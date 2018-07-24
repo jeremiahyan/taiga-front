@@ -1,5 +1,93 @@
 # Changelog
 
+## Unreleased
+
+## 3.3.13 (2018-07-05)
+
+### Misc
+
+- Add assigned users filters.
+
+- Minor bug fixes.
+
+## 3.3.12 (2018-06-27)
+
+### Misc
+
+- Temporary remove assigned users filters.
+
+## 3.3.11 (2018-06-27)
+
+### Misc
+
+- Fix debounce load US's
+- Fix RTL style bug
+
+## 3.3.10 (2018-06-21)
+
+### Misc
+
+- Fix style bug.
+
+## 3.3.9 (2018-06-21)
+
+### Misc
+
+- Update locales.
+
+- Improve RTL styles.
+
+## 3.3.8 (2018-06-14)
+
+### Features
+
+- Add Right-To-Left (RTL) support.
+
+### Misc
+
+- Update locales.
+
+## 3.3.7 (2018-05-31)
+
+### Misc
+
+- Fix bug unable to sign up when no privacyPolicyUrl or termsOfServiceUrl
+  settings were defined.
+
+- Update locales.
+
+## 3.3.6 (2018-05-24)
+
+### Misc
+
+- Minor bug fix regarding GDPR notification.
+
+## 3.3.5 (2018-05-24)
+
+### Misc
+
+- Update locales.
+
+## 3.3.4 (2018-05-24)
+
+### Misc
+
+- Add features to fulfill GDPR.
+
+## 3.3.3 (2018-05-10)
+
+### Misc
+
+- Add Persian (Iran) language.
+- Update locales.
+- Minor bug fixes.
+
+## 3.3.2 (2018-04-30)
+
+### Misc
+
+- Minor bug fixes.
+
 ## 3.3.1 (2018-04-30)
 
 ### Misc
