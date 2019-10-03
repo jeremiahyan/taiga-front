@@ -3,6 +3,7 @@
     tg-bind-scope
     ng-class="{blocked: us.is_blocked}"
     tg-class-permission="{'readonly': '!modify_us'}"
+    data-id="{{ us.id }}"
 )
 
     .input(tg-check-permission="modify_us")
@@ -29,8 +30,9 @@
                 span(ng-bind-html="us.subject | emojify")
                 tg-due-date(
                     due-date="us.due_date"
-                    due-date-status="us.due_date_status"
+                    is-closed="us.is_closed"
                     ng-if="us.due_date"
+                    obj-type="us"
                 )
                 tg-belong-to-epics(
                     format="pill"

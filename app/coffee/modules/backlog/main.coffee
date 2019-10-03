@@ -1,10 +1,5 @@
 ###
-# Copyright (C) 2014-2017 Andrey Antukh <niwi@niwi.nz>
-# Copyright (C) 2014-2017 Jesús Espino Garcia <jespinog@gmail.com>
-# Copyright (C) 2014-2017 David Barragán Merino <bameda@dbarragan.com>
-# Copyright (C) 2014-2017 Alejandro Alonso <alejandro.alonso@kaleidos.net>
-# Copyright (C) 2014-2017 Juan Francisco Alcántara <juanfran.alcantara@kaleidos.net>
-# Copyright (C) 2014-2017 Xavi Julian <xavier.julian@kaleidos.net>
+# Copyright (C) 2014-2018 Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -60,7 +55,8 @@ class BacklogController extends mixOf(taiga.Controller, taiga.PageMixin, taiga.F
         "tgErrorHandlingService",
         "$tgStorage",
         "tgFilterRemoteStorageService",
-        "tgProjectService"
+        "tgProjectService",
+        "tgLoader"
     ]
 
     storeCustomFiltersName: 'backlog-custom-filters'
@@ -70,7 +66,7 @@ class BacklogController extends mixOf(taiga.Controller, taiga.PageMixin, taiga.F
 
     constructor: (@scope, @rootscope, @repo, @confirm, @rs, @params, @q, @location, @appMetaService, @navUrls,
                   @events, @analytics, @translate, @loading, @rs2, @modelTransform, @errorHandlingService,
-                  @storage, @filterRemoteStorageService, @projectService) ->
+                  @storage, @filterRemoteStorageService, @projectService, @tgLoader) ->
         bindMethods(@)
 
         @.backlogOrder = {}
@@ -312,10 +308,13 @@ class BacklogController extends mixOf(taiga.Controller, taiga.PageMixin, taiga.F
                 @.disablePagination = false
                 @.page++
 
+            @rootscope.$broadcast("backlog:userstories:loaded")
+
             # The broadcast must be executed when the DOM has been fully reloaded.
             # We can't assure when this exactly happens so we need a defer
             scopeDefer @scope, =>
                 @scope.$broadcast("userstories:loaded")
+                @tgLoader.pageLoaded()
 
             return userstories
 
@@ -477,6 +476,10 @@ class BacklogController extends mixOf(taiga.Controller, taiga.PageMixin, taiga.F
         for it, key in afterDestination # increase position of the us after the dragged us's
             orderList[it.id] = startIndex + key + 1
 
+        setNextOrders = _.map(afterDestination, (it) =>
+            {us_id: it.id, order: orderList[it.id]}
+        )
+
         # refresh order
         @scope.userstories = _.sortBy @scope.userstories, (it) => @.backlogOrder[it.id]
         @scope.visibleUserStories = _.map @scope.userstories, (it) -> return it.ref
@@ -489,14 +492,16 @@ class BacklogController extends mixOf(taiga.Controller, taiga.PageMixin, taiga.F
 
         # saving
         if usList.length > 1 && (newSprintId != oldSprintId) # drag multiple to sprint
-            data = modifiedUs.concat(setPreviousOrders)
+            data = modifiedUs.concat(setPreviousOrders, setNextOrders)
             promise = @rs.userstories.bulkUpdateMilestone(project, newSprintId, data)
         else if usList.length > 1 # drag multiple in backlog
-            data = modifiedUs.concat(setPreviousOrders)
+            data = modifiedUs.concat(setPreviousOrders, setNextOrders)
             promise = @rs.userstories.bulkUpdateBacklogOrder(project, data)
         else  # drag single
             setOrders = {}
             for it in setPreviousOrders
+                setOrders[it.us_id] = it.order
+            for it in setNextOrders
                 setOrders[it.us_id] = it.order
 
             options = {
@@ -535,7 +540,11 @@ class BacklogController extends mixOf(taiga.Controller, taiga.PageMixin, taiga.F
 
         return @rs.userstories.getByRef(projectId, ref).then (us) =>
             @rs2.attachments.list("us", us.id, projectId).then (attachments) =>
-                @rootscope.$broadcast("usform:edit", us, attachments.toJS())
+                @rootscope.$broadcast("genericform:edit", {
+                    'objType': 'us',
+                    'obj': us,
+                    'attachments': attachments.toJS()
+                })
                 currentLoading.finish()
 
     deleteUserStory: (us) ->
@@ -560,8 +569,11 @@ class BacklogController extends mixOf(taiga.Controller, taiga.PageMixin, taiga.F
 
     addNewUs: (type) ->
         switch type
-            when "standard" then @rootscope.$broadcast("usform:new", @scope.projectId,
-                                                       @scope.project.default_us_status, @scope.usStatusList)
+            when "standard" then @rootscope.$broadcast("genericform:new",
+                {
+                    'objType': 'us',
+                    'project': @scope.project
+                })
             when "bulk" then @rootscope.$broadcast("usform:bulk", @scope.projectId,
                                                    @scope.project.default_us_status)
 
@@ -569,13 +581,13 @@ class BacklogController extends mixOf(taiga.Controller, taiga.PageMixin, taiga.F
         @rootscope.$broadcast("sprintform:create", @scope.projectId)
 
     findCurrentSprint: () ->
-      currentDate = new Date().getTime()
+        currentDate = new Date().getTime()
 
-      return  _.find @scope.sprints, (sprint) ->
-          start = moment(sprint.estimated_start, 'YYYY-MM-DD').format('x')
-          end = moment(sprint.estimated_finish, 'YYYY-MM-DD').format('x')
+        return  _.find @scope.sprints, (sprint) ->
+            start = moment(sprint.estimated_start, 'YYYY-MM-DD').format('x')
+            end = moment(sprint.estimated_finish, 'YYYY-MM-DD').format('x')
 
-          return currentDate >= start && currentDate <= end
+            return currentDate >= start && currentDate <= end
 
 module.controller("BacklogController", BacklogController)
 
@@ -675,7 +687,8 @@ BacklogDirective = ($repo, $rootscope, $translate, $rs) ->
             moveUssToSprint(selectedUss, $scope.sprints[0])
 
         $scope.$on "sprintform:create:success:callback", (e, ussToMove) ->
-            _.partial(moveToCurrentSprint, ussToMove)()
+            if ussToMove
+                _.partial(moveToCurrentSprint, ussToMove)()
 
         shiftPressed = false
         lastChecked = null

@@ -1,10 +1,5 @@
 ###
-# Copyright (C) 2014-2017 Andrey Antukh <niwi@niwi.nz>
-# Copyright (C) 2014-2017 Jesús Espino Garcia <jespinog@gmail.com>
-# Copyright (C) 2014-2017 David Barragán Merino <bameda@dbarragan.com>
-# Copyright (C) 2014-2017 Alejandro Alonso <alejandro.alonso@kaleidos.net>
-# Copyright (C) 2014-2017 Juan Francisco Alcántara <juanfran.alcantara@kaleidos.net>
-# Copyright (C) 2014-2017 Xavi Julian <xavier.julian@kaleidos.net>
+# Copyright (C) 2014-2018 Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -19,7 +14,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
-# File: modules/taskboard.coffee
+# File: modules/taskboard/main.coffee
 ###
 
 taiga = @.taiga
@@ -57,12 +52,24 @@ class TaskboardController extends mixOf(taiga.Controller, taiga.PageMixin, taiga
         "$translate",
         "tgErrorHandlingService",
         "tgTaskboardTasks",
+        "tgTaskboardIssues",
         "$tgStorage",
-        "tgFilterRemoteStorageService"
+        "tgFilterRemoteStorageService",
+        "tgLightboxFactory"
+    ]
+
+    excludePrefix: "exclude_"
+    filterCategories: [
+        "tags",
+        "status",
+        "assigned_to",
+        "owner",
+        "role",
     ]
 
     constructor: (@scope, @rootscope, @repo, @confirm, @rs, @rs2, @params, @q, @appMetaService, @location, @navUrls,
-                  @events, @analytics, @translate, @errorHandlingService, @taskboardTasksService, @storage, @filterRemoteStorageService) ->
+                  @events, @analytics, @translate, @errorHandlingService, @taskboardTasksService,
+                  @taskboardIssuesService, @storage, @filterRemoteStorageService, @lightboxFactory) ->
         bindMethods(@)
         @taskboardTasksService.reset()
         @scope.userstories = []
@@ -75,6 +82,9 @@ class TaskboardController extends mixOf(taiga.Controller, taiga.PageMixin, taiga
 
         taiga.defineImmutableProperty @.scope, "usTasks", () =>
             return @taskboardTasksService.usTasks
+
+        taiga.defineImmutableProperty @.scope, "milestoneIssues", () =>
+            return @taskboardIssuesService.milestoneIssues
 
     firstLoad: () ->
         promise = @.loadInitialData()
@@ -102,7 +112,7 @@ class TaskboardController extends mixOf(taiga.Controller, taiga.PageMixin, taiga
 
         else if @.zoomLevel > 1 && previousZoomLevel <= 1
             @.zoomLoading = true
-            @.loadTasks().then () =>
+            @q.all([@.loadTasks(), @.loadIssues()]).then () =>
                 @.zoomLoading = false
                 @taskboardTasksService.resetFolds()
 
@@ -115,12 +125,12 @@ class TaskboardController extends mixOf(taiga.Controller, taiga.PageMixin, taiga
         @.generateFilters()
 
     removeFilter: (filter) ->
-        @.unselectFilter(filter.dataType, filter.id)
+        @.unselectFilter(filter.dataType, filter.id, false, filter.mode)
         @.loadTasks()
         @.generateFilters()
 
     addFilter: (newFilter) ->
-        @.selectFilter(newFilter.category.dataType, newFilter.filter.id)
+        @.selectFilter(newFilter.category.dataType, newFilter.filter.id, false, newFilter.mode)
         @.loadTasks()
         @.generateFilters()
 
@@ -144,11 +154,10 @@ class TaskboardController extends mixOf(taiga.Controller, taiga.PageMixin, taiga
     saveCustomFilter: (name) ->
         filters = {}
         urlfilters = @location.search()
-        filters.tags = urlfilters.tags
-        filters.status = urlfilters.status
-        filters.assigned_to = urlfilters.assigned_to
-        filters.owner = urlfilters.owner
-        filters.role = urlfilters.role
+        for key in @.filterCategories
+            excludeKey = @.excludePrefix.concat(key)
+            filters[key] = urlfilters[key]
+            filters[excludeKey] = urlfilters[excludeKey]
 
         @filterRemoteStorageService.getFilters(@scope.projectId, 'tasks-custom-filters').then (userFilters) =>
             userFilters[name] = filters
@@ -163,12 +172,12 @@ class TaskboardController extends mixOf(taiga.Controller, taiga.PageMixin, taiga
         loadFilters = {}
         loadFilters.project = @scope.projectId
         loadFilters.milestone = @scope.sprintId
-        loadFilters.tags = urlfilters.tags
-        loadFilters.status = urlfilters.status
-        loadFilters.assigned_to = urlfilters.assigned_to
-        loadFilters.owner = urlfilters.owner
-        loadFilters.role = urlfilters.role
         loadFilters.q = urlfilters.q
+
+        for key in @.filterCategories
+            excludeKey = @.excludePrefix.concat(key)
+            loadFilters[key] = urlfilters[key]
+            loadFilters[excludeKey] = urlfilters[excludeKey]
 
         return @q.all([
             @rs.tasks.filtersData(loadFilters),
@@ -176,20 +185,21 @@ class TaskboardController extends mixOf(taiga.Controller, taiga.PageMixin, taiga
         ]).then (result) =>
             data = result[0]
             customFiltersRaw = result[1]
+            dataCollection = {}
 
-            statuses = _.map data.statuses, (it) ->
+            dataCollection.status = _.map data.statuses, (it) ->
                 it.id = it.id.toString()
 
                 return it
-            tags = _.map data.tags, (it) ->
+            dataCollection.tags = _.map data.tags, (it) ->
                 it.id = it.name
 
                 return it
 
-            tagsWithAtLeastOneElement = _.filter tags, (tag) ->
+            tagsWithAtLeastOneElement = _.filter dataCollection.tags, (tag) ->
                 return tag.count > 0
 
-            assignedTo = _.map data.assigned_to, (it) ->
+            dataCollection.assigned_to = _.map data.assigned_to, (it) ->
                 if it.id
                     it.id = it.id.toString()
                 else
@@ -198,7 +208,7 @@ class TaskboardController extends mixOf(taiga.Controller, taiga.PageMixin, taiga
                 it.name = it.full_name || "Unassigned"
 
                 return it
-            role = _.map data.roles, (it) ->
+            dataCollection.role = _.map data.roles, (it) ->
                 if it.id
                     it.id = it.id.toString()
                 else
@@ -207,7 +217,7 @@ class TaskboardController extends mixOf(taiga.Controller, taiga.PageMixin, taiga
                 it.name = it.name || "Unassigned"
 
                 return it
-            owner = _.map data.owners, (it) ->
+            dataCollection.owner = _.map data.owners, (it) ->
                 it.id = it.id.toString()
                 it.name = it.full_name
 
@@ -215,25 +225,14 @@ class TaskboardController extends mixOf(taiga.Controller, taiga.PageMixin, taiga
 
             @.selectedFilters = []
 
-            if loadFilters.status
-                selected = @.formatSelectedFilters("status", statuses, loadFilters.status)
-                @.selectedFilters = @.selectedFilters.concat(selected)
-
-            if loadFilters.tags
-                selected = @.formatSelectedFilters("tags", tags, loadFilters.tags)
-                @.selectedFilters = @.selectedFilters.concat(selected)
-
-            if loadFilters.assigned_to
-                selected = @.formatSelectedFilters("assigned_to", assignedTo, loadFilters.assigned_to)
-                @.selectedFilters = @.selectedFilters.concat(selected)
-
-            if loadFilters.owner
-                selected = @.formatSelectedFilters("owner", owner, loadFilters.owner)
-                @.selectedFilters = @.selectedFilters.concat(selected)
-
-            if loadFilters.role
-                selected = @.formatSelectedFilters("role", role, loadFilters.role)
-                @.selectedFilters = @.selectedFilters.concat(selected)
+            for key in @.filterCategories
+                excludeKey = @.excludePrefix.concat(key)
+                if loadFilters[key]
+                    selected = @.formatSelectedFilters(key, dataCollection[key], loadFilters[key])
+                    @.selectedFilters = @.selectedFilters.concat(selected)
+                if loadFilters[excludeKey]
+                    selected = @.formatSelectedFilters(key, dataCollection[key], loadFilters[excludeKey], "exclude")
+                    @.selectedFilters = @.selectedFilters.concat(selected)
 
             @.filterQ = loadFilters.q
 
@@ -241,29 +240,29 @@ class TaskboardController extends mixOf(taiga.Controller, taiga.PageMixin, taiga
                 {
                     title: @translate.instant("COMMON.FILTERS.CATEGORIES.STATUS"),
                     dataType: "status",
-                    content: statuses
+                    content: dataCollection.status
                 },
                 {
                     title: @translate.instant("COMMON.FILTERS.CATEGORIES.TAGS"),
                     dataType: "tags",
-                    content: tags,
+                    content: dataCollection.tags,
                     hideEmpty: true,
                     totalTaggedElements: tagsWithAtLeastOneElement.length
                 },
                 {
                     title: @translate.instant("COMMON.FILTERS.CATEGORIES.ASSIGNED_TO"),
                     dataType: "assigned_to",
-                    content: assignedTo
+                    content: dataCollection.assigned_to
                 },
                 {
                     title: @translate.instant("COMMON.FILTERS.CATEGORIES.ROLE"),
                     dataType: "role",
-                    content: role
+                    content: dataCollection.role
                 },
                 {
                     title: @translate.instant("COMMON.FILTERS.CATEGORIES.CREATED_BY"),
                     dataType: "owner",
-                    content: owner
+                    content: dataCollection.owner
                 }
             ]
 
@@ -309,26 +308,62 @@ class TaskboardController extends mixOf(taiga.Controller, taiga.PageMixin, taiga
             @.refreshTagsColors().then () =>
                 @taskboardTasksService.replaceModel(task)
 
+        @scope.$on "issueform:new:success", (event, issue) =>
+            @.refreshTagsColors().then () =>
+                @taskboardIssuesService.add(issue)
+
+            @analytics.trackEvent("issue", "create", "create issue on taskboard", 1)
+
+        @scope.$on "issueform:add:success", (event, issue) =>
+            @.refreshTagsColors().then () =>
+                @taskboardIssuesService.add(issue)
+
+        @scope.$on "issueform:edit:success", (event, issue) =>
+            @.refreshTagsColors().then () =>
+                @taskboardIssuesService.replaceModel(issue)
+
         @scope.$on "taskboard:task:deleted", (event, task) =>
             @.loadTasks()
+
+        @scope.$on "taskboard:issue:deleted", (event, issue) =>
+            @.loadIssues()
 
         @scope.$on("taskboard:task:move", @.taskMove)
         @scope.$on("assigned-to:added", @.onAssignedToChanged)
 
-    onAssignedToChanged: (ctx, userid, taskModel) ->
-        taskModel.assigned_to = userid
+        @scope.$on "taskboard:items:move", (event, itemsMoved) =>
+            if itemsMoved.uss
+                @.firstLoad()
+            else
+                @.loadTasks() if itemsMoved.tasks
+                @.loadIssues() if itemsMoved.issues
 
-        @taskboardTasksService.replaceModel(taskModel)
+    onAssignedToChanged: (ctx, userid, model) ->
+        if model.getName() == 'tasks'
+            model.assigned_to = userid
+            @taskboardTasksService.replaceModel(model)
 
-        @repo.save(taskModel).then =>
-            @.generateFilters()
-            if @.isFilterDataTypeSelected('assigned_to') || @.isFilterDataTypeSelected('role')
-                @.loadTasks()
+            @repo.save(model).then =>
+                @.generateFilters()
+                if @.isFilterDataTypeSelected('assigned_to') || @.isFilterDataTypeSelected('role')
+                    @.loadTasks()
+        if model.getName() == 'issues'
+            model.assigned_to = userid
+            @taskboardIssuesService.replaceModel(model)
+
+            @repo.save(model).then =>
+                @.generateFilters()
+                if @.isFilterDataTypeSelected('assigned_to') || @.isFilterDataTypeSelected('role')
+                    @.loadIssues()
 
     initializeSubscription: ->
         routingKey = "changes.project.#{@scope.projectId}.tasks"
         @events.subscribe @scope, routingKey, debounceLeading(500, (message) =>
             @.loadTaskboard())
+
+        routingKey = "changes.project.#{@scope.projectId}.issues"
+        @events.subscribe @scope, routingKey, debounceLeading(500, (message) =>
+            @.loadIssues())
 
         routingKey1 = "changes.project.#{@scope.projectId}.userstories"
         @events.subscribe @scope, routingKey1, (message) =>
@@ -349,6 +384,7 @@ class TaskboardController extends mixOf(taiga.Controller, taiga.PageMixin, taiga
             @scope.taskStatusList = _.sortBy(project.task_statuses, "order")
             @scope.usStatusList = _.sortBy(project.us_statuses, "order")
             @scope.usStatusById = groupBy(project.us_statuses, (e) -> e.id)
+            @scope.issueStatusById = groupBy(project.issue_statuses, (e) -> e.id)
 
             @scope.$emit('project:loaded', project)
 
@@ -386,7 +422,21 @@ class TaskboardController extends mixOf(taiga.Controller, taiga.PageMixin, taiga
 
             @taskboardTasksService.setUserstories(@scope.userstories)
 
+            @rootscope.$broadcast("taskboard:userstories:loaded", @scope.userstories)
             return sprint
+
+    loadIssues: ->
+        params = {}
+
+        if @.zoomLevel > 1
+            params.include_attachments = 1
+
+        params = _.merge params, @location.search()
+
+        return @rs.issues.listInProject(@scope.projectId, @scope.sprintId, params).then (issues) =>
+            @taskboardIssuesService.init(@scope.project, @scope.usersById, @scope.issueStatusById)
+            @taskboardIssuesService.set(issues)
+            @scope.taskBoardLoading = false
 
     loadTasks: ->
         params = {}
@@ -395,7 +445,6 @@ class TaskboardController extends mixOf(taiga.Controller, taiga.PageMixin, taiga
             params.include_attachments = 1
 
         params = _.merge params, @location.search()
-
         return @rs.tasks.list(@scope.projectId, @scope.sprintId, null, params).then (tasks) =>
             @taskboardTasksService.init(@scope.project, @scope.usersById)
             @taskboardTasksService.set(tasks)
@@ -404,7 +453,10 @@ class TaskboardController extends mixOf(taiga.Controller, taiga.PageMixin, taiga
         return @q.all([
             @.refreshTagsColors(),
             @.loadSprintStats(),
-            @.loadSprint().then(=> @.loadTasks())
+            @.loadSprint().then(=>
+                @.loadTasks()
+                @.loadIssues()
+            )
         ])
 
     loadInitialData: ->
@@ -439,11 +491,37 @@ class TaskboardController extends mixOf(taiga.Controller, taiga.PageMixin, taiga
         task = task.set('loading-edit', true)
         @taskboardTasksService.replace(task)
 
-        @rs.tasks.getByRef(task.getIn(['model', 'project']), task.getIn(['model', 'ref'])).then (editingTask) =>
-             @rs2.attachments.list("task", task.get('id'), task.getIn(['model', 'project'])).then (attachments) =>
-                @rootscope.$broadcast("taskform:edit", editingTask, attachments.toJS())
-                task = task.set('loading', false)
+        @rs.tasks.getByRef(task.getIn(['model', 'project']), task.getIn(['model', 'ref']))
+        .then (editingTask) =>
+            @rs2.attachments.list("task", task.get('id'), task.getIn(['model', 'project']))
+            .then (attachments) =>
+                @rootscope.$broadcast("genericform:edit", {
+                    'objType': 'task',
+                    'obj': editingTask,
+                    'project': @scope.project,
+                    'sprintId': @scope.sprintId,
+                    'attachments': attachments.toJS()
+                })
+
+                task = task.set('loading-edit', false)
                 @taskboardTasksService.replace(task)
+
+    editIssue: (id) ->
+        issue = @.taskboardIssuesService.getIssue(id)
+        issue = issue.set('loading-edit', true)
+
+        @rs.issues.getByRef(issue.getIn(['model', 'project']), issue.getIn(['model', 'ref']))
+        .then (editingIssue) =>
+            @rs2.attachments.list("issue", issue.get('id'), issue.getIn(['model', 'project']))
+            .then (attachments) =>
+                @rootscope.$broadcast("genericform:edit", {
+                    'objType': 'issue',
+                    'obj': editingIssue,
+                    'project': @scope.project,
+                    'sprintId': @scope.sprintId,
+                    'attachments': attachments.toJS()
+                })
+                issue = issue.set('loading-edit', false)
 
     deleteTask: (id) ->
         task = @.taskboardTasksService.getTask(id)
@@ -463,8 +541,50 @@ class TaskboardController extends mixOf(taiga.Controller, taiga.PageMixin, taiga
                     askResponse.finish(false)
                     @confirm.notify("error")
 
+    deleteIssue: (id) ->
+        issue = @.taskboardIssuesService.getIssue(id)
+        issue = issue.set('loading-delete', true)
+
+        @rs.issues.getByRef(issue.getIn(['model', 'project']), issue.getIn(['model', 'ref']))
+        .then (deletingIssue) =>
+            issue = issue.set('loading-delete', false)
+            title = @translate.instant("ISSUES.ACTION_DELETE")
+            message = deletingIssue.subject
+            @confirm.askOnDelete(title, message).then (askResponse) =>
+                promise = @repo.remove(deletingIssue)
+                promise.then =>
+                    @scope.$broadcast("taskboard:issue:deleted")
+                    askResponse.finish()
+                promise.then null, ->
+                    askResponse.finish(false)
+                    @confirm.notify("error")
+
+    removeIssueFromSprint: (id) ->
+        issue = @.taskboardIssuesService.getIssue(id)
+        issue = issue.set('loading-delete', true)
+
+        @rs.issues.getByRef(issue.getIn(['model', 'project']), issue.getIn(['model', 'ref']))
+        .then (removingIssue) =>
+            issue = issue.set('loading-delete', false)
+            title = @translate.instant("ISSUES.CONFIRM_DETACH_FROM_SPRINT.TITLE")
+            message = @translate.instant("ISSUES.CONFIRM_DETACH_FROM_SPRINT.MESSAGE")
+            message = @translate.instant(
+                "ISSUES.CONFIRM_DETACH_FROM_SPRINT.MESSAGE",
+                {sprintName: @scope.sprint.name}
+            )
+
+            @confirm.ask(title, null, message).then (askResponse) =>
+                removingIssue.milestone = null
+                promise = @repo.save(removingIssue)
+                promise.then =>
+                    @.taskboardIssuesService.remove(removingIssue)
+                    askResponse.finish()
+                promise.then null, ->
+                    askResponse.finish(false)
+                    @confirm.notify("error")
 
     taskMove: (ctx, task, oldStatusId, usId, statusId, order) ->
+        @scope.movingTask = true
         task = @taskboardTasksService.getTaskModel(task.get('id'))
 
         moveUpdateData = @taskboardTasksService.move(task.id, usId, statusId, order)
@@ -481,6 +601,10 @@ class TaskboardController extends mixOf(taiga.Controller, taiga.PageMixin, taiga
         }
 
         promise = @repo.save(task, true, params, options, true).then (result) =>
+            if result[0] and result[0].user_story
+                @.reloadUserStory(result[0].user_story)
+
+            @scope.movingTask = false
             headers = result[1]
 
             if headers && headers['taiga-info-order-updated']
@@ -492,20 +616,85 @@ class TaskboardController extends mixOf(taiga.Controller, taiga.PageMixin, taiga
             if @.isFilterDataTypeSelected('status')
                 @.loadTasks()
 
+    reloadUserStory: (userStoryId) ->
+        @rs.userstories.get(@scope.project.id, userStoryId).then (us) =>
+            @scope.userstories = _.map(@scope.userstories, (x) -> if x.id == us.id then us else x)
 
     ## Template actions
     addNewTask: (type, us) ->
         switch type
-            when "standard" then @rootscope.$broadcast("taskform:new", @scope.sprintId, us?.id)
+            when "standard" then @rootscope.$broadcast("genericform:new",
+                {
+                    'objType': 'task',
+                    'project': @scope.project,
+                    'sprintId': @scope.sprintId,
+                    'usId': us?.id
+                })
             when "bulk" then @rootscope.$broadcast("taskform:bulk", @scope.sprintId, us?.id)
 
-    toggleFold: (id) ->
-        @taskboardTasksService.toggleFold(id)
+    addNewIssue: (type, us) ->
+        switch type
+            when "standard" then @rootscope.$broadcast("genericform:new-or-existing",
+                {
+                    objType: 'issue',
+                    project: @scope.project,
+                    sprintId: @scope.sprintId,
+                    relatedField: 'milestone',
+                    relatedObjectId: @scope.sprintId,
+                    targetName: @scope.sprint.name,
+                })
+            when "standard" then @rootscope.$broadcast("taskform:new", @scope.sprintId, us?.id)
+            when "bulk" then @rootscope.$broadcast("issueform:bulk", @scope.projectId, @scope.sprintId)
+
+    toggleFold: (id,  modelName) ->
+        if modelName == 'issues'
+            @taskboardIssuesService.toggleFold(id)
+        else if modelName == 'tasks'
+            @taskboardTasksService.toggleFold(id)
+
+    openUsersSelection: (item) ->
+        onClose = (assignedUsers) =>
+            userId = assignedUsers.pop() || null
+
+            if item.getName() == 'tasks'
+                item.assigned_to = userId
+                @taskboardTasksService.replaceModel(item)
+
+                @repo.save(item).then =>
+                    @.generateFilters()
+                    if @.isFilterDataTypeSelected('assigned_to') || @.isFilterDataTypeSelected('role')
+                        @.loadTasks()
+
+            if item.getName() == 'issues'
+                item.assigned_to = userId
+                @taskboardIssuesService.replaceModel(item)
+
+                @repo.save(item).then =>
+                    @.generateFilters()
+                    if @.isFilterDataTypeSelected('assigned_to') || @.isFilterDataTypeSelected('role')
+                        @.loadIssues()
+
+        @lightboxFactory.create(
+            'tg-lb-select-user',
+            {
+                "class": "lightbox lightbox-select-user",
+            },
+            {
+                "currentUsers": [item.assigned_to],
+                "activeUsers": @scope.activeUsers,
+                "onClose": onClose,
+                "single": true,
+                "lbTitle": @translate.instant("COMMON.ASSIGNED_USERS.ADD"),
+            }
+        )
 
     changeTaskAssignedTo: (id) ->
         task = @taskboardTasksService.getTaskModel(id)
+        @.openUsersSelection(task)
 
-        @rootscope.$broadcast("assigned-to:add", task)
+    changeIssueAssignedTo: (id) ->
+        issue = @taskboardIssuesService.getIssueModel(id)
+        @.openUsersSelection(issue)
 
     setRolePoints: () ->
         computableRoles = _.filter(@scope.project.roles, "computable")
@@ -592,12 +781,8 @@ TaskboardSquishColumnDirective = (rs) ->
 
             recalculateTaskboardWidth()
 
-        $scope.foldUs = (us) ->
-            if !us
-                $scope.usFolded[null] = !!!$scope.usFolded[null]
-            else
-                $scope.usFolded[us.id] = !!!$scope.usFolded[us.id]
-
+        $scope.foldUs = (rowId) ->
+            $scope.usFolded[rowId] = !!!$scope.usFolded[rowId]
             rs.tasks.storeUsRowModes($scope.projectId, $scope.sprintId, $scope.usFolded)
 
             recalculateTaskboardWidth()
@@ -642,6 +827,12 @@ TaskboardSquishColumnDirective = (rs) ->
                 return total + width
 
             $el.find('.taskboard-table-inner').css("width", totalWidth)
+
+            issuesBoxWidth = $el.find('.issues-row .taskboard-row-title-box').outerWidth(true)
+            $el.find('.issues-row').css("width", totalWidth - columnWidths.pop())
+
+            issueCardMaxWidth = if $scope.ctrl.zoomLevel == '0' then 128 else 280
+            $el.find('.issues-row .taskboard-cards-box .card').css("max-width", issueCardMaxWidth)
 
         recalculateStatusColumnWidth = (statusId) =>
             #unassigned ceil

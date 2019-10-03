@@ -1,10 +1,5 @@
 ###
-# Copyright (C) 2014-2017 Andrey Antukh <niwi@niwi.nz>
-# Copyright (C) 2014-2017 Jesús Espino Garcia <jespinog@gmail.com>
-# Copyright (C) 2014-2017 David Barragán Merino <bameda@dbarragan.com>
-# Copyright (C) 2014-2017 Alejandro Alonso <alejandro.alonso@kaleidos.net>
-# Copyright (C) 2014-2017 Juan Francisco Alcántara <juanfran.alcantara@kaleidos.net>
-# Copyright (C) 2014-2017 Xavi Julian <xavier.julian@kaleidos.net>
+# Copyright (C) 2014-2018 Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -270,6 +265,15 @@ randomInt = (start, end) ->
     interval = end - start
     return start + Math.floor(Math.random()*(interval+1))
 
+normalizeString = (string) ->
+    normalizedString = string
+    normalizedString = normalizedString.replace("Á", "A").replace("Ä", "A").replace("À", "A")
+    normalizedString = normalizedString.replace("É", "E").replace("Ë", "E").replace("È", "E")
+    normalizedString = normalizedString.replace("Í", "I").replace("Ï", "I").replace("Ì", "I")
+    normalizedString = normalizedString.replace("Ó", "O").replace("Ö", "O").replace("Ò", "O")
+    normalizedString = normalizedString.replace("Ú", "U").replace("Ü", "U").replace("Ù", "U")
+    return normalizedString
+
 taiga = @.taiga
 taiga.addClass = addClass
 taiga.nl2br = nl2br
@@ -302,3 +306,4 @@ taiga.getRandomDefaultColor = getRandomDefaultColor
 taiga.getDefaulColorList = getDefaulColorList
 taiga.getMatches = getMatches
 taiga.randomInt = randomInt
+taiga.normalizeString = normalizeString

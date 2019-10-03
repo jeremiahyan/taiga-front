@@ -1,5 +1,5 @@
 ###
-# Copyright (C) 2014-2015 Taiga Agile LLC <taiga@taiga.io>
+# Copyright (C) 2014-2018 Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
-# File: card.controller.coffee
+# File: components/card/card.controller.coffee
 ###
 
 class CardController
@@ -87,6 +87,8 @@ class CardController
     getNavKey: () ->
         if @.type == 'task'
             return 'project-tasks-detail'
+        else if @.type == 'issue'
+            return 'project-issues-detail'
         else
             return 'project-userstories-detail'
 

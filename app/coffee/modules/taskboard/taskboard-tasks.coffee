@@ -1,5 +1,5 @@
 ###
-# Copyright (C) 2014-2017 Taiga Agile LLC <taiga@taiga.io>
+# Copyright (C) 2014-2018 Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
-# File: home.service.coffee
+# File: modules/taskboard/taskboard-tasks.coffee
 ###
 
 groupBy = @.taiga.groupBy
@@ -140,6 +140,9 @@ class TaskboardTasksService extends taiga.Service
         return {"task_id": task.id, "order": @.order[task.id], "set_orders": setOrders}
 
     refresh: ->
+        if !@.project
+            return
+
         @.tasksRaw = _.sortBy @.tasksRaw, (it) => @.order[it.id]
 
         tasks = @.tasksRaw

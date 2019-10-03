@@ -137,7 +137,7 @@ div.wrapper(
 
             .module.module-videoconference(ng-class="{true:'active', false:''}[isVideoconferenceActivated]")
                 .module-icon
-                    tg-svg(svg-icon="icon-bubble-empty")
+                    tg-svg(svg-icon="icon-meetup")
                 .module-name(translate="ADMIN.MODULES.MEETUP")
                 .module-desc
                     p(translate="ADMIN.MODULES.MEETUP_DESCRIPTION")
@@ -146,7 +146,7 @@ div.wrapper(
                             id="videoconference-type"
                             name="videoconference-type"
                             ng-model="project.videoconferences"
-                            ng-options="e.id as e.name|translate for e in [{'id':'appear-in', 'name':'ADMIN.MODULES.APPEARIN_CHAT_ROOM'},{'id':'jitsi', 'name': 'ADMIN.MODULES.JITSI_CHAT_ROOM'},{'id':'talky', 'name': 'ADMIN.MODULES.TALKY_CHAT_ROOM'},{'id':'custom', 'name': 'ADMIN.MODULES.CUSTOM_CHAT_ROOM'}]")
+                            ng-options="e.id as e.name|translate for e in [{'id':'whereby-com', 'name':'ADMIN.MODULES.WHEREBYCOM_CHAT_ROOM'},{'id':'jitsi', 'name': 'ADMIN.MODULES.JITSI_CHAT_ROOM'},{'id':'talky', 'name': 'ADMIN.MODULES.TALKY_CHAT_ROOM'},{'id':'custom', 'name': 'ADMIN.MODULES.CUSTOM_CHAT_ROOM'}]")
                             option(
                                 value=""
                                 translate="ADMIN.MODULES.SELECT_VIDEOCONFERENCE"
@@ -164,11 +164,11 @@ div.wrapper(
                             input(
                                 id="videoconference-url"
                                 name="videoconference-url"
-                                type="url"
+                                type="text"
                                 ng-model="project.videoconferences_extra_data"
                                 data-maxlength="250"
                                 placeholder="{{'ADMIN.MODULES.URL_CHAT_ROOM' | translate}}"
-                                data-type="url"
+                                data-url
                                 data-required="true"
                             )
                         fieldset.options

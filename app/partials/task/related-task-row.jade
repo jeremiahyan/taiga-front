@@ -1,3 +1,10 @@
+.task-reorder
+    <% if(perms.modify_task) { %>
+    tg-svg.icon-drag(
+        svg-icon="icon-drag"
+    )
+    <% } %>
+
 .task-name
     a.clickable(
         tg-nav="project-tasks-detail:project=project.slug,ref=task.ref")
@@ -5,7 +12,7 @@
         span(ng-non-bindable) <%= emojify(task.subject) %>
     tg-due-date(
         due-date="task.due_date"
-        due-date-status="task.due_date_status"
+        obj-type="task"
         ng-if="task.due_date"
     )
 .task-settings

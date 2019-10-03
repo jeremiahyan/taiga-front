@@ -1,5 +1,5 @@
 ###
-# Copyright (C) 2014-2017 Taiga Agile LLC <taiga@taiga.io>
+# Copyright (C) 2014-2018 Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
-# File: epics.service.coffee
+# File: epics/epics.service.coffee
 ###
 
 taiga = @.taiga
@@ -64,15 +64,23 @@ class EpicsService
     listRelatedUserStories: (epic) ->
         return @resources.userstories.listInEpic(epic.get('id'))
 
-    createEpic: (epicData, attachments) ->
-        epicData.project = @projectService.project.get('id')
+    createEpic: (epicData, attachments, projectId) ->
+        if projectId
+            epicData.project = projectId
+        else
+            epicData.project = @projectService.project.get('id')
 
         return @resources.epics.post(epicData)
             .then (epic) =>
-                promises = _.map attachments.toJS(), (attachment) =>
-                    @attachmentsService.upload(attachment.file, epic.get('id'), epic.get('project'), 'epic')
+                if !attachments
+                    return epic
+                else
+                    promises = _.map attachments.toJS(), (attachment) =>
+                        @attachmentsService.upload(
+                            attachment.file, epic.get('id'), epic.get('project'), 'epic')
 
-                Promise.all(promises).then(@.fetchEpics.bind(this, true))
+                    Promise.all(promises).then(@.fetchEpics.bind(this, true))
+
 
     reorderEpic: (epic, newIndex) ->
         orderList = {}

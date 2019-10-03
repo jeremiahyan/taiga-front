@@ -1,5 +1,5 @@
 ###
-# Copyright (C) 2014-2017 Taiga Agile LLC <taiga@taiga.io>
+# Copyright (C) 2014-2018 Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
-# File: current-user.service.coffee
+# File: services/current-user.service.coffee
 ###
 
 taiga = @.taiga
@@ -60,7 +60,6 @@ class CurrentUserService
 
     setUser: (user) ->
         @._user = user
-
         return @._loadUserInfo()
 
     bulkUpdateProjectsOrder: (sortData) ->
@@ -69,6 +68,10 @@ class CurrentUserService
 
     loadProjects: () ->
         return @projectsService.getProjectsByUserId(@._user.get("id"))
+            .then (projects) => @.setProjects(projects)
+
+    loadProjectsList: () ->
+        return @projectsService.getListProjectsByUserId(@._user.get("id"), null,)
             .then (projects) => @.setProjects(projects)
 
     disableJoyRide: (section) ->
@@ -110,12 +113,14 @@ class CurrentUserService
 
     _loadUserInfo: () ->
         return Promise.all([
-            @.loadProjects()
+            @.loadProjectsList()
         ])
 
     setProjects: (projects) ->
         @._projects = @._projects.set("all", projects)
         @._projects = @._projects.set("recents", projects.slice(0, 10))
+        @._projects = @._projects.set("unblocked",
+                                      projects.filter((project) -> project.toJS().blocked_code == null))
 
         @._projectsById = Immutable.fromJS(groupBy(projects.toJS(), (p) -> p.id))
 
@@ -123,56 +128,60 @@ class CurrentUserService
 
     canCreatePrivateProjects: () ->
         user = @.getUser()
-        if user.get('max_private_projects') != null && user.get('total_private_projects') >= user.get('max_private_projects')
-            return {
-                valid: false,
-                reason: 'max_private_projects',
-                type: 'private_project',
-                current: user.get('total_private_projects'),
-                max: user.get('max_private_projects')
-            }
+        if user.get('max_private_projects') != null &&
+            user.get('total_private_projects') >= user.get('max_private_projects')
+                return {
+                    valid: false,
+                    reason: 'max_private_projects',
+                    type: 'private_project',
+                    current: user.get('total_private_projects'),
+                    max: user.get('max_private_projects')
+                }
 
         return {valid: true}
 
     canCreatePublicProjects: () ->
         user = @.getUser()
 
-        if user.get('max_public_projects') != null && user.get('total_public_projects') >= user.get('max_public_projects')
-            return {
-                valid: false,
-                reason: 'max_public_projects',
-                type: 'public_project',
-                current: user.get('total_public_projects'),
-                max: user.get('max_public_projects')
-            }
+        if user.get('max_public_projects') != null &&
+            user.get('total_public_projects') >= user.get('max_public_projects')
+                return {
+                    valid: false,
+                    reason: 'max_public_projects',
+                    type: 'public_project',
+                    current: user.get('total_public_projects'),
+                    max: user.get('max_public_projects')
+                }
 
         return {valid: true}
 
     canAddMembersPublicProject: (totalMembers) ->
         user = @.getUser()
 
-        if user.get('max_memberships_public_projects') != null && totalMembers > user.get('max_memberships_public_projects')
-            return {
-                valid: false,
-                reason: 'max_members_public_projects',
-                type: 'public_project',
-                current: totalMembers,
-                max: user.get('max_memberships_public_projects')
-            }
+        if user.get('max_memberships_public_projects') != null &&
+            totalMembers > user.get('max_memberships_public_projects')
+                return {
+                    valid: false,
+                    reason: 'max_members_public_projects',
+                    type: 'public_project',
+                    current: totalMembers,
+                    max: user.get('max_memberships_public_projects')
+                }
 
         return {valid: true}
 
     canAddMembersPrivateProject: (totalMembers) ->
         user = @.getUser()
 
-        if user.get('max_memberships_private_projects') != null && totalMembers > user.get('max_memberships_private_projects')
-            return {
-                valid: false,
-                reason: 'max_members_private_projects',
-                type: 'private_project',
-                current: totalMembers,
-                max: user.get('max_memberships_private_projects')
-            }
+        if user.get('max_memberships_private_projects') != null &&
+            totalMembers > user.get('max_memberships_private_projects')
+                return {
+                    valid: false,
+                    reason: 'max_members_private_projects',
+                    type: 'private_project',
+                    current: totalMembers,
+                    max: user.get('max_memberships_private_projects')
+                }
 
         return {valid: true}
 

@@ -1,10 +1,5 @@
 ###
-# Copyright (C) 2014-2017 Andrey Antukh <niwi@niwi.nz>
-# Copyright (C) 2014-2017 Jesús Espino Garcia <jespinog@gmail.com>
-# Copyright (C) 2014-2017 David Barragán Merino <bameda@dbarragan.com>
-# Copyright (C) 2014-2017 Alejandro Alonso <alejandro.alonso@kaleidos.net>
-# Copyright (C) 2014-2017 Juan Francisco Alcántara <juanfran.alcantara@kaleidos.net>
-# Copyright (C) 2014-2017 Xavi Julian <xavier.julian@kaleidos.net>
+# Copyright (C) 2014-2018 Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -237,9 +232,8 @@ module.directive("tgRelatedTaskCreateButton", ["$tgRepo", "$compile", "$tgConfir
 RelatedTasksDirective = ($repo, $rs, $rootscope) ->
     link = ($scope, $el, $attrs) ->
         loadTasks = ->
-            return $rs.tasks.list($scope.projectId, null, $scope.usId).then (tasks) =>
-                $scope.tasks = _.sortBy(tasks, (x) => [x.us_order, x.ref])
-                return tasks
+            return $rs.tasks.list($scope.projectId, null, $scope.usId).then (result) ->
+                Immutable.fromJS(result.data)
 
         _isVisible = ->
             if $scope.project
@@ -251,12 +245,18 @@ RelatedTasksDirective = ($repo, $rs, $rootscope) ->
                 return $scope.project.my_permissions.indexOf("modify_task") != -1
             return false
 
+        $scope.reorderTask = (task, newIndex) ->
+            $rootscope.$broadcast('task:reorder', task, newIndex)
+
         $scope.showRelatedTasks = ->
             return _isVisible() && ( _isEditable() ||  $scope.tasks?.length )
 
         $scope.$on "related-tasks:add", ->
             loadTasks().then ->
                 $rootscope.$broadcast("related-tasks:update")
+
+        $scope.$on "related-tasks:reordered", ->
+            loadTasks()
 
         $scope.$on "related-tasks:delete", ->
             loadTasks().then ->
@@ -276,7 +276,7 @@ RelatedTasksDirective = ($repo, $rs, $rootscope) ->
 module.directive("tgRelatedTasks", ["$tgRepo", "$tgResources", "$rootScope", RelatedTasksDirective])
 
 
-RelatedTaskAssignedToInlineEditionDirective = ($repo, $rootscope, $translate, avatarService) ->
+RelatedTaskAssignedToInlineEditionDirective = ($repo, $rootscope, $translate, avatarService, $lightboxFactory) ->
     template = _.template("""
     <img style="background-color: <%- bg %>" src="<%- imgurl %>" alt="<%- name %>"/>
     <figcaption><%- name %></figcaption>
@@ -312,7 +312,29 @@ RelatedTaskAssignedToInlineEditionDirective = ($repo, $rootscope, $translate, av
         updateRelatedTask(task)
 
         $el.on "click", ".task-assignedto", (event) ->
-            $rootscope.$broadcast("assigned-to:add", task)
+            event.preventDefault()
+            event.stopPropagation()
+
+            onClose = (assignedUsers) =>
+                task.assigned_to = assignedUsers.pop() || null
+                if autoSave
+                    $repo.save(task).then ->
+                        $scope.$emit("related-tasks:assigned-to-changed")
+                        updateRelatedTask(task)
+
+            $lightboxFactory.create(
+                'tg-lb-select-user',
+                {
+                    "class": "lightbox lightbox-select-user",
+                },
+                {
+                    "currentUsers": [task.assigned_to],
+                    "activeUsers": $scope.activeUsers,
+                    "onClose": onClose,
+                    "single": true,
+                    "lbTitle": $translate.instant("COMMON.ASSIGNED_USERS.ADD"),
+                }
+            )
 
         taiga.bindOnce $scope, "project", (project) ->
             # If the user has not enough permissions the click events are unbinded
@@ -320,18 +342,10 @@ RelatedTaskAssignedToInlineEditionDirective = ($repo, $rootscope, $translate, av
                 $el.unbind("click")
                 $el.find("a").addClass("not-clickable")
 
-        $scope.$on "assigned-to:added", debounce 2000, (ctx, userId, updatedRelatedTask) =>
-            if updatedRelatedTask.id == task.id
-                updatedRelatedTask.assigned_to = userId
-                if autoSave
-                    $repo.save(updatedRelatedTask).then ->
-                        $scope.$emit("related-tasks:assigned-to-changed")
-                updateRelatedTask(updatedRelatedTask)
-
         $scope.$on "$destroy", ->
             $el.off()
 
     return {link: link}
 
 module.directive("tgRelatedTaskAssignedToInlineEdition", ["$tgRepo", "$rootScope", "$translate", "tgAvatarService",
-                                                          RelatedTaskAssignedToInlineEditionDirective])
+                                                          "tgLightboxFactory", RelatedTaskAssignedToInlineEditionDirective])

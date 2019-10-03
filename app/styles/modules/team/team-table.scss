@@ -55,7 +55,7 @@
     }
     .team-header {
         @include font-type(text);
-        @include font-type(bold);
+        @include font-type(semibold);
         border-bottom: 0;
     }
     .hero {
@@ -91,7 +91,7 @@
             width: 100%;
         }
         .name {
-            @include font-type(bold);
+            @include font-type(semibold);
         }
         .position {
             @include font-type(light);
@@ -102,7 +102,9 @@
         @include popover(100%, '', 0, 30px, '', 15px, '', 50%, -5px);
     }
     .icon-badge {
+        fill: $primary-light;
         position: relative;
+        stroke: $primary-light;
         top: .15rem;
     }
 }

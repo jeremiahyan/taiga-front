@@ -21,11 +21,6 @@ div.wrapper(
 
         section.us-story-main-data
             header
-                tg-vote-button.upvote-btn(
-                    item="task",
-                    on-upvote="ctrl.onUpvote",
-                    on-downvote="ctrl.onDownvote"
-                )
                 tg-detail-header.detail-header-container(
                     item="task"
                     project="project"
@@ -75,7 +70,7 @@ div.wrapper(
 
     sidebar.menu-secondary.sidebar.ticket-data
 
-        .ticket-header
+        section.ticket-header
             span.ticket-title(
                 tg-task-status-display
                 ng-model="task"
@@ -85,32 +80,42 @@ div.wrapper(
                 ng-model="task"
             )
 
-        section.ticket-assigned-to(tg-assigned-to, ng-model="task", required-perm="modify_task")
+        section.ticket-section(
+            tg-assigned-to
+            ng-model="task"
+            required-perm="modify_task"
+        )
 
-        section.ticket-watch-buttons
-            div.ticket-watch(
-                tg-watch-button
-                item="task"
-                data-environment="ticket"
-                on-watch="ctrl.onWatch"
-                on-unwatch="ctrl.onUnwatch"
-            )
-            div.ticket-watchers(
-                tg-watchers
-                ng-model="task"
-                required-perm="modify_us"
-            )
+        section.ticket-section.ticket-watchers(
+            tg-watchers
+            item="task"
+            active-users="activeUsers"
+            on-watch="ctrl.onWatch"
+            on-unwatch="ctrl.onUnwatch"
+            required-perm="modify_task"
+        )
 
-        section.ticket-detail-settings
+        section.ticket-section.upvote-btn(
+            tg-vote-button
+            item="task",
+            on-upvote="ctrl.onUpvote",
+            on-downvote="ctrl.onDownvote"
+        )
+
+        section.ticket-section.ticket-detail-settings
             tg-due-date(
-                tg-check-permission="modify_task"
                 due-date="task.due_date"
-                due-date-status="task.due_date_status"
+                format="button"
                 is-closed="task.is_closed"
                 item="task"
-                format="button"
+                obj-type="task"
+                tg-check-permission="modify_task"
             )
             tg-task-is-iocaine-button(ng-model="task")
+            tg-promote-to-us-button(
+                tg-check-permission="add_us",
+                ng-model="task"
+            )
             tg-block-button(tg-check-permission="modify_task", ng-model="task")
             tg-delete-button(
                 tg-check-permission="delete_task"
@@ -120,5 +125,3 @@ div.wrapper(
             )
 
     div.lightbox.lightbox-block(tg-lb-block, ng-model="task", title="TASK.LIGHTBOX_TITLE_BLOKING_TASK")
-    div.lightbox.lightbox-select-user(tg-lb-assignedto)
-    div.lightbox.lightbox-select-user(tg-lb-watchers)

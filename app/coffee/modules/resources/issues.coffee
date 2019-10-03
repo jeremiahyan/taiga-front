@@ -1,10 +1,5 @@
 ###
-# Copyright (C) 2014-2017 Andrey Antukh <niwi@niwi.nz>
-# Copyright (C) 2014-2017 Jesús Espino Garcia <jespinog@gmail.com>
-# Copyright (C) 2014-2017 David Barragán Merino <bameda@dbarragan.com>
-# Copyright (C) 2014-2017 Alejandro Alonso <alejandro.alonso@kaleidos.net>
-# Copyright (C) 2014-2017 Juan Francisco Alcántara <juanfran.alcantara@kaleidos.net>
-# Copyright (C) 2014-2017 Xavi Julian <xavier.julian@kaleidos.net>
+# Copyright (C) 2014-2018 Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -51,9 +46,15 @@ resourceProvider = ($repo, $http, $urls, $storage, $q) ->
         service.storeQueryParams(projectId, params)
         return $repo.queryPaginated("issues", params, options)
 
-    service.bulkCreate = (projectId, data) ->
+    service.listInProject = (projectId, sprintId=null, params) ->
+        params = _.merge(params, {project: projectId})
+        params.milestone = sprintId if sprintId
+        service.storeQueryParams(projectId, params)
+        return $repo.queryMany("issues", params)
+
+    service.bulkCreate = (projectId, milestoneId, data) ->
         url = $urls.resolve("bulk-create-issues")
-        params = {project_id: projectId, bulk_issues: data}
+        params = {project_id: projectId,  milestone_id: milestoneId, bulk_issues: data}
         return $http.post(url, params)
 
     service.upvote = (issueId) ->
@@ -83,6 +84,11 @@ resourceProvider = ($repo, $http, $urls, $storage, $q) ->
         service.storeQueryParams(projectId, params)
         return $repo.queryMany(type, params)
 
+    service.createDefaultValues = (projectId, type) ->
+        data = {"project_id": projectId}
+        url = $urls.resolve("#{type}-create-default")
+        return $http.post(url, data)
+
     service.storeQueryParams = (projectId, params) ->
         ns = "#{projectId}:#{hashSuffix}"
         hash = generateHash([projectId, ns])
@@ -92,6 +98,11 @@ resourceProvider = ($repo, $http, $urls, $storage, $q) ->
         ns = "#{projectId}:#{hashSuffix}"
         hash = generateHash([projectId, ns])
         return $storage.get(hash) or {}
+
+    service.bulkUpdateMilestone = (projectId, milestoneId, data) ->
+        url = $urls.resolve("bulk-update-issue-milestone")
+        params = {project_id: projectId, milestone_id: milestoneId, bulk_issues: data}
+        return $http.post(url, params)
 
     return (instance) ->
         instance.issues = service

@@ -1,10 +1,5 @@
 ###
-# Copyright (C) 2014-2017 Andrey Antukh <niwi@niwi.nz>
-# Copyright (C) 2014-2017 Jesús Espino Garcia <jespinog@gmail.com>
-# Copyright (C) 2014-2017 David Barragán Merino <bameda@dbarragan.com>
-# Copyright (C) 2014-2017 Alejandro Alonso <alejandro.alonso@kaleidos.net>
-# Copyright (C) 2014-2017 Juan Francisco Alcántara <juanfran.alcantara@kaleidos.net>
-# Copyright (C) 2014-2017 Xavi Julian <xavier.julian@kaleidos.net>
+# Copyright (C) 2014-2018 Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -30,6 +25,7 @@ joinStr = @.taiga.joinStr
 groupBy = @.taiga.groupBy
 bindOnce = @.taiga.bindOnce
 bindMethods = @.taiga.bindMethods
+normalizeString = @.taiga.normalizeString
 
 module = angular.module("taigaIssues")
 
@@ -58,7 +54,8 @@ class IssueDetailController extends mixOf(taiga.Controller, taiga.PageMixin)
     ]
 
     constructor: (@scope, @rootscope, @repo, @confirm, @rs, @params, @q, @location,
-                  @log, @appMetaService, @analytics, @navUrls, @translate, @modelTransform, @errorHandlingService, @projectService) ->
+                  @log, @appMetaService, @analytics, @navUrls, @translate, @modelTransform,
+                  @errorHandlingService, @projectService) ->
         bindMethods(@)
 
         @scope.issueRef = @params.issueref
@@ -105,6 +102,14 @@ class IssueDetailController extends mixOf(taiga.Controller, taiga.PageMixin)
         @scope.$on "custom-attributes-values:edit", =>
             @rootscope.$broadcast("object:updated")
 
+        @scope.$on "assign-sprint-to-issue:success", (ctx, milestoneId) =>
+            @scope.issue.milestone = milestoneId
+            @rootscope.$broadcast("object:updated")
+            if milestoneId
+                @.loadSprint()
+            else
+                @scope.sprint = null
+
     initializeOnDeleteGoToUrl: ->
        ctx = {project: @scope.project.slug}
        if @scope.project.is_issues_activated
@@ -150,12 +155,18 @@ class IssueDetailController extends mixOf(taiga.Controller, taiga.PageMixin)
                 }
                 @scope.nextUrl = @navUrls.resolve("project-issues-detail", ctx)
 
+    loadSprint: ->
+        if @scope.issue.milestone
+            return @rs.sprints.get(@scope.issue.project, @scope.issue.milestone).then (sprint) =>
+                @scope.sprint = sprint
+                return sprint
+
     loadInitialData: ->
         project = @.loadProject()
 
         @.fillUsersAndRoles(project.members, project.roles)
 
-        return @.loadIssue()
+        return @.loadIssue().then(=> @.loadSprint())
 
     ###
     # Note: This methods (onUpvote() and onDownvote()) are related to tg-vote-button.
@@ -355,10 +366,12 @@ IssueTypeButtonDirective = ($rootScope, $repo, $confirm, $loading, $modelTransfo
     template = $template.get("issue/issue-type-button.html", true)
 
     link = ($scope, $el, $attrs, $model) ->
+        notAutoSave = $scope.$eval($attrs.notAutoSave)
+
         isEditable = ->
             return $scope.project.my_permissions.indexOf("modify_issue") != -1
 
-        render = (issue) =>
+        render = (issue) ->
             type = $scope.typeById[issue.type]
 
             html = template({
@@ -373,6 +386,11 @@ IssueTypeButtonDirective = ($rootScope, $repo, $confirm, $loading, $modelTransfo
 
         save = (type) ->
             $.fn.popover().closeAll()
+
+            if notAutoSave
+                $model.$modelValue.type = type
+                $scope.$apply()
+                return
 
             currentLoading = $loading()
                 .target($el.find(".level-name"))
@@ -445,10 +463,12 @@ IssueSeverityButtonDirective = ($rootScope, $repo, $confirm, $loading, $modelTra
     template = $template.get("issue/issue-severity-button.html", true)
 
     link = ($scope, $el, $attrs, $model) ->
+        notAutoSave = $scope.$eval($attrs.notAutoSave)
+
         isEditable = ->
             return $scope.project.my_permissions.indexOf("modify_issue") != -1
 
-        render = (issue) =>
+        render = (issue) ->
             severity = $scope.severityById[issue.severity]
 
             html = template({
@@ -463,6 +483,11 @@ IssueSeverityButtonDirective = ($rootScope, $repo, $confirm, $loading, $modelTra
 
         save = (severity) ->
             $.fn.popover().closeAll()
+
+            if notAutoSave
+                $model.$modelValue.severity = severity
+                $scope.$apply()
+                return
 
             currentLoading = $loading()
                 .target($el.find(".level-name"))
@@ -536,10 +561,12 @@ IssuePriorityButtonDirective = ($rootScope, $repo, $confirm, $loading, $modelTra
     template = $template.get("issue/issue-priority-button.html", true)
 
     link = ($scope, $el, $attrs, $model) ->
+        notAutoSave = $scope.$eval($attrs.notAutoSave)
+
         isEditable = ->
             return $scope.project.my_permissions.indexOf("modify_issue") != -1
 
-        render = (issue) =>
+        render = (issue) ->
             priority = $scope.priorityById[issue.priority]
 
             html = template({
@@ -554,6 +581,11 @@ IssuePriorityButtonDirective = ($rootScope, $repo, $confirm, $loading, $modelTra
 
         save = (priority) ->
             $.fn.popover().closeAll()
+
+            if notAutoSave
+                $model.$modelValue.priority = priority
+                $scope.$apply()
+                return
 
             currentLoading = $loading()
                 .target($el.find(".level-name"))
@@ -610,55 +642,98 @@ module.directive("tgIssuePriorityButton", ["$rootScope", "$tgRepo", "$tgConfirm"
 
 
 #############################################################################
-## Promote Issue to US button directive
+## Add Issue to Sprint button directive
 #############################################################################
 
-PromoteIssueToUsButtonDirective = ($rootScope, $repo, $confirm, $translate) ->
+AssignSprintToIssueButtonDirective = ($rootscope, $rs, $repo, $loading, $translate,
+lightboxService, $modelTransform, $confirm) ->
     link = ($scope, $el, $attrs, $model) ->
+        avaliableMilestones = []
+        issue = null
 
-        save = (issue, askResponse) =>
-            data = {
-                generated_from_issue: issue.id
-                project: issue.project,
-                subject: issue.subject
-                description: issue.description
-                tags: issue.tags
-                is_blocked: issue.is_blocked
-                blocked_note: issue.blocked_note
-                due_date: issue.due_date
-            }
+        $scope.$watch $attrs.ngModel, (item) ->
+            return if not item
+            if item.milestone
+                $el.find('.assign-issue-button.button-unset').removeClass('is-active')
+                $el.find('.assign-issue-button.button-set').addClass('is-active')
+            else
+                $el.find('.assign-issue-button.button-set').removeClass('is-active')
+                $el.find('.assign-issue-button.button-unset').addClass('is-active')
 
-            onSuccess = ->
-                askResponse.finish()
-                $confirm.notify("success")
-                $rootScope.$broadcast("promote-issue-to-us:success")
-
-            onError = ->
-                askResponse.finish()
-                $confirm.notify("error")
-
-            $repo.create("userstories", data).then(onSuccess, onError)
-
-        $el.on "click", "a", (event) ->
+        $el.on "click", ".assign-issue-button.button-unset", (event) ->
             event.preventDefault()
+            event.stopPropagation()
+            title = $translate.instant("ISSUES.ACTION_ATTACH_SPRINT")
             issue = $model.$modelValue
+            $rs.sprints.list($scope.projectId, null).then (data) ->
+                $scope.milestones = data.milestones
+                $scope.selectedSprint = issue.milestone
+                avaliableMilestones = angular.copy($scope.milestones)
+                lightboxService.open($el.find(".lightbox-assign-sprint-to-issue"))
 
-            title = $translate.instant("ISSUES.CONFIRM_PROMOTE.TITLE")
-            message = $translate.instant("ISSUES.CONFIRM_PROMOTE.MESSAGE")
-            subtitle = issue.subject
+        $el.on "click", ".assign-issue-button.button-set", (event) ->
+            event.preventDefault()
+            event.stopPropagation()
+            issue = $model.$modelValue
+            $rs.sprints.list($scope.projectId, null).then (data) ->
+                currentSprint = _.find(data.milestones, { "id": issue.milestone })
 
-            $confirm.ask(title, subtitle, message).then (response) =>
-                save(issue, response)
+                title = $translate.instant("ISSUES.CONFIRM_DETACH_FROM_SPRINT.TITLE")
+                message = $translate.instant(
+                    "ISSUES.CONFIRM_DETACH_FROM_SPRINT.MESSAGE",
+                    {sprintName: currentSprint.name}
+                )
+
+                $confirm.ask(title, null, message).then (askResponse) ->
+                    onSuccess = ->
+                        $rootscope.$broadcast("assign-sprint-to-issue:success", null)
+                        askResponse.finish()
+                        lightboxService.close($el)
+
+
+                    onError = ->
+                        askResponse.finish(false)
+                        $confirm.notify("error")
+
+                    transform = $modelTransform.save (issue) ->
+                        issue.setAttr('milestone', null)
+                        return issue
+                    transform.then(onSuccess, onError)
 
         $scope.$on "$destroy", ->
             $el.off()
 
+        existsMilestone = (needle, haystack) ->
+            haystack = normalizeString(haystack.toUpperCase())
+            needle = normalizeString(needle.toUpperCase())
+            return _.includes(haystack, needle)
+
+        $scope.filterMilestones = (filterText) ->
+            $scope.milestones = avaliableMilestones.filter((milestone) ->
+                existsMilestone(filterText, milestone.name)
+            )
+
+        $scope.saveIssueToSprint = (selectedSprint, event) ->
+            currentLoading = $loading().target($(event.currentTarget)).start()
+            issue.setAttr('milestone', selectedSprint.id)
+
+            transform = $modelTransform.save (item) ->
+                issue.setAttr('milestone', selectedSprint.id)
+                return item
+
+            transform.then ->
+                currentLoading.finish()
+                lightboxService.close($el.find(".lightbox-assign-sprint-to-issue"))
+                $rootscope.$broadcast("assign-sprint-to-issue:success", selectedSprint.id)
+
     return {
-        restrict: "AE"
-        require: "ngModel"
-        templateUrl: "issue/promote-issue-to-us-button.html"
         link: link
+        restrict: "EA"
+        require: "ngModel"
+        templateUrl: "issue/assign-sprint-to-issue-button.html"
+
     }
 
-module.directive("tgPromoteIssueToUsButton", ["$rootScope", "$tgRepo", "$tgConfirm", "$translate"
-                                              PromoteIssueToUsButtonDirective])
+module.directive("tgAssignSprintToIssueButton", ["$rootScope", "$tgResources", "$tgRepo",
+                "$tgLoading", "$translate", "lightboxService", "$tgQueueModelTransformation",
+                "$tgConfirm", AssignSprintToIssueButtonDirective] )

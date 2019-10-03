@@ -1,5 +1,5 @@
 ###
-# Copyright (C) 2014-2017 Taiga Agile LLC <taiga@taiga.io>
+# Copyright (C) 2014-2018 Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
-# File: kanban-userstories.service.coffee
+# File: modules/kanban/kanban-usertories.coffee
 ###
 
 groupBy = @.taiga.groupBy
@@ -38,11 +38,10 @@ class KanbanUserstoriesService extends taiga.Service
 
     resetFolds: () ->
         @.foldStatusChanged = {}
-        @.refresh()
 
     toggleFold: (usId) ->
         @.foldStatusChanged[usId] = !@.foldStatusChanged[usId]
-        @.refresh()
+        @.refreshUserStory(usId)
 
     set: (userstories) ->
         @.userstoriesRaw = userstories
@@ -94,6 +93,7 @@ class KanbanUserstoriesService extends taiga.Service
         @.refresh()
 
     move: (usList, statusId, index) ->
+
         initialLength = usList.length
 
         usByStatus = _.filter @.userstoriesRaw, (it) =>
@@ -123,8 +123,23 @@ class KanbanUserstoriesService extends taiga.Service
         setPreviousOrders = []
         setNextOrders = []
 
-        if !previous
+        isArchivedHiddenStatus = @.archivedStatus.indexOf(statusId) != -1 &&
+            @.statusHide.indexOf(statusId) != -1
+
+        if isArchivedHiddenStatus
+            startIndex = new Date().getTime()
+
+        else if !previous
             startIndex = 0
+
+            for it, key in afterDestination # increase position of the us after the dragged us's
+                @.order[it.id] = key + initialLength + 1
+                it.kanban_order = @.order[it.id]
+
+            setNextOrders = _.map(afterDestination, (it) =>
+                {us_id: it.id, order: @.order[it.id]}
+            )
+
         else if previous
             startIndex = @.order[previous.id] + 1
 
@@ -207,36 +222,50 @@ class KanbanUserstoriesService extends taiga.Service
     getUsModel: (id) ->
         return _.find @.userstoriesRaw, (us) -> return us.id == id
 
-    refresh: ->
+    refreshUserStory: (usId) ->
+        usModel = @.getUsModel(usId)
+        collection =  @.usByStatus.toJS()
+
+        index = _.findIndex(collection[usModel.status], (x) => x.id == usId)
+        us = @.retrieveUserStoryData(usModel)
+        collection[usModel.status][index] = us
+
+        @.usByStatus = Immutable.fromJS(collection)
+
+    retrieveUserStoryData: (usModel) ->
+        us = {}
+        model = usModel.getAttrs()
+
+        us.foldStatusChanged = @.foldStatusChanged[usModel.id]
+
+        us.model = model
+        us.images = _.filter model.attachments, (it) -> return !!it.thumbnail_card_url
+
+        us.id = usModel.id
+        us.assigned_to = @.usersById[usModel.assigned_to]
+        us.assigned_users = []
+
+        usModel.assigned_users.forEach (assignedUserId) =>
+            assignedUserData = @.usersById[assignedUserId]
+            us.assigned_users.push(assignedUserData)
+
+        us.colorized_tags = _.map us.model.tags, (tag) =>
+            return {name: tag[0], color: tag[1]}
+
+        return us
+
+    refresh: () ->
         @.userstoriesRaw = _.sortBy @.userstoriesRaw, (it) => @.order[it.id]
 
-        userstories = @.userstoriesRaw
-        userstories = _.map userstories, (usModel) =>
-            us = {}
+        collection = {}
 
-            model = usModel.getAttrs()
+        for key, usModel of @.userstoriesRaw
+            us = @.retrieveUserStoryData(usModel)
+            if (!collection[us.model.status])
+                collection[us.model.status] = []
 
-            us.foldStatusChanged = @.foldStatusChanged[usModel.id]
+            collection[us.model.status].push(us)
 
-            us.model = model
-            us.images = _.filter model.attachments, (it) -> return !!it.thumbnail_card_url
-
-            us.id = usModel.id
-            us.assigned_to = @.usersById[usModel.assigned_to]
-            us.assigned_users = []
-
-            usModel.assigned_users.forEach (assignedUserId) =>
-                assignedUserData = @.usersById[assignedUserId]
-                us.assigned_users.push(assignedUserData)
-
-            us.colorized_tags = _.map us.model.tags, (tag) =>
-                return {name: tag[0], color: tag[1]}
-
-            return us
-
-        usByStatus = _.groupBy userstories, (us) ->
-            return us.model.status
-
-        @.usByStatus = Immutable.fromJS(usByStatus)
+        @.usByStatus = Immutable.fromJS(collection)
 
 angular.module("taigaKanban").service("tgKanbanUserstories", KanbanUserstoriesService)

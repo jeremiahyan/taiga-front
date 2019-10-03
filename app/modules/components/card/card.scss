@@ -39,8 +39,17 @@
         .card-estimation {
             color: $white;
         }
+        .card-task a {
+            &.blocked-task {
+                color: $red;
+            }
+        }
         .card-owner-actions {
             background: rgba($red-light, .9);
+
+            a:hover {
+                color: $white;
+            }
         }
         svg {
             fill: $white;
@@ -60,6 +69,11 @@
             .card-title {
                 color: $white;
             }
+        }
+    }
+    &.zoom-2 {
+        .card-title {
+            padding: .5rem 1rem 0;
         }
     }
 }
@@ -125,7 +139,7 @@
     .card-actions {
         display: flex;
         justify-content: space-between;
-        padding: 0 .5rem;
+        padding: 0 0 0 .5rem;
     }
     .card-delete:hover {
         color: $red-light;
@@ -160,6 +174,12 @@
     font-size: 14px;
     justify-content: space-between;
     padding: 0 1rem .5rem;
+    .card-status-tag {
+        font-size: .75rem;
+        height: .1rem;
+        line-height: .1rem;
+        padding: 0 .5em 0 0;
+    }
     .card-estimation.not-estimated {
         font-size: .8125rem;
     }
@@ -203,6 +223,9 @@
 .card-completion {
     margin: 0 1rem .5rem;
     position: relative;
+    &:hover .card-tooltip {
+        display: block;
+    }
     .card-completion-bar {
         background: $whitish;
         height: .4rem;
@@ -215,24 +238,18 @@
         left: 0;
         position: absolute;
         top: 0;
-        &:hover {
-            + .card-tooltip {
-                opacity: 1;
-            }
-        }
     }
     .card-tooltip {
         background: $blackish;
         border-radius: 5px;
         color: $white;
+        display: none;
         font-size: 14px;
         left: calc(25% - 50px);
-        opacity: 0;
         padding: .25rem 1rem;
         position: absolute;
         text-align: center;
         top: -2.25rem;
-        transition: opacity .2s;
         width: 100px;
         &::after {
             background: $black;

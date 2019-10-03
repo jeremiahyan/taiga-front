@@ -9,14 +9,18 @@ div.wrapper(
     div.main.us-detail
         div.us-detail-header.header-with-actions
             include ../includes/components/mainTitle
+            .action-buttons
+                a.button-gray(
+                    href=""
+                    tg-check-permission="view_milestones"
+                    tg-nav="project-taskboard:project=project.slug,sprint=sprint.slug"
+                    ng-if="sprint && project.is_backlog_activated"
+                    title="{{'ISSUES.TITLE_LINK_TASKBOARD' | translate}}"
+                    translate="ISSUES.LINK_TASKBOARD"
+                )
 
         section.us-story-main-data
             header
-                tg-vote-button.upvote-btn(
-                    item="issue"
-                    on-upvote="ctrl.onUpvote"
-                    on-downvote="ctrl.onDownvote"
-                )
                 tg-detail-header.detail-header-container(
                     item="issue"
                     project="project"
@@ -66,7 +70,7 @@ div.wrapper(
 
     sidebar.menu-secondary.sidebar.ticket-data
 
-        .ticket-header
+        section.ticket-header
             span.ticket-title(
                 tg-issue-status-display
                 ng-model="issue"
@@ -76,9 +80,7 @@ div.wrapper(
                 ng-model="issue"
             )
 
-        //tg-created-by-display.ticket-created-by(ng-model="issue")
-
-        div.ticket-data-container
+        section.ticket-section.ticket-data-container
             div.ticket-status(
                 tg-issue-type-button
                 ng-model="issue"
@@ -92,38 +94,45 @@ div.wrapper(
                 ng-model="issue"
             )
 
-        section.ticket-assigned-to(
+        section.ticket-section(
             tg-assigned-to
             ng-model="issue"
             required-perm="modify_issue"
         )
 
-        section.ticket-watch-buttons
-            div.ticket-watch(
-                tg-watch-button
-                item="issue"
-                data-environment="ticket"
-                on-watch="ctrl.onWatch"
-                on-unwatch="ctrl.onUnwatch"
-            )
-            div.ticket-watchers(
-                tg-watchers
-                ng-model="issue"
-                required-perm="modify_us"
-            )
+        section.ticket-section.ticket-watchers(
+            tg-watchers
+            item="issue"
+            active-users="activeUsers"
+            on-watch="ctrl.onWatch"
+            on-unwatch="ctrl.onUnwatch"
+            required-perm="modify_issue"
+        )
 
-        section.ticket-detail-settings
+        section.ticket-section.upvote-btn(
+            tg-vote-button
+            item="issue"
+            on-upvote="ctrl.onUpvote"
+            on-downvote="ctrl.onDownvote"
+        )
+
+        section.ticket-section.ticket-detail-settings
             tg-due-date(
-                tg-check-permission="modify_issue"
                 due-date="issue.due_date"
-                due-date-status="issue.due_date_status"
+                format="button"
                 is-closed="issue.is_closed"
                 item="issue"
-                format="button"
+                obj-type="issue"
+                tg-check-permission="modify_issue"
             )
-            tg-promote-issue-to-us-button(
+            tg-promote-to-us-button(
                 tg-check-permission="add_us",
                 ng-model="issue"
+            )
+            tg-assign-sprint-to-issue-button(
+                tg-check-permission="modify_issue",
+                ng-model="issue"
+                ng-if="project.is_backlog_activated"
             )
             tg-block-button(
                 tg-check-permission="modify_issue",
@@ -137,5 +146,3 @@ div.wrapper(
             )
 
     div.lightbox.lightbox-block(tg-lb-block, ng-model="issue", title="ISSUES.LIGHTBOX_TITLE_BLOKING_ISSUE")
-    div.lightbox.lightbox-select-user(tg-lb-assignedto)
-    div.lightbox.lightbox-select-user(tg-lb-watchers)

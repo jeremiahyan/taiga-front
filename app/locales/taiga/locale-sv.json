@@ -3,6 +3,7 @@
         "YES": "Ja",
         "NO": "Nej",
         "OR": "eller",
+        "I_GET_IT": "OK, I get it",
         "LOADING": "Laddar...",
         "DATE": "YYYY-MM-DD",
         "DATETIME": "YYYY-MM-DD HH:mm",
@@ -13,7 +14,9 @@
         "UNLINK": "Avlänka",
         "CREATE": "Skapa",
         "ADD": "Lägg till",
-        "COPY_TO_CLIPBOARD": "Kopiera till urklipp: Ctrl+C",
+        "BACK": "Baksida",
+        "COPY_TO_CLIPBOARD": "Copy to clipboard",
+        "COPIED_TO_CLIPBOARD": "Texten är kopierad",
         "EDIT": "Redigera",
         "DRAG": "Dra",
         "TAG_LINE": "Ditt agila, gratis och öppen-källkod projekthanteringsverktyg",
@@ -31,7 +34,7 @@
         "PLUGINS": "Insticksprogram",
         "ONE_ITEM_LINE": "En post per rad ...",
         "NEW_BULK": "Lägg till flera nya",
-        "RELATED_TASKS": "Besläktade uppgifter",
+        "SUBTASKS": "Subtasks",
         "PREVIOUS": "Föregående",
         "NEXT": "Nästa",
         "LOGOUT": "Logga  ut",
@@ -48,7 +51,9 @@
         "CARD": {
             "ASSIGN_TO": "Tilldela Till",
             "EDIT": "Ändra kort",
-            "DELETE": "Delete card"
+            "DELETE": "Delete card",
+            "DELETE_ISSUE": "Ta bort ärende",
+            "DETACH_ISSUE_FROM_SPRINT": "Detach issue from sprint"
         },
         "FORM_ERRORS": {
             "DEFAULT_MESSAGE": "Det här värdet är felaktigt. ",
@@ -79,7 +84,6 @@
         },
         "PICKERDATE": {
             "FORMAT": "YYYY-MM-DD",
-            "IS_RTL": "falsk",
             "FIRST_DAY_OF_WEEK": "1",
             "PREV_MONTH": "Tidigare månad",
             "NEXT_MONTH": "Nästa månad",
@@ -143,6 +147,7 @@
             "TYPE": "Typ",
             "SEVERITY": "Allvarsgrad",
             "PRIORITY": "Prioritet",
+            "ASSIGNED": "Tilldelad",
             "ASSIGNED_TO": "Tilldelad till",
             "ASSIGNED_USERS": "Assigned users",
             "POINTS": "Poäng",
@@ -167,10 +172,7 @@
             "SELF": "Tilldela mig"
         },
         "DUE_DATE": {
-            "TITLE_ACTION_SET_DUE_DATE": "Set due date",
-            "DUE_SOON": "due soon",
-            "PAST_DUE": "past due date",
-            "NO_LONGER_APPLICABLE": "no longer applicable"
+            "TITLE_ACTION_SET_DUE_DATE": "Set due date"
         },
         "ASSIGNED_USERS": {
             "ADD": "Select assigned user",
@@ -200,6 +202,19 @@
             "BUTTON_TITLE": "Rösta för / Rösta emot den här posten",
             "COUNTER_TITLE": "{total, plural, one{one vote} other{# votes}}"
         },
+        "PROMOTE_TO_US": "Flytta till användarhistorie",
+        "PROMOTED_ISSUES": "This Issue has been promoted to US:",
+        "PROMOTED_TASKS": "This Task has been promoted to US:",
+        "CONFIRM_PROMOTE": {
+            "ISSUE": {
+                "TITLE": "Promote this Issue to a new user story",
+                "MESSAGE": "Är du säker på att du vill skapa en ny US från det här ärendet?"
+            },
+            "TASK": {
+                "TITLE": "Promote this Task to a new user story",
+                "MESSAGE": "Are you sure you want to create a new US from this Task?"
+            }
+        },
         "CUSTOM_ATTRIBUTES": {
             "CUSTOM_FIELDS": "Anpassade fält",
             "SAVE": "Spara anpassad fält",
@@ -215,6 +230,11 @@
             "ACTION_SAVE_CUSTOM_FILTER": "spara som anpassad filter",
             "PLACEHOLDER_FILTER_NAME": "Skriv filternamnet och tryck på <Enter>",
             "APPLIED_FILTERS_NUM": "applicerade filter",
+            "TITLE_ADVANCED_FILTER": "Advanced",
+            "ADVANCED_FILTERS": {
+                "INCLUDE": "Include",
+                "EXCLUDE": "Exclude"
+            },
             "CATEGORIES": {
                 "TYPE": "Typ",
                 "STATUS": "Status",
@@ -377,7 +397,12 @@
         "EMPTY_PROJECT_LIST": "Du har inte än några projekt",
         "WORKING_ON_SECTION": "Arbetar med",
         "WATCHING_SECTION": "Bevakar",
-        "DASHBOARD": "Instrumentpanel för projekt"
+        "DASHBOARD": "Instrumentpanel för projekt",
+        "SET_HIDDEN": "Set as hidden",
+        "SET_VISIBLE": "Set as visible",
+        "NO_HIDDEN_ITEMS": "You have no hidden items",
+        "HIDE_HIDDEN": "Do not show hidden objects",
+        "SHOW_HIDDEN": "Show hidden objects"
     },
     "EPICS": {
         "TITLE": "EPOS",
@@ -402,6 +427,8 @@
             "ASSIGNED_TO": "Tilldelad",
             "STATUS": "Status",
             "PROGRESS": "Framsteg",
+            "CLOSED_US": "Closed user stories",
+            "CLOSED_EPICS": "Closed epics",
             "VIEW_OPTIONS": "Visningsalternativ"
         },
         "CREATE": {
@@ -460,7 +487,8 @@
             "PAGE_TITLE": "Medlemskap - {{projectName}}",
             "ADD_BUTTON": "+ Ny medlem",
             "ADD_BUTTON_TITLE": "Lägg till ny medlem",
-            "LIMIT_USERS_WARNING_MESSAGE_FOR_ADMIN": "Dessvärre har detta projekt nått sin gräns för <strong>({{members}})</strong> tillåtna medlemmar.",
+            "UPGRADE_BUTTON": "Upgrade your plan",
+            "LIMIT_USERS_WARNING_MESSAGE_FOR_ADMIN": "If you would like to <strong>add more members</strong>, please contact the project owner <a href='mailto:{{ owner_email }}' title='{{ owner_email }}'>{{ owner_email }}</a>",
             "LIMIT_USERS_WARNING_MESSAGE_FOR_OWNER": "Detta projektet har nått sin gräns för <strong>({{members}})</strong> tillåtna medlemmar. Kontakta administratören om du vill utöka gränsen."
         },
         "PROJECT_EXPORT": {
@@ -497,7 +525,7 @@
             "SELECT_VIDEOCONFERENCE": "Välj videokonferenssystem",
             "SALT_CHAT_ROOM": "Add a prefix to the chatroom name",
             "JITSI_CHAT_ROOM": "Jitsi",
-            "APPEARIN_CHAT_ROOM": "Dyker upp i ",
+            "WHEREBYCOM_CHAT_ROOM": "Whereby.com",
             "TALKY_CHAT_ROOM": "Talky",
             "CUSTOM_CHAT_ROOM": "Anpassa",
             "URL_CHAT_ROOM": "Länken till ditt chattrum"
@@ -538,7 +566,9 @@
             "DESCRIPTION": "Hämta en CSV-fil eller kopiera den genererade länken och öppna i din favorit ordbehandlare eller kalkylark för att skapa dina egna projektdatarapporter. Du kan lätt visualisera och analysera alla dina data. ",
             "HELP": "Hur använda i mitt eget kalkylark?",
             "REGENERATE_TITLE": "Ändra länken",
-            "REGENERATE_SUBTITLE": "Du kan ändra CSV för datalänken. Den tidigare länken tas bort. Är du säker på det? "
+            "REGENERATE_SUBTITLE": "You are going to change the CSV data access url. The previous url will be disabled. Are you sure?",
+            "DELETE_TITLE": "Delete URL",
+            "DELETE_SUBTITLE": "You are going to delete the current CSV data access url. Are you sure?"
         },
         "CSV": {
             "SECTION_TITLE_EPIC": "eposrapporter",
@@ -549,7 +579,9 @@
             "URL_FIELD_PLACEHOLDER": "Vänligen skapa en ny CSV-länk",
             "TITLE_REGENERATE_URL": "Skapa CSV länk",
             "ACTION_GENERATE_URL": "Skapa länk",
-            "ACTION_REGENERATE": "Regenerera"
+            "ACTION_REGENERATE": "Regenerera",
+            "TITLE_DELETE_URL": "Delete CSV url",
+            "ACTION_DELETE_URL": "Ta bort"
         },
         "CUSTOM_FIELDS": {
             "TITLE": "Anpassade fält",
@@ -566,7 +598,10 @@
             "FIELD_TYPE_RICHTEXT": "Rich text",
             "FIELD_TYPE_MULTI": "Flerradig",
             "FIELD_TYPE_DATE": "Datum",
-            "FIELD_TYPE_URL": "Url"
+            "FIELD_TYPE_URL": "Url",
+            "FIELD_TYPE_DROPDOWN": "Dropdown",
+            "FIELD_TYPE_CHECKBOX": "Checkbox",
+            "FIELD_TYPE_NUMBER": "Number"
         },
         "PROJECT_VALUES": {
             "PAGE_TITLE": "{{sectionName}} - Projektvärden - {{projectName}}",
@@ -615,6 +650,18 @@
             "MIXING_HELP_TEXT": "Välj de taggar du vill slå samman",
             "MIXING_MERGE": "Slå samman taggar",
             "SELECTED": "Valda"
+        },
+        "PROJECT_DUE_DATE_STATUS": {
+            "TITLE": "Due Dates",
+            "SUBTITLE": "Specify the due dates your user stories, tasks and issues will go through if selected",
+            "US_TITLE": "User Story Due Date status",
+            "ACTION_ADD_STATUS": "Lägg till ny status",
+            "TASK_TITLE": "Task Due Date status",
+            "ISSUE_TITLE": "Issue Due Date status",
+            "DAYS_TO_DUE_DATE": "Days to due date",
+            "BEFORE_AFTER": "Before/after",
+            "BEFORE": "Before",
+            "AFTER": "Past"
         },
         "ROLES": {
             "PAGE_TITLE": "Roller - {{projectName}}",
@@ -716,7 +763,8 @@
             "LABEL_SEVERITY": "Standardvärde för val av allvarlighet"
         },
         "STATUS": {
-            "PLACEHOLDER_WRITE_STATUS_NAME": "Skriv ett namn för den nya statusen"
+            "PLACEHOLDER_WRITE_STATUS_NAME": "Skriv ett namn för den nya statusen",
+            "PLACEHOLDER_DAYS_TO_DUE_DATE": "Write a number of days to due date"
         },
         "TYPES": {
             "PLACEHOLDER_WRITE_NAME": "Skriv ett namn för det nya elementet"
@@ -742,7 +790,8 @@
             "SEVERITIES": "Allvarsgrad",
             "TYPES": "Typ",
             "CUSTOM_FIELDS": "Anpassade fält",
-            "TAGS": "Etiketter"
+            "TAGS": "Etiketter",
+            "DUE_DATES": "Due dates"
         },
         "SUBMENU_ROLES": {
             "TITLE": "Roller",
@@ -769,7 +818,7 @@
     "USER": {
         "PROFILE": {
             "PAGE_TITLE": "{{userFullName}} (@{{userUsername}})",
-            "EDIT": "Ändra profil",
+            "USER_SETTINGS": "Inställningar för användare",
             "CLOSED_US": "Stängd US",
             "PROJECTS": "Projekt",
             "PROJECTS_EMPTY": "{{username}} har inga projekt än",
@@ -830,6 +879,7 @@
         "SECTION": {
             "SEARCH": "Sök",
             "TIMELINE": "Tidslinje",
+            "EPICS": "Epos",
             "BACKLOG": "Inkorg",
             "KANBAN": "Kanban",
             "ISSUES": "Ärenden",
@@ -851,8 +901,8 @@
             "NOTIFICATIONS": "Notifieringar",
             "VIEW_PROFILE_TITLE": "Visa profil",
             "VIEW_PROFILE": "Visa profil",
-            "EDIT_PROFILE_TITLE": "Ändra din profil",
-            "EDIT_PROFILE": "Ändra profil",
+            "USER_SETTINGS_TITLE": "Ändra inställningarna",
+            "USER_SETTINGS": "Inställningar för användare",
             "CHANGE_PASSWORD_TITLE": "Byt lösenord",
             "CHANGE_PASSWORD": "Byt lösenord",
             "DASHBOARD_TITLE": "Instrumentpanel",
@@ -1045,6 +1095,11 @@
             "SELECT": "Välj att tilldela till",
             "SEARCH": "Sök efter användare"
         },
+        "SELECT_USER": {
+            "SEARCH": "Sök efter användare",
+            "REMOVE": "Remove user",
+            "ROLE": "Roll"
+        },
         "ADD_MEMBER": {
             "TITLE": "Ny medlem",
             "PLACEHOLDER": "Filtrera användare eller skriv ett mail för att bjuda in",
@@ -1054,9 +1109,6 @@
             "CHOOSE_ROLE": "Välj en roll",
             "PLACEHOLDER_INVITATION_TEXT": "(Valfritt) Lägg till en personlig hälsning till invitationen. Berätta något trevligt till din nya projektmedlem ;-)",
             "HELP_TEXT": "Om användaren redan är registrerad på Taiga vill hen bli lagt till automatiskt. I annat fall vill de motta en invitation. "
-        },
-        "CREATE_ISSUE": {
-            "TITLE": "Lägg till ärende"
         },
         "FEEDBACK": {
             "TITLE": "Berätta för oss ...",
@@ -1076,21 +1128,22 @@
             "TITLE_ACTION_DELETE_SPRINT": "ta bort sprint",
             "LAST_SPRINT_NAME": "senaste sprint är <strong> {{lastSprint}} ;-) </strong>"
         },
-        "CREATE_EDIT_TASK": {
-            "TITLE": "Ny uppgift",
-            "PLACEHOLDER_SUBJECT": "Lägg till titel",
-            "PLACEHOLDER_STATUS": "Status för uppgift",
-            "OPTION_UNASSIGNED": "Otilldelad",
-            "PLACEHOLDER_SHORT_DESCRIPTION": "Skriv en kort beskrivning",
-            "ACTION_EDIT": "Ändra uppgiften",
-            "CONFIRM_CLOSE": "You have not saved changes.\nAre you sure you want to close the form?"
-        },
-        "CREATE_EDIT_US": {
-            "TITLE": "Nytt US",
-            "PLACEHOLDER_DESCRIPTION": "Vänligen lägg till en beskrivande text för att hjälpa andra att förstå den här användarhistorien. ",
-            "NEW_US": "Ny användarhistorie",
-            "EDIT_US": "Ändra användarhistorien",
-            "CONFIRM_CLOSE": "You have not saved changes.\nAre you sure you want to close the form?"
+        "CREATE_EDIT": {
+            "TASK_PLACEHOLDER_DESCRIPTION": "Please add descriptive text to help others better understand this Task",
+            "ISSUE_PLACEHOLDER_DESCRIPTION": "Please add descriptive text to help others better understand this Issue",
+            "US_PLACEHOLDER_DESCRIPTION": "Please add descriptive text to help others better understand this User Story",
+            "NEW_TASK": "New Task",
+            "NEW_ISSUE": "New Issue",
+            "NEW_US": "New User Story",
+            "EDIT_TASK": "Edit Task",
+            "EDIT_ISSUE": "Edit Issue",
+            "EDIT_US": "Edit User Story",
+            "ADD_EXISTING_ISSUE": "Add Issue to {{ targetName }}",
+            "CONFIRM_CLOSE": "You have not saved changes.\nAre you sure you want to close the form?",
+            "EXISTING_ISSUE": "Existing Issue",
+            "CHOOSE_EXISTING_ISSUE": "Which Issue?",
+            "ADD_ISSUE": "Lägg till ärende",
+            "FILTER_ISSUES": "Filter Issues"
         },
         "DELETE_DUE_DATE": {
             "TITLE": "Delete due date",
@@ -1098,6 +1151,10 @@
         },
         "DELETE_SPRINT": {
             "TITLE": "Ta bort sprint"
+        },
+        "REMOVE_RELATIONSHIP_WITH_EPIC": {
+            "TITLE": "Remove relationship with Epic",
+            "MESSAGE": "Are you sure you want to remove the relationship of this User Story with the Epic <strong>{{epicSubject}}</strong>?"
         },
         "CREATE_MEMBER": {
             "PLACEHOLDER_INVITATION_TEXT": "(Valfritt) Lägg till en personlig hälsning till invitationen. Berätta något trevligt till din nya projektmedlem ;-)",
@@ -1139,23 +1196,36 @@
                 "IN_THREE_MONTHS": "In three months"
             },
             "TITLE_ACTION_DELETE_DUE_DATE": "Delete due date"
+        },
+        "ADMIN_DUE_DATES": {
+            "TITLE_ACTION_DELETE_DUE_DATE": "Delete due date",
+            "SUBTITLE_ACTION_DELETE_DUE_DATE": "Are you sure you want to delete the due date status {{due_date_status_name}}?"
+        },
+        "RELATE_TO_EPIC": {
+            "TITLE": "Link to Epic",
+            "EXISTING_EPIC": "Existing epic",
+            "NEW_EPIC": "New epic",
+            "CHOOSE_PROJECT_FOR_CREATION": "Vilket är projektet?",
+            "CHOOSE_PROJECT_FROM": "Vilket är projektet?",
+            "SUBJECT": "Titel",
+            "CHOOSE_EPIC": "What's the epic?",
+            "FILTER_EPICS": "Filter epics",
+            "NO_EPICS_FOUND": "Det ser ut som om vi inte hittade något som matchade din sökning."
         }
     },
     "EPIC": {
         "PAGE_TITLE": "{{epicSubject}} - Epost {{epicRef}} - {{projectName}}",
         "PAGE_DESCRIPTION": "Status: {{epicStatus }}. Beskrivning: {{epicDescription}}",
         "SECTION_NAME": "Epost",
-        "TITLE_LIGHTBOX_UNLINK_RELATED_USERSTORY": "Ta bort länkning till relaterade användningsfall ",
-        "MSG_LIGHTBOX_UNLINK_RELATED_USERSTORY": "Det kommer radera länken till det relaterade användningsfallet '{{subject}}'",
         "ERROR_UNLINK_RELATED_USERSTORY": "Vi har inte lyckats att ta bort: {{errorMessage}}",
         "CREATE_RELATED_USERSTORIES": "Skapa en relation med",
         "NEW_USERSTORY": "Ny användarhistorie",
         "EXISTING_USERSTORY": "Befintligt användningsfal",
-        "CHOOSE_PROJECT_FOR_CREATION": "Vilket är projektet?",
+        "CHOOSE_PROJECT_FOR_CREATION": "Which project?",
         "SUBJECT": "Titel",
         "SUBJECT_BULK_MODE": "Ämne (infoga bulk)",
-        "CHOOSE_PROJECT_FROM": "Vilket är projektet?",
-        "CHOOSE_USERSTORY": "What's the user story?",
+        "CHOOSE_PROJECT_FROM": "Which project?",
+        "CHOOSE_USERSTORY": "Which user story?",
         "NO_USERSTORIES": "This project has no User Stories yet. Please select another project.",
         "NO_USERSTORIES_FOUND": "Det ser ut som om vi inte hittade något som matchade din sökning.",
         "FILTER_USERSTORIES": "Filtrera användningsfall",
@@ -1171,12 +1241,16 @@
         "TOTAL_POINTS": "totalpoäng",
         "ADD": "+ Lägg till ny användarhistorie",
         "ADD_BULK": "Lägg till flera nya användarhistorier",
-        "PROMOTED": "Denna US har blivit flyttat från ärende: ",
+        "PROMOTED_FROM_ISSUE": "Denna US har blivit flyttat från ärende: ",
+        "PROMOTED_FROM_TASK": "This US has been promoted from Task:",
         "TITLE_LINK_GO_TO_ISSUE": "Gå till ärende",
+        "TITLE_LINK_GO_TO_TASK": "Go to task",
         "TITLE_DELETE_ACTION": "Ta bort användarhistorien",
         "LIGHTBOX_TITLE_BLOKING_US": "Blockera oss",
         "NOT_ESTIMATED": "Ej beräknad",
         "OWNER_US": "Denna användarstoryn tillhör",
+        "RELATE_TO_EPIC": "Link to Epic",
+        "REMOVE_RELATIONSHIP_WITH_EPIC": "Remove Epic relationship",
         "TRIBE": {
             "PUBLISH": "Publish as Gig in Taiga Tribe",
             "PUBLISH_INFO": "Mer information",
@@ -1187,10 +1261,6 @@
             "SYNCHRONIZE_LINK": "synkronisera med Taiga Tribe",
             "PUBLISH_MORE_INFO_TITLE": "Behöver du någon för den här uppgiften?",
             "PUBLISH_MORE_INFO_TEXT": "<p>If you need help with a particular piece of work you can easily create gigs on<a href='http://taigatribe.com' title='Taiga Tribe'> Taiga Tribe </a> and receive help from all over the world. You will be able to control and manage the gig enjoying a great community eager to contribute.</p><p><a href='http://taigatribe.com' title='Taiga Tribe'> TaigaTribe </a>  was born as a Taiga sibling. Both platforms can live separately but we believe that there is much power in using them combined so we are making sure the integration works like a charm.</p>"
-        },
-        "FIELDS": {
-            "TEAM_REQUIREMENT": "Teamets behov",
-            "CLIENT_REQUIREMENT": "Kräver beställare"
         }
     },
     "COMMENTS": {
@@ -1339,6 +1409,8 @@
         "SECTION_NAME": "Uppgiftstavla",
         "TITLE_ACTION_ADD": "Lägg till en ny uppgift",
         "TITLE_ACTION_ADD_BULK": "Lägg till några flera nya uppgifter",
+        "TITLE_ACTION_ADD_ISSUE": "Add a new Issue",
+        "TITLE_ACTION_ADD_ISSUE_BULK": "Add some new Issues in bulk",
         "TITLE_ACTION_ASSIGN": "Tilldela uppgift",
         "PLACEHOLDER_CARD_TITLE": "Det har kan vara en uppgift",
         "PLACEHOLDER_CARD_TEXT": "Dela användarhistorier upp i uppgifter och spåra dem separat",
@@ -1349,7 +1421,8 @@
             "TITLE_ACTION_FOLD_ROW": "Vika i hop raden",
             "TITLE_ACTION_UNFOLD_ROW": "Veckla ut rad",
             "FIELD_POINTS": "poäng",
-            "ROW_UNASSIGED_TASKS_TITLE": "Ej tilldelade uppgifter"
+            "ROW_STORYLESS_TASKS_TITLE": "Storyless tasks",
+            "ROW_ISSUES_TITLE": "Sprint Issues"
         },
         "CHARTS": {
             "XAXIS_LABEL": "Dagar",
@@ -1357,6 +1430,20 @@
             "OPTIMAL": "Optimala poäng som väntar för dag {{formattedDate}} ska vara {{roundedValue}}",
             "REAL": "Verkliga poäng som väntar för dag {{formattedDate}} är {{roundedValue}}",
             "DATE": "DD MM YYYY"
+        },
+        "MOVE_TO_SPRINT": {
+            "TITLE_ACTION_MOVE_UNFINISHED": "Move unfinished items to another sprint",
+            "TITLE_MOVE_UNFINISHED": "Move unfinished items to another open sprint",
+            "MOVE_TO_OPEN_SPRINT": "Move to open sprint",
+            "NO_OPEN_SPRINTS": "There are no other open sprints. Please create one first.",
+            "SELECT_DESTINATION_PLACEHOLDER": "Select destination",
+            "UNFINISHED_USER_STORIES_COUNT": "{total, plural, one{<strong>#</strong> unfinished user story} other{<strong>#</strong> unfinished user stories}}",
+            "UNFINISHED_STORYLESS_TASKS_COUNT": "{total, plural, one{<strong>#</strong> unfinished storyless task} other{<strong>#</strong> unfinished storyless tasks}}",
+            "UNFINISHED_ISSUES_COUNT": "{total, plural, one{<strong>#</strong> unfinished issue} other{<strong>#</strong> unfinished issue}}",
+            "WARNING_ISSUES_NOT_MOVED_TITLE": "You just moved all user stories and taks, and the sprint'll be closed",
+            "WARNING_ISSUES_NOT_MOVED": "The issues'll remain in the sprint and don't be removed",
+            "WARNING_SPRINT_STILL_OPEN_TITLE": "{total, plural, one{You just moved # item!} other{You just moved # items!}}",
+            "WARNING_SPRINT_STILL_OPEN": "Please note that the sprint {{sprintName}} <strong>will remain open</strong> as long as it contains unfinished items."
         }
     },
     "TASK": {
@@ -1405,20 +1492,29 @@
         "PAGE_DESCRIPTION": "Ärenden som listas för projektet {{projectName}}: {{projectDescription}}",
         "SECTION_NAME": "ärende",
         "ACTION_NEW_ISSUE": "+ NYTT ÄRENDE",
-        "ACTION_PROMOTE_TO_US": "Flytta till användarhistorie",
-        "PROMOTED": "Ärendet har flyttats till US:",
+        "ACTION_ATTACH_SPRINT": "Attach issue to Sprint",
+        "ACTION_DETACH_SPRINT": "Detach issue from Sprint",
         "EXTERNAL_REFERENCE": "Den här uppgiften är skapat från",
         "GO_TO_EXTERNAL_REFERENCE": "Gå till början",
         "ACTION_DELETE": "Ta bort ärende",
         "LIGHTBOX_TITLE_BLOKING_ISSUE": "Blockerad ärende",
+        "LINK_TASKBOARD": "Uppgiftstavla",
+        "TITLE_LINK_TASKBOARD": "Gå till uppgiftstavlan",
+        "FILTER_SPRINTS": "Filter Sprints",
+        "CHOOSE_SPRINT": "Which Sprint?",
         "FIELDS": {
             "PRIORITY": "Prioritet",
             "SEVERITY": "Allvarsgrad",
             "TYPE": "Typ"
         },
-        "CONFIRM_PROMOTE": {
-            "TITLE": "Flytta det här ärendet till en ny användarhistorie",
-            "MESSAGE": "Är du säker på att du vill skapa en ny US från det här ärendet?"
+        "FILTER_ISSUES": "Filter Issues",
+        "CONFIRM_DETACH_FROM_SPRINT": {
+            "TITLE": "Detach issue from Sprint",
+            "MESSAGE": "You are about to detach the issue from the sprint <strong>{{ sprintName }}<strong>"
+        },
+        "CONFIRM_CHANGE_FROM_SPRINT": {
+            "TITLE": "Attach issue to Sprint",
+            "MESSAGE": "<strong>This issue is currently attached to sprint {{ oldSprintName }}</strong>. You are about to detach it from that sprint and attach it instead to sprint <strong>{{ newSprintName }}.</strong>"
         },
         "TABLE": {
             "COLUMNS": {
@@ -1428,7 +1524,7 @@
                 "SUBJECT": "Titel",
                 "VOTES": "Röster",
                 "STATUS": "Status",
-                "CREATED": "Skapad",
+                "MODIFIED": "Modifierad",
                 "ASSIGNED_TO": "Tilldelad till"
             },
             "TITLE_ACTION_CHANGE_STATUS": "Ändra status",
@@ -1497,10 +1593,10 @@
         "AVATAR_MAX_SIZE": "[Max. size: {{maxFileSize}}]",
         "MENU": {
             "SECTION_TITLE": "Inställningar för användare",
-            "USER_PROFILE": "Användarprofil",
             "CHANGE_PASSWORD": "Byt lösenord",
             "EMAIL_NOTIFICATIONS": "E-postnotifieringar",
-            "DESKTOP_NOTIFICATIONS": "Desktop notifications"
+            "DESKTOP_NOTIFICATIONS": "Desktop notifications",
+            "EVENTS": "Events"
         },
         "NOTIFICATIONS": {
             "LIVE_SECTION_NAME": "Desktop Notifications",
@@ -1512,6 +1608,20 @@
             "OPTION_ALL": "Alla",
             "OPTION_INVOLVED": "Involverad",
             "OPTION_NONE": "Ingen"
+        },
+        "PROJECT_SETTINGS": {
+            "SET_START_PAGES": "Set start pages",
+            "START_PAGES_PER_PROJECT": "Set start pages per project",
+            "COLUMN_PROJECT": "Projekt",
+            "COLUMN_STARTPAGE": "Start page",
+            "DEFAULT_VALUE": "Default"
+        },
+        "EVENTS": {
+            "SECTION_NAME": "Events",
+            "SECTION_DESCRIPTION": "Important events in Taiga header",
+            "SECTION_DESCRIPTION_EXPANDED": "(direct mentions, updates in items that you are watching...)",
+            "COLUMN_ENABLED": "Enabled",
+            "COLUMN_PROJECT": "Projekt"
         }
     },
     "USER_PROFILE": {
@@ -1609,7 +1719,26 @@
         "US_REMOVED_FROM_MILESTONE": "{{username}} har lagt till US {{obj_name}} till inkorgen",
         "BLOCKED": "{{username}} har blockerad {{obj_name}}",
         "UNBLOCKED": "{{username}} har tagit bort blockeringen för {{obj_name}}",
-        "NEW_USER": "{{username}} har blitt medlem i Taiga"
+        "NEW_USER": "{{username}} har blitt medlem i Taiga",
+        "ITEM_TYPES": {
+            "USERSTORY": "User Story",
+            "ISSUE": "ärende",
+            "TASK": "Uppgift"
+        }
+    },
+    "EVENTS": {
+        "TITLE": "Events",
+        "MY_EVENTS": "My events",
+        "DISMISS_ALL": "Dismiss all",
+        "VIEW_ALL": "View all",
+        "NO_NEW_EVENTS": "No new events",
+        "NO_EVENTS_YET": "There are no events yet",
+        "ASSIGNED_YOU": "{{username}} assigned you to {{obj_name}}",
+        "ADDED_YOU_AS_WATCHER": "{{username}} added you as watcher on {{obj_name}}",
+        "ADDED_YOU_AS_MEMBER": "{{username}} added you as member",
+        "MENTIONED_YOU": "{{username}} mentioned you on {{obj_name}}",
+        "MENTIONED_YOU_IN_COMMENT": "{{username}} mentioned you in a comment on {{obj_name}}",
+        "COMMENTED": "{{username}} has commented on {{obj_name}}"
     },
     "LEGAL": {
         "TERMS_OF_SERVICE_AND_PRIVACY_POLICY_AD": "<span>When creating a new account, you agree to our </span><a href=\"{{ termsOfServiceUrl }}\" title=\"See terms of service\" target=\"_blank\">terms of service</a><span> and </span><a href=\"{{ privacyPolicyUrl }}\" title=\"See privacy policy\" target=\"_blank\">privacy policy</a>.",

@@ -12,7 +12,7 @@
     min-height: 36px;
     .related-tasks-title {
         @include font-size(medium);
-        @include font-type(bold);
+        @include font-type(semibold);
         margin-left: 1rem;
     }
     .add-button {
@@ -63,6 +63,25 @@
             cursor: pointer;
             flex-shrink: 0;
             width: 150px;
+        }
+    }
+    .single-related-task {
+        &:hover {
+            background: rgba($primary-light, .05);
+            .icon-drag {
+                opacity: 1;
+            }
+        }
+        .task-reorder {
+            display: flex;
+            margin-right: 1rem;
+        }
+        .icon-drag {
+            @include svg-size(.75rem);
+            cursor: move;
+            fill: $whitish;
+            opacity: 0;
+            transition: opacity .1s;
         }
     }
     .related-task-create-form {
@@ -124,10 +143,10 @@
         color: $whitish;
         a,
         svg {
-            fill: $whitish;
+            fill: $gray-light;
         }
         .task-name a {
-            color: $whitish;
+            color: $gray-light;
             text-decoration: line-through;
 
         }

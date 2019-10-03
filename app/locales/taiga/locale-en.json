@@ -3,6 +3,7 @@
         "YES": "Yes",
         "NO": "No",
         "OR": "or",
+        "I_GET_IT": "OK, I get it",
         "LOADING": "Loading...",
         "DATE": "DD MMM YYYY",
         "DATETIME": "DD MMM YYYY HH:mm",
@@ -13,7 +14,9 @@
         "UNLINK": "Unlink",
         "CREATE": "Create",
         "ADD": "Add",
-        "COPY_TO_CLIPBOARD": "Copy to clipboard: Ctrl+C",
+        "BACK": "Back",
+        "COPY_TO_CLIPBOARD": "Copy to clipboard",
+        "COPIED_TO_CLIPBOARD": "Text has been copied to clipboard",
         "EDIT": "Edit",
         "DRAG": "Drag",
         "TAG_LINE": "Your agile, free, and open source project management tool",
@@ -31,7 +34,7 @@
         "PLUGINS": "Plugins",
         "ONE_ITEM_LINE": "One item per line...",
         "NEW_BULK": "New bulk insert",
-        "RELATED_TASKS": "Related tasks",
+        "SUBTASKS": "Subtasks",
         "PREVIOUS": "Previous",
         "NEXT": "Next",
         "LOGOUT": "Logout",
@@ -48,7 +51,9 @@
         "CARD": {
             "ASSIGN_TO": "Assign To",
             "EDIT": "Edit card",
-            "DELETE": "Delete card"
+            "DELETE": "Delete card",
+            "DELETE_ISSUE": "Delete issue",
+            "DETACH_ISSUE_FROM_SPRINT": "Detach issue from sprint"
         },
         "FORM_ERRORS": {
             "DEFAULT_MESSAGE": "This value seems to be invalid.",
@@ -142,6 +147,7 @@
             "TYPE": "Type",
             "SEVERITY": "Severity",
             "PRIORITY": "Priority",
+            "ASSIGNED": "Assigned",
             "ASSIGNED_TO": "Assigned to",
             "ASSIGNED_USERS": "Assigned users",
             "POINTS": "Points",
@@ -166,10 +172,7 @@
             "SELF": "Assign to me"
         },
         "DUE_DATE": {
-            "TITLE_ACTION_SET_DUE_DATE": "Set due date",
-            "DUE_SOON": "due soon",
-            "PAST_DUE": "past due date",
-            "NO_LONGER_APPLICABLE": "no longer applicable"
+            "TITLE_ACTION_SET_DUE_DATE": "Set due date"
         },
         "ASSIGNED_USERS": {
             "ADD": "Select assigned user",
@@ -199,6 +202,19 @@
             "BUTTON_TITLE": "Upvote/Downvote this item",
             "COUNTER_TITLE": "{total, plural, one{one vote} other{# votes}}"
         },
+        "PROMOTE_TO_US": "Promote to User Story",
+        "PROMOTED_ISSUES": "This Issue has been promoted to US:",
+        "PROMOTED_TASKS": "This Task has been promoted to US:",
+        "CONFIRM_PROMOTE": {
+          "ISSUE": {
+            "TITLE": "Promote this Issue to a new user story",
+            "MESSAGE": "Are you sure you want to create a new US from this Issue?"
+          },
+          "TASK": {
+            "TITLE": "Promote this Task to a new user story",
+            "MESSAGE": "Are you sure you want to create a new US from this Task?"
+          }
+        },
         "CUSTOM_ATTRIBUTES": {
             "CUSTOM_FIELDS": "Custom Fields",
             "SAVE": "Save Custom Field",
@@ -214,6 +230,11 @@
             "ACTION_SAVE_CUSTOM_FILTER": "save as custom filter",
             "PLACEHOLDER_FILTER_NAME": "Write the filter name and press enter",
             "APPLIED_FILTERS_NUM": "filters applied",
+            "TITLE_ADVANCED_FILTER": "Advanced",
+            "ADVANCED_FILTERS": {
+                "INCLUDE": "Include",
+                "EXCLUDE": "Exclude"
+            },
             "CATEGORIES": {
                 "TYPE": "Type",
                 "STATUS": "Status",
@@ -338,7 +359,7 @@
         "LINK_CANCEL": "Nah, take me back. I think I remember it.",
         "SUCCESS_TITLE": "Check your inbox!",
         "SUCCESS_TEXT": "We sent you an email with the instructions to set a new password",
-        "ERROR": "According to our Oompa Loompas, your are not registered yet."
+        "ERROR": "According to our Oompa Loompas, you are not registered yet."
     },
     "CHANGE_PASSWORD": {
         "PAGE_TITLE": "Change you password - Taiga",
@@ -376,7 +397,12 @@
         "EMPTY_PROJECT_LIST": "You don't have any projects yet",
         "WORKING_ON_SECTION": "Working on",
         "WATCHING_SECTION": "Watching",
-        "DASHBOARD": "Projects Dashboard"
+        "DASHBOARD": "Projects Dashboard",
+        "SET_HIDDEN": "Set as hidden",
+        "SET_VISIBLE": "Set as visible",
+        "NO_HIDDEN_ITEMS": "You have no hidden items",
+        "HIDE_HIDDEN": "Do not show hidden objects",
+        "SHOW_HIDDEN": "Show hidden objects"
     },
     "EPICS": {
         "TITLE": "EPICS",
@@ -401,6 +427,8 @@
             "ASSIGNED_TO": "Assigned",
             "STATUS": "Status",
             "PROGRESS": "Progress",
+            "CLOSED_US": "Closed user stories",
+            "CLOSED_EPICS": "Closed epics",
             "VIEW_OPTIONS": "View options"
         },
         "CREATE": {
@@ -459,7 +487,8 @@
             "PAGE_TITLE": "Memberships - {{projectName}}",
             "ADD_BUTTON": "+ New member",
             "ADD_BUTTON_TITLE": "Add new member",
-            "LIMIT_USERS_WARNING_MESSAGE_FOR_ADMIN": "Unfortunately, this project has reached its limit of <strong>({{members}})</strong> allowed members.",
+            "UPGRADE_BUTTON": "Upgrade your plan",
+            "LIMIT_USERS_WARNING_MESSAGE_FOR_ADMIN": "If you would like to <strong>add more members</strong>, please contact the project owner <a href='mailto:{{ owner_email }}' title='{{ owner_email }}'>{{ owner_email }}</a>",
             "LIMIT_USERS_WARNING_MESSAGE_FOR_OWNER": "This project has reached its limit of <strong>({{members}})</strong> allowed members. If you would like to increase that limit please contact the administrator."
         },
         "PROJECT_EXPORT": {
@@ -496,7 +525,7 @@
             "SELECT_VIDEOCONFERENCE": "Select a videoconference system",
             "SALT_CHAT_ROOM": "Add a prefix to the chatroom name",
             "JITSI_CHAT_ROOM": "Jitsi",
-            "APPEARIN_CHAT_ROOM": "AppearIn",
+            "WHEREBYCOM_CHAT_ROOM": "Whereby.com",
             "TALKY_CHAT_ROOM": "Talky",
             "CUSTOM_CHAT_ROOM": "Custom",
             "URL_CHAT_ROOM": "URL of your chat room"
@@ -537,7 +566,9 @@
             "DESCRIPTION": "Download a CSV file or copy the generated URL and open it in your favourite text editor or spreadsheet to make your own project data reports. You will be able to visualize and analyze all your data easily.",
             "HELP": "How to use this on my own spreadsheet?",
             "REGENERATE_TITLE": "Change URL",
-            "REGENERATE_SUBTITLE": "You going to change the CSV data access url. The previous url will be disabled. Are you sure?"
+            "REGENERATE_SUBTITLE": "You are going to change the CSV data access url. The previous url will be disabled. Are you sure?",
+            "DELETE_TITLE": "Delete URL",
+            "DELETE_SUBTITLE": "You are going to delete the current CSV data access url. Are you sure?"
         },
         "CSV": {
             "SECTION_TITLE_EPIC": "epics reports",
@@ -548,7 +579,9 @@
             "URL_FIELD_PLACEHOLDER": "Please regenerate CSV url",
             "TITLE_REGENERATE_URL": "Regenerate CSV url",
             "ACTION_GENERATE_URL": "Generate Url",
-            "ACTION_REGENERATE": "Regenerate"
+            "ACTION_REGENERATE": "Regenerate",
+            "TITLE_DELETE_URL": "Delete CSV url",
+            "ACTION_DELETE_URL": "Delete"
         },
         "CUSTOM_FIELDS": {
             "TITLE": "Custom Fields",
@@ -565,7 +598,10 @@
             "FIELD_TYPE_RICHTEXT": "Rich text",
             "FIELD_TYPE_MULTI": "Multi-line",
             "FIELD_TYPE_DATE": "Date",
-            "FIELD_TYPE_URL": "Url"
+            "FIELD_TYPE_URL": "Url",
+            "FIELD_TYPE_DROPDOWN": "Dropdown",
+            "FIELD_TYPE_CHECKBOX": "Checkbox",
+            "FIELD_TYPE_NUMBER": "Number"
         },
         "PROJECT_VALUES": {
             "PAGE_TITLE": "{{sectionName}} - Project values - {{projectName}}",
@@ -614,6 +650,18 @@
             "MIXING_HELP_TEXT": "Select the tags that you want to merge",
             "MIXING_MERGE": "Merge Tags",
             "SELECTED": "Selected"
+        },
+        "PROJECT_DUE_DATE_STATUS": {
+            "TITLE": "Due Dates",
+            "SUBTITLE": "Specify the due dates your user stories, tasks and issues will go through if selected",
+            "US_TITLE": "User Story Due Date status",
+            "ACTION_ADD_STATUS": "Add new status",
+            "TASK_TITLE": "Task Due Date status",
+            "ISSUE_TITLE": "Issue Due Date status",
+            "DAYS_TO_DUE_DATE": "Days to due date",
+            "BEFORE_AFTER": "Before/after",
+            "BEFORE": "Before",
+            "AFTER": "Past"
         },
         "ROLES": {
             "PAGE_TITLE": "Roles - {{projectName}}",
@@ -715,7 +763,8 @@
             "LABEL_SEVERITY": "Default value for severity selector"
         },
         "STATUS": {
-            "PLACEHOLDER_WRITE_STATUS_NAME": "Write a name for the new status"
+            "PLACEHOLDER_WRITE_STATUS_NAME": "Write a name for the new status",
+            "PLACEHOLDER_DAYS_TO_DUE_DATE": "Write a number of days to due date"
         },
         "TYPES": {
             "PLACEHOLDER_WRITE_NAME": "Write a name for the new element"
@@ -735,13 +784,14 @@
             "INTEGRATIONS": "Integrations"
         },
         "SUBMENU_PROJECT_VALUES": {
-            "STATUS": "Status",
+            "STATUS": "Statuses",
             "POINTS": "Points",
             "PRIORITIES": "Priorities",
             "SEVERITIES": "Severities",
             "TYPES": "Types",
             "CUSTOM_FIELDS": "Custom fields",
-            "TAGS": "Tags"
+            "TAGS": "Tags",
+            "DUE_DATES": "Due dates"
         },
         "SUBMENU_ROLES": {
             "TITLE": "Roles",
@@ -768,7 +818,7 @@
     "USER": {
         "PROFILE": {
             "PAGE_TITLE": "{{userFullName}} (@{{userUsername}})",
-            "EDIT": "Edit profile",
+            "USER_SETTINGS": "User Settings",
             "CLOSED_US": "Closed US",
             "PROJECTS": "Projects",
             "PROJECTS_EMPTY": "{{username}} doesn't' have projects yet",
@@ -829,6 +879,7 @@
         "SECTION": {
             "SEARCH": "Search",
             "TIMELINE": "Timeline",
+            "EPICS": "Epics",
             "BACKLOG": "Backlog",
             "KANBAN": "Kanban",
             "ISSUES": "Issues",
@@ -850,8 +901,8 @@
             "NOTIFICATIONS": "Notifications",
             "VIEW_PROFILE_TITLE": "View Profile",
             "VIEW_PROFILE": "View Profile",
-            "EDIT_PROFILE_TITLE": "Edit your profile",
-            "EDIT_PROFILE": "Edit Profile",
+            "USER_SETTINGS_TITLE": "Edit your settings",
+            "USER_SETTINGS": "User Settings",
             "CHANGE_PASSWORD_TITLE": "Change password",
             "CHANGE_PASSWORD": "Change password",
             "DASHBOARD_TITLE": "Dashboard",
@@ -1044,6 +1095,11 @@
             "SELECT": "Select assigned to",
             "SEARCH": "Search for users"
         },
+        "SELECT_USER": {
+            "SEARCH": "Search for users",
+            "REMOVE": "Remove user",
+            "ROLE": "Role"
+        },
         "ADD_MEMBER": {
             "TITLE": "New Member",
             "PLACEHOLDER": "Filter users or write an email to invite",
@@ -1053,9 +1109,6 @@
             "CHOOSE_ROLE": "Choose a role",
             "PLACEHOLDER_INVITATION_TEXT": "(Optional) Add a personalized text to the invitation. Tell something lovely to your new members ;-)",
             "HELP_TEXT": "If users are already registered on Taiga, they will be added automatically. Otherwise they will receive an invitation."
-        },
-        "CREATE_ISSUE": {
-            "TITLE": "Add Issue"
         },
         "FEEDBACK": {
             "TITLE": "Tell us something...",
@@ -1075,21 +1128,22 @@
             "TITLE_ACTION_DELETE_SPRINT": "delete sprint",
             "LAST_SPRINT_NAME": "last sprint is <strong> {{lastSprint}} ;-) </strong>"
         },
-        "CREATE_EDIT_TASK": {
-            "TITLE": "New task",
-            "PLACEHOLDER_SUBJECT": "A task subject",
-            "PLACEHOLDER_STATUS": "Task status",
-            "OPTION_UNASSIGNED": "Unassigned",
-            "PLACEHOLDER_SHORT_DESCRIPTION": "Type a short description",
-            "ACTION_EDIT": "Edit task",
-            "CONFIRM_CLOSE": "You have not saved changes.\nAre you sure you want to close the form?"
-        },
-        "CREATE_EDIT_US": {
-            "TITLE": "New US",
-            "PLACEHOLDER_DESCRIPTION": "Please add descriptive text to help others better understand this US",
-            "NEW_US": "New user story",
-            "EDIT_US": "Edit user story",
-            "CONFIRM_CLOSE": "You have not saved changes.\nAre you sure you want to close the form?"
+        "CREATE_EDIT": {
+            "TASK_PLACEHOLDER_DESCRIPTION": "Please add descriptive text to help others better understand this Task",
+            "ISSUE_PLACEHOLDER_DESCRIPTION": "Please add descriptive text to help others better understand this Issue",
+            "US_PLACEHOLDER_DESCRIPTION": "Please add descriptive text to help others better understand this User Story",
+            "NEW_TASK": "New Task",
+            "NEW_ISSUE": "New Issue",
+            "NEW_US": "New User Story",
+            "EDIT_TASK": "Edit Task",
+            "EDIT_ISSUE": "Edit Issue",
+            "EDIT_US": "Edit User Story",
+            "ADD_EXISTING_ISSUE": "Add Issue to {{ targetName }}",
+            "CONFIRM_CLOSE": "You have not saved changes.\nAre you sure you want to close the form?",
+            "EXISTING_ISSUE": "Existing Issue",
+            "CHOOSE_EXISTING_ISSUE": "Which Issue?",
+            "ADD_ISSUE": "Add Issue",
+            "FILTER_ISSUES": "Filter Issues"
         },
         "DELETE_DUE_DATE": {
             "TITLE": "Delete due date",
@@ -1097,6 +1151,10 @@
         },
         "DELETE_SPRINT": {
             "TITLE": "Delete sprint"
+        },
+        "REMOVE_RELATIONSHIP_WITH_EPIC": {
+            "TITLE": "Remove relationship with Epic",
+            "MESSAGE": "Are you sure you want to remove the relationship of this User Story with the Epic <strong>{{epicSubject}}</strong>?"
         },
         "CREATE_MEMBER": {
             "PLACEHOLDER_INVITATION_TEXT": "(Optional) Add a personalized text to the invitation. Tell something lovely to your new members ;-)",
@@ -1138,23 +1196,36 @@
                 "IN_THREE_MONTHS": "In three months"
             },
             "TITLE_ACTION_DELETE_DUE_DATE": "Delete due date"
+        },
+        "ADMIN_DUE_DATES": {
+            "TITLE_ACTION_DELETE_DUE_DATE": "Delete due date",
+            "SUBTITLE_ACTION_DELETE_DUE_DATE": "Are you sure you want to delete the due date status {{due_date_status_name}}?"
+        },
+        "RELATE_TO_EPIC": {
+            "TITLE": "Link to Epic",
+            "EXISTING_EPIC": "Existing epic",
+            "NEW_EPIC": "New epic",
+            "CHOOSE_PROJECT_FOR_CREATION": "What's the project?",
+            "CHOOSE_PROJECT_FROM": "What's the project?",
+            "SUBJECT": "Subject",
+            "CHOOSE_EPIC": "What's the epic?",
+            "FILTER_EPICS": "Filter epics",
+            "NO_EPICS_FOUND": "It looks like nothing was found with your search criteria"
         }
     },
     "EPIC": {
         "PAGE_TITLE": "{{epicSubject}} - Epic {{epicRef}} - {{projectName}}",
         "PAGE_DESCRIPTION": "Status: {{epicStatus }}. Description: {{epicDescription}}",
         "SECTION_NAME": "Epic",
-        "TITLE_LIGHTBOX_UNLINK_RELATED_USERSTORY": "Unlink related userstory",
-        "MSG_LIGHTBOX_UNLINK_RELATED_USERSTORY": "It will delete the link to the related userstory '{{subject}}'",
         "ERROR_UNLINK_RELATED_USERSTORY": "We have not been able to unlink: {{errorMessage}}",
         "CREATE_RELATED_USERSTORIES": "Create a relationship with",
         "NEW_USERSTORY": "New user story",
         "EXISTING_USERSTORY": "Existing user story",
-        "CHOOSE_PROJECT_FOR_CREATION": "What's the project?",
+        "CHOOSE_PROJECT_FOR_CREATION": "Which project?",
         "SUBJECT": "Subject",
         "SUBJECT_BULK_MODE": "Subject (bulk insert)",
-        "CHOOSE_PROJECT_FROM": "What's the project?",
-        "CHOOSE_USERSTORY": "What's the user story?",
+        "CHOOSE_PROJECT_FROM": "Which project?",
+        "CHOOSE_USERSTORY": "Which user story?",
         "NO_USERSTORIES": "This project has no User Stories yet. Please select another project.",
         "NO_USERSTORIES_FOUND": "It looks like nothing was found with your search criteria",
         "FILTER_USERSTORIES": "Filter user stories",
@@ -1170,12 +1241,16 @@
         "TOTAL_POINTS": "total points",
         "ADD": "+ Add a new User Story",
         "ADD_BULK": "Add some new User Stories in bulk",
-        "PROMOTED": "This US has been promoted from Issue:",
+        "PROMOTED_FROM_ISSUE": "This US has been promoted from Issue:",
+        "PROMOTED_FROM_TASK": "This US has been promoted from Task:",
         "TITLE_LINK_GO_TO_ISSUE": "Go to issue",
+        "TITLE_LINK_GO_TO_TASK": "Go to task",
         "TITLE_DELETE_ACTION": "Delete User Story",
         "LIGHTBOX_TITLE_BLOKING_US": "Blocking us",
         "NOT_ESTIMATED": "Not estimated",
         "OWNER_US": "This User Story belongs to",
+        "RELATE_TO_EPIC": "Link to Epic",
+        "REMOVE_RELATIONSHIP_WITH_EPIC": "Remove Epic relationship",
         "TRIBE": {
             "PUBLISH": "Publish as Gig in Taiga Tribe",
             "PUBLISH_INFO": "More info",
@@ -1186,10 +1261,6 @@
             "SYNCHRONIZE_LINK": "synchronize with Taiga Tribe",
             "PUBLISH_MORE_INFO_TITLE": "Do you need somebody for this task?",
             "PUBLISH_MORE_INFO_TEXT": "<p>If you need help with a particular piece of work you can easily create gigs on<a href='http://taigatribe.com' title='Taiga Tribe'> Taiga Tribe </a> and receive help from all over the world. You will be able to control and manage the gig enjoying a great community eager to contribute.</p><p><a href='http://taigatribe.com' title='Taiga Tribe'> TaigaTribe </a>  was born as a Taiga sibling. Both platforms can live separately but we believe that there is much power in using them combined so we are making sure the integration works like a charm.</p>"
-        },
-        "FIELDS": {
-            "TEAM_REQUIREMENT": "Team Requirement",
-            "CLIENT_REQUIREMENT": "Client Requirement"
         }
     },
     "COMMENTS": {
@@ -1338,6 +1409,8 @@
         "SECTION_NAME": "Taskboard",
         "TITLE_ACTION_ADD": "Add a new Task",
         "TITLE_ACTION_ADD_BULK": "Add some new Tasks in bulk",
+        "TITLE_ACTION_ADD_ISSUE": "Add a new Issue",
+        "TITLE_ACTION_ADD_ISSUE_BULK": "Add some new Issues in bulk",
         "TITLE_ACTION_ASSIGN": "Assign task",
         "PLACEHOLDER_CARD_TITLE": "This could be a task",
         "PLACEHOLDER_CARD_TEXT": "Split Stories into tasks to track them separately",
@@ -1348,7 +1421,8 @@
             "TITLE_ACTION_FOLD_ROW": "Fold Row",
             "TITLE_ACTION_UNFOLD_ROW": "Unfold Row",
             "FIELD_POINTS": "points",
-            "ROW_UNASSIGED_TASKS_TITLE": "Unassigned tasks"
+            "ROW_STORYLESS_TASKS_TITLE": "Storyless tasks",
+            "ROW_ISSUES_TITLE": "Sprint Issues"
         },
         "CHARTS": {
             "XAXIS_LABEL": "Days",
@@ -1356,6 +1430,20 @@
             "OPTIMAL": "Optimal pending points for day {{formattedDate}} should be {{roundedValue}}",
             "REAL": "Real pending points for day {{formattedDate}} is {{roundedValue}}",
             "DATE": "DD MMMM YYYY"
+        },
+        "MOVE_TO_SPRINT": {
+          "TITLE_ACTION_MOVE_UNFINISHED": "Move unfinished items to another sprint",
+          "TITLE_MOVE_UNFINISHED": "Move unfinished items to another open sprint",
+          "MOVE_TO_OPEN_SPRINT": "Move to open sprint",
+          "NO_OPEN_SPRINTS": "There are no other open sprints. Please create one first.",
+          "SELECT_DESTINATION_PLACEHOLDER": "Select destination",
+          "UNFINISHED_USER_STORIES_COUNT": "{total, plural, one{<strong>#</strong> unfinished user story} other{<strong>#</strong> unfinished user stories}}",
+          "UNFINISHED_STORYLESS_TASKS_COUNT": "{total, plural, one{<strong>#</strong> unfinished storyless task} other{<strong>#</strong> unfinished storyless tasks}}",
+          "UNFINISHED_ISSUES_COUNT": "{total, plural, one{<strong>#</strong> unfinished issue} other{<strong>#</strong> unfinished issue}}",
+          "WARNING_ISSUES_NOT_MOVED_TITLE": "You just moved all user stories and taks, and the sprint'll be closed",
+          "WARNING_ISSUES_NOT_MOVED": "The issues'll remain in the sprint and don't be removed",
+          "WARNING_SPRINT_STILL_OPEN_TITLE": "{total, plural, one{You just moved # item!} other{You just moved # items!}}",
+          "WARNING_SPRINT_STILL_OPEN": "Please note that the sprint {{sprintName}} <strong>will remain open</strong> as long as it contains unfinished items."
         }
     },
     "TASK": {
@@ -1404,20 +1492,29 @@
         "PAGE_DESCRIPTION": "The issues list panel of the project {{projectName}}: {{projectDescription}}",
         "SECTION_NAME": "Issue",
         "ACTION_NEW_ISSUE": "+ NEW ISSUE",
-        "ACTION_PROMOTE_TO_US": "Promote to User Story",
-        "PROMOTED": "This issue has been promoted to US:",
+        "ACTION_ATTACH_SPRINT": "Attach issue to Sprint",
+        "ACTION_DETACH_SPRINT": "Detach issue from Sprint",
         "EXTERNAL_REFERENCE": "This issue has been created from",
         "GO_TO_EXTERNAL_REFERENCE": "Go to origin",
         "ACTION_DELETE": "Delete issue",
         "LIGHTBOX_TITLE_BLOKING_ISSUE": "Blocking issue",
+        "LINK_TASKBOARD": "Taskboard",
+        "TITLE_LINK_TASKBOARD": "Go to the taskboard",
+        "FILTER_SPRINTS": "Filter Sprints",
+        "CHOOSE_SPRINT": "Which Sprint?",
         "FIELDS": {
             "PRIORITY": "Priority",
             "SEVERITY": "Severity",
             "TYPE": "Type"
         },
-        "CONFIRM_PROMOTE": {
-            "TITLE": "Promote this issue to a new user story",
-            "MESSAGE": "Are you sure you want to create a new US from this Issue?"
+        "FILTER_ISSUES": "Filter Issues",
+        "CONFIRM_DETACH_FROM_SPRINT": {
+            "TITLE": "Detach issue from Sprint",
+            "MESSAGE": "You are about to detach the issue from the sprint <strong>{{ sprintName }}<strong>"
+        },
+        "CONFIRM_CHANGE_FROM_SPRINT": {
+            "TITLE": "Attach issue to Sprint",
+            "MESSAGE": "<strong>This issue is currently attached to sprint {{ oldSprintName }}</strong>. You are about to detach it from that sprint and attach it instead to sprint <strong>{{ newSprintName }}.</strong>"
         },
         "TABLE": {
             "COLUMNS": {
@@ -1427,7 +1524,7 @@
                 "SUBJECT": "Subject",
                 "VOTES": "Votes",
                 "STATUS": "Status",
-                "CREATED": "Created",
+                "MODIFIED": "Modified",
                 "ASSIGNED_TO": "Assigned to"
             },
             "TITLE_ACTION_CHANGE_STATUS": "Change status",
@@ -1496,10 +1593,10 @@
         "AVATAR_MAX_SIZE": "[Max. size: {{maxFileSize}}]",
         "MENU": {
             "SECTION_TITLE": "User Settings",
-            "USER_PROFILE": "User profile",
             "CHANGE_PASSWORD": "Change password",
             "EMAIL_NOTIFICATIONS": "Email notifications",
-            "DESKTOP_NOTIFICATIONS": "Desktop notifications"
+            "DESKTOP_NOTIFICATIONS": "Desktop notifications",
+            "EVENTS": "Events"
         },
         "NOTIFICATIONS": {
             "LIVE_SECTION_NAME": "Desktop Notifications",
@@ -1511,6 +1608,20 @@
             "OPTION_ALL": "All",
             "OPTION_INVOLVED": "Involved",
             "OPTION_NONE": "None"
+        },
+        "PROJECT_SETTINGS": {
+            "SET_START_PAGES": "Set start pages",
+            "START_PAGES_PER_PROJECT": "Set start pages per project",
+            "COLUMN_PROJECT": "Project",
+            "COLUMN_STARTPAGE": "Start page",
+            "DEFAULT_VALUE": "Default"
+        },
+        "EVENTS": {
+            "SECTION_NAME": "Events",
+            "SECTION_DESCRIPTION": "Important events in Taiga header",
+            "SECTION_DESCRIPTION_EXPANDED": "(direct mentions, updates in items that you are watching...)",
+            "COLUMN_ENABLED": "Enabled",
+            "COLUMN_PROJECT": "Project"
         }
     },
     "USER_PROFILE": {
@@ -1608,7 +1719,26 @@
         "US_REMOVED_FROM_MILESTONE": "{{username}} has added the US {{obj_name}} to the backlog",
         "BLOCKED": "{{username}} has blocked {{obj_name}}",
         "UNBLOCKED": "{{username}} has unblocked {{obj_name}}",
-        "NEW_USER": "{{username}} has joined Taiga"
+        "NEW_USER": "{{username}} has joined Taiga",
+        "ITEM_TYPES": {
+            "USERSTORY": "User Story",
+            "ISSUE": "Issue",
+            "TASK": "Task"
+        }
+    },
+    "EVENTS": {
+        "TITLE": "Events",
+        "MY_EVENTS": "My events",
+        "DISMISS_ALL": "Dismiss all",
+        "VIEW_ALL": "View all",
+        "NO_NEW_EVENTS": "No new events",
+        "NO_EVENTS_YET": "There are no events yet",
+        "ASSIGNED_YOU": "{{username}} assigned you to {{obj_name}}",
+        "ADDED_YOU_AS_WATCHER": "{{username}} added you as watcher on {{obj_name}}",
+        "ADDED_YOU_AS_MEMBER": "{{username}} added you as member",
+        "MENTIONED_YOU": "{{username}} mentioned you on {{obj_name}}",
+        "MENTIONED_YOU_IN_COMMENT": "{{username}} mentioned you in a comment on {{obj_name}}",
+        "COMMENTED": "{{username}} has commented on {{obj_name}}"
     },
     "LEGAL": {
         "TERMS_OF_SERVICE_AND_PRIVACY_POLICY_AD": "<span>When creating a new account, you agree to our </span><a href=\"{{ termsOfServiceUrl }}\" title=\"See terms of service\" target=\"_blank\">terms of service</a><span> and </span><a href=\"{{ privacyPolicyUrl }}\" title=\"See privacy policy\" target=\"_blank\">privacy policy</a>.",

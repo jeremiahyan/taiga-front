@@ -28,7 +28,7 @@ div.wrapper(tg-backlog, ng-controller="BacklogController as ctrl",
                 tg-svg(svg-icon="icon-graph")
                 div.empty-text
                     p.title(translate="BACKLOG.CUSTOMIZE_GRAPH")
-                    p {{'BACKLOG.CUSTOMIZE_GRAPH_TEXT' | translate}} #[a(href="", tg-nav="project-admin-project-profile-modules:project=project.slug", title="{{'BACKLOG.CUSTOMIZE_GRAPH_TITLE' | translate}}") {{'BACKLOG.CUSTOMIZE_GRAPH_ADMIN' | translate}}]
+                    p {{'BACKLOG.CUSTOMIZE_GRAPH_TEXT' | translate}} #[a(href="", tg-nav="project-admin-project-values-points:project=project.slug", title="{{'BACKLOG.CUSTOMIZE_GRAPH_TITLE' | translate}}") {{'BACKLOG.CUSTOMIZE_GRAPH_ADMIN' | translate}}]
 
             div.graphics-container.js-burndown-graph
                 div.burndown(tg-burndown-backlog-graph)
@@ -123,8 +123,7 @@ div.wrapper(tg-backlog, ng-controller="BacklogController as ctrl",
     sidebar.menu-secondary.sidebar
         include ../includes/modules/sprints
 
-    div.lightbox.lightbox-generic-form.lb-create-edit-userstory(tg-lb-create-edit-userstory)
-        include ../includes/modules/lightbox-us-create-edit
+    div.lightbox.lightbox-generic-form.lightbox-create-edit(tg-lb-create-edit)
 
     div.lightbox.lightbox-generic-bulk(tg-lb-create-bulk-userstories)
         include ../includes/modules/lightbox-us-bulk

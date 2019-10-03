@@ -21,11 +21,6 @@ div.wrapper(
 
         section.us-story-main-data
             header
-                tg-vote-button.upvote-btn(
-                    item="us"
-                    on-upvote="ctrl.onUpvote"
-                    on-downvote="ctrl.onDownvote"
-                )
                 tg-detail-header.detail-header-container(
                     item="us"
                     project="project"
@@ -93,29 +88,34 @@ div.wrapper(
                 gig-id="us.tribe_gig.id"
             )
 
-        tg-us-estimation.ticket-estimation(ng-model="us")
+        section.ticket-section.ticket-estimation(
+            tg-us-estimation
+            ng-model="us"
+        )
 
-        section.ticket-assigned-users(
+        section.ticket-section.ticket-assigned-users(
             tg-assigned-users
             ng-model="us"
             required-perm="modify_us"
         )
 
-        section.ticket-watch-buttons
-            div.ticket-watch(
-                tg-watch-button
-                item="us"
-                data-environment="ticket"
-                on-watch="ctrl.onWatch"
-                on-unwatch="ctrl.onUnwatch"
-            )
-            div.ticket-watchers(
-                tg-watchers
-                ng-model="us"
-                required-perm="modify_us"
-            )
+        section.ticket-section.ticket-watchers(
+            tg-watchers
+            item="us"
+            active-users="activeUsers"
+            on-watch="ctrl.onWatch"
+            on-unwatch="ctrl.onUnwatch"
+            required-perm="modify_us"
+        )
 
-        section.ticket-to-tribe(ng-if="tribeEnabled && !us.tribe_gig")
+        section.ticket-section.upvote-btn(
+            tg-vote-button
+            item="us"
+            on-upvote="ctrl.onUpvote"
+            on-downvote="ctrl.onDownvote"
+        )
+
+        section.ticket-section.ticket-to-tribe(ng-if="tribeEnabled && !us.tribe_gig")
             tg-tribe-button(
                 us-id="us.id"
                 project-slug="project.slug"
@@ -126,14 +126,14 @@ div.wrapper(
                 ng-click="ctrl.onTribeInfo()"
             ) {{'US.TRIBE.PUBLISH_INFO' | translate}}
 
-        section.ticket-detail-settings
+        section.ticket-section.ticket-detail-settings
             tg-due-date(
-                tg-check-permission="modify_us"
                 due-date="us.due_date"
-                due-date-status="us.due_date_status"
+                format="button"
                 is-closed="us.is_closed"
                 item="us"
-                format="button"
+                obj-type="us"
+                tg-check-permission="modify_us"
             )
             tg-us-team-requirement-button(ng-model="us")
             tg-us-client-requirement-button(ng-model="us")
@@ -153,6 +153,4 @@ div.wrapper(
         title="{{ 'US.LIGHTBOX_TITLE_BLOKING_US' | translate }}"
         ng-model="us"
     )
-    div.lightbox.lightbox-select-user(tg-lb-assignedto)
-    div.lightbox.lightbox-select-user(tg-lb-assigned-users)
-    div.lightbox.lightbox-select-user(tg-lb-watchers)
+    div.lightbox.lightbox-relate-to-epic(tg-lb-relatetoepic)

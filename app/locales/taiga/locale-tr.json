@@ -3,6 +3,7 @@
         "YES": "Evet",
         "NO": "Hayır",
         "OR": "veya",
+        "I_GET_IT": "Tamam, Anlaşıldı.",
         "LOADING": "Yükleniyor...",
         "DATE": "DD MM YYYY",
         "DATETIME": "DD MM YYYY HH:mm",
@@ -13,7 +14,9 @@
         "UNLINK": "Bağlantıyı Kopar",
         "CREATE": "Oluştur",
         "ADD": "Ekle",
-        "COPY_TO_CLIPBOARD": "Panoya kopyala: Ctrl+C",
+        "BACK": "Arka",
+        "COPY_TO_CLIPBOARD": "Kopyala",
+        "COPIED_TO_CLIPBOARD": "Yazı belleğe kopyalandı.",
         "EDIT": "Düzenle",
         "DRAG": "Sürükle",
         "TAG_LINE": "Çevik, ücretsiz ve açık kaynak proje yönetim aracınız",
@@ -31,7 +34,7 @@
         "PLUGINS": "Eklentiler",
         "ONE_ITEM_LINE": "Her satıra bir kalem...",
         "NEW_BULK": "Yeni toplu ekleme",
-        "RELATED_TASKS": "İlişkili görevler",
+        "SUBTASKS": "Alt Görev",
         "PREVIOUS": "Önceki",
         "NEXT": "İleri",
         "LOGOUT": "Çıkış",
@@ -48,7 +51,9 @@
         "CARD": {
             "ASSIGN_TO": "Atanmış",
             "EDIT": "Kartı düzenle",
-            "DELETE": "Delete card"
+            "DELETE": "Delete card",
+            "DELETE_ISSUE": "Sorun sil",
+            "DETACH_ISSUE_FROM_SPRINT": "Detach issue from sprint"
         },
         "FORM_ERRORS": {
             "DEFAULT_MESSAGE": "Bu değer geçersiz gözüküyor",
@@ -79,7 +84,6 @@
         },
         "PICKERDATE": {
             "FORMAT": "DD MM YYYY",
-            "IS_RTL": "yanlış",
             "FIRST_DAY_OF_WEEK": "1",
             "PREV_MONTH": "Önceki Ay",
             "NEXT_MONTH": "Gelecek Ay",
@@ -143,6 +147,7 @@
             "TYPE": "Tip ",
             "SEVERITY": "Önem Derecesi",
             "PRIORITY": "Öncelik",
+            "ASSIGNED": "Aranmış",
             "ASSIGNED_TO": "Atanmış",
             "ASSIGNED_USERS": "Assigned users",
             "POINTS": "Puanlar",
@@ -167,10 +172,7 @@
             "SELF": "Bana ata"
         },
         "DUE_DATE": {
-            "TITLE_ACTION_SET_DUE_DATE": "Set due date",
-            "DUE_SOON": "due soon",
-            "PAST_DUE": "past due date",
-            "NO_LONGER_APPLICABLE": "no longer applicable"
+            "TITLE_ACTION_SET_DUE_DATE": "Set due date"
         },
         "ASSIGNED_USERS": {
             "ADD": "Select assigned user",
@@ -200,6 +202,19 @@
             "BUTTON_TITLE": "Bu konuya oy/karşı oy ver",
             "COUNTER_TITLE": "{total, plural, one{bir oy} other{# oy}}"
         },
+        "PROMOTE_TO_US": "Kullanıcı Hikayesine Terfi Ettir",
+        "PROMOTED_ISSUES": "This Issue has been promoted to US:",
+        "PROMOTED_TASKS": "This Task has been promoted to US:",
+        "CONFIRM_PROMOTE": {
+            "ISSUE": {
+                "TITLE": "Promote this Issue to a new user story",
+                "MESSAGE": "Bu sorundan yeni bir hikaye oluşturmak istediğinize emin misiniz?"
+            },
+            "TASK": {
+                "TITLE": "Promote this Task to a new user story",
+                "MESSAGE": "Are you sure you want to create a new US from this Task?"
+            }
+        },
         "CUSTOM_ATTRIBUTES": {
             "CUSTOM_FIELDS": "Özel Alanlar",
             "SAVE": "Özel Alan Kaydet",
@@ -215,6 +230,11 @@
             "ACTION_SAVE_CUSTOM_FILTER": "özel filtre olarak kaydet",
             "PLACEHOLDER_FILTER_NAME": "Filtre adı yazın ve enter a basın",
             "APPLIED_FILTERS_NUM": "filtre uygulandı",
+            "TITLE_ADVANCED_FILTER": "Advanced",
+            "ADVANCED_FILTERS": {
+                "INCLUDE": "Include",
+                "EXCLUDE": "Exclude"
+            },
             "CATEGORIES": {
                 "TYPE": "Tip",
                 "STATUS": "Durum ",
@@ -377,7 +397,12 @@
         "EMPTY_PROJECT_LIST": "Henüz bir projeniz yok",
         "WORKING_ON_SECTION": "Üzerinde çalışılıyor",
         "WATCHING_SECTION": "İzleniyor",
-        "DASHBOARD": "Proje Panosu"
+        "DASHBOARD": "Proje Panosu",
+        "SET_HIDDEN": "Set as hidden",
+        "SET_VISIBLE": "Set as visible",
+        "NO_HIDDEN_ITEMS": "You have no hidden items",
+        "HIDE_HIDDEN": "Do not show hidden objects",
+        "SHOW_HIDDEN": "Show hidden objects"
     },
     "EPICS": {
         "TITLE": "DESTANLAR",
@@ -402,6 +427,8 @@
             "ASSIGNED_TO": "Aranmış",
             "STATUS": "Durum ",
             "PROGRESS": "İlerleme",
+            "CLOSED_US": "Closed user stories",
+            "CLOSED_EPICS": "Closed epics",
             "VIEW_OPTIONS": "Seçenekleri gör"
         },
         "CREATE": {
@@ -460,7 +487,8 @@
             "PAGE_TITLE": "Üyelikler - {{projectName}}",
             "ADD_BUTTON": "+ Yeni üye",
             "ADD_BUTTON_TITLE": "Yeni üye ekle",
-            "LIMIT_USERS_WARNING_MESSAGE_FOR_ADMIN": "Maalesef bu proje sınır olan <strong>({{members}})</strong> kullanıcı sayısına erişti.",
+            "UPGRADE_BUTTON": "Planınızı Yükseltin",
+            "LIMIT_USERS_WARNING_MESSAGE_FOR_ADMIN": "If you would like to <strong>add more members</strong>, please contact the project owner <a href='mailto:{{ owner_email }}' title='{{ owner_email }}'>{{ owner_email }}</a>",
             "LIMIT_USERS_WARNING_MESSAGE_FOR_OWNER": "This project has reached its limit of <strong>({{members}})</strong> allowed members. If you would like to increase that limit please contact the administrator."
         },
         "PROJECT_EXPORT": {
@@ -497,7 +525,7 @@
             "SELECT_VIDEOCONFERENCE": "Bir video konferans sistemi seç",
             "SALT_CHAT_ROOM": "Add a prefix to the chatroom name",
             "JITSI_CHAT_ROOM": "Jitsi",
-            "APPEARIN_CHAT_ROOM": "AppearIn",
+            "WHEREBYCOM_CHAT_ROOM": "Whereby.com",
             "TALKY_CHAT_ROOM": "Talky",
             "CUSTOM_CHAT_ROOM": "Özel",
             "URL_CHAT_ROOM": "Sohbet odanızın linki"
@@ -538,7 +566,9 @@
             "DESCRIPTION": "Kendi raporlarınızı oluşturmak için CSV dosyası olarak indirin veya oluşturulan URL'yi kopyalayıp istediğiniz metin editörü veya hesap tablosu programında açın. Bu sayede tüm verilerinizi kolayca görüp inceleyebileceksiniz.",
             "HELP": "Bunu elektronik çizelgemde nasıl kullanayım?",
             "REGENERATE_TITLE": "URL değiştir",
-            "REGENERATE_SUBTITLE": "CSV veri erişim linkini değiştireceksiniz. Önceki link kapatılacak. Emin misiniz?"
+            "REGENERATE_SUBTITLE": "You are going to change the CSV data access url. The previous url will be disabled. Are you sure?",
+            "DELETE_TITLE": "Url'yi sil",
+            "DELETE_SUBTITLE": "You are going to delete the current CSV data access url. Are you sure?"
         },
         "CSV": {
             "SECTION_TITLE_EPIC": "destan raporları",
@@ -549,7 +579,9 @@
             "URL_FIELD_PLACEHOLDER": "Lütfen CSV url'ini yeniden oluşturun",
             "TITLE_REGENERATE_URL": "CSV url ini yeniden oluştur",
             "ACTION_GENERATE_URL": "URL oluştur",
-            "ACTION_REGENERATE": "Yeniden oluştur"
+            "ACTION_REGENERATE": "Yeniden oluştur",
+            "TITLE_DELETE_URL": "Delete CSV url",
+            "ACTION_DELETE_URL": "Sil"
         },
         "CUSTOM_FIELDS": {
             "TITLE": "Özel Alanlar",
@@ -566,7 +598,10 @@
             "FIELD_TYPE_RICHTEXT": "Zengin metin",
             "FIELD_TYPE_MULTI": "Çoklu-satır",
             "FIELD_TYPE_DATE": "Tarih",
-            "FIELD_TYPE_URL": "Url"
+            "FIELD_TYPE_URL": "Url",
+            "FIELD_TYPE_DROPDOWN": "Dropdown",
+            "FIELD_TYPE_CHECKBOX": "Checkbox",
+            "FIELD_TYPE_NUMBER": "Number"
         },
         "PROJECT_VALUES": {
             "PAGE_TITLE": "{{sectionName}} - Proje değerleri- {{projectName}}",
@@ -615,6 +650,18 @@
             "MIXING_HELP_TEXT": "Birleştirmek istediğiniz etiketleri seçiniz",
             "MIXING_MERGE": "Etiketleri Birleştir",
             "SELECTED": "Selected"
+        },
+        "PROJECT_DUE_DATE_STATUS": {
+            "TITLE": "Due Dates",
+            "SUBTITLE": "Specify the due dates your user stories, tasks and issues will go through if selected",
+            "US_TITLE": "User Story Due Date status",
+            "ACTION_ADD_STATUS": "Yeni durum ekle",
+            "TASK_TITLE": "Task Due Date status",
+            "ISSUE_TITLE": "Issue Due Date status",
+            "DAYS_TO_DUE_DATE": "Days to due date",
+            "BEFORE_AFTER": "Before/after",
+            "BEFORE": "Before",
+            "AFTER": "Past"
         },
         "ROLES": {
             "PAGE_TITLE": "Roller  - {{projectName}}",
@@ -716,7 +763,8 @@
             "LABEL_SEVERITY": "Önem derecesi seçicisi için varsayılan değer"
         },
         "STATUS": {
-            "PLACEHOLDER_WRITE_STATUS_NAME": "Yeni durum için bir isim yaz"
+            "PLACEHOLDER_WRITE_STATUS_NAME": "Yeni durum için bir isim yaz",
+            "PLACEHOLDER_DAYS_TO_DUE_DATE": "Write a number of days to due date"
         },
         "TYPES": {
             "PLACEHOLDER_WRITE_NAME": "Yeni nesne için bir isim yazın"
@@ -736,13 +784,14 @@
             "INTEGRATIONS": "Bütünleştirmeler"
         },
         "SUBMENU_PROJECT_VALUES": {
-            "STATUS": "Durum",
+            "STATUS": "Durumlar",
             "POINTS": "Puanlar",
             "PRIORITIES": "Öncelikler",
             "SEVERITIES": "Önem Dereceleri",
             "TYPES": "Tipler",
             "CUSTOM_FIELDS": "Özel alanlar",
-            "TAGS": "Etiketler "
+            "TAGS": "Etiketler ",
+            "DUE_DATES": "Due dates"
         },
         "SUBMENU_ROLES": {
             "TITLE": "Roller",
@@ -769,7 +818,7 @@
     "USER": {
         "PROFILE": {
             "PAGE_TITLE": "{{userFullName}} (@{{userUsername}})",
-            "EDIT": "Profili Düzenle",
+            "USER_SETTINGS": "Kullanıcı Ayarları",
             "CLOSED_US": "Kapatılmış KH",
             "PROJECTS": "Projeler",
             "PROJECTS_EMPTY": "{{username}} kullanıcısının henüz bir projesi yok",
@@ -830,6 +879,7 @@
         "SECTION": {
             "SEARCH": "Ara",
             "TIMELINE": "Zaman Çizelgesi",
+            "EPICS": "Destanlar",
             "BACKLOG": "Havuz",
             "KANBAN": "Kanban",
             "ISSUES": "Sorunlar",
@@ -851,8 +901,8 @@
             "NOTIFICATIONS": "Bildirimler",
             "VIEW_PROFILE_TITLE": "Profili Görüntüle",
             "VIEW_PROFILE": "Profili Görüntüle",
-            "EDIT_PROFILE_TITLE": "Profilini düzenle",
-            "EDIT_PROFILE": "Profil Düzenle",
+            "USER_SETTINGS_TITLE": "Ayarlarınızı düzenleyin",
+            "USER_SETTINGS": "Kullanıcı Ayarları",
             "CHANGE_PASSWORD_TITLE": "Parolayı değiştir",
             "CHANGE_PASSWORD": "Parolayı değiştir",
             "DASHBOARD_TITLE": "Pano",
@@ -1045,6 +1095,11 @@
             "SELECT": "Atananı seç",
             "SEARCH": "Kullanıcıları ara"
         },
+        "SELECT_USER": {
+            "SEARCH": "Kullanıcıları ara",
+            "REMOVE": "Remove user",
+            "ROLE": "Rol"
+        },
         "ADD_MEMBER": {
             "TITLE": "Yeni üye",
             "PLACEHOLDER": "Kullanıcıları süzün ya da davet etmek için e-posta yazın",
@@ -1054,9 +1109,6 @@
             "CHOOSE_ROLE": "Rol seçiniz",
             "PLACEHOLDER_INVITATION_TEXT": "(Opsiyonel) Davetinize kişiselleştirilmiş bir metin ekleyin. Yeni üyelerinize tatlı bir şeyler söyleyin ;-)",
             "HELP_TEXT": "Eğer kullanıcılar önceden Taigaya kayıt olmuşlarsa, otomatik olarak ekleneceklerdir. Eğer olmamışlarsa bir davet mektubu alacaklardır."
-        },
-        "CREATE_ISSUE": {
-            "TITLE": "Sorun Ekle"
         },
         "FEEDBACK": {
             "TITLE": "Bize birşeyler anlat..",
@@ -1076,21 +1128,22 @@
             "TITLE_ACTION_DELETE_SPRINT": "koşuyu sil",
             "LAST_SPRINT_NAME": "Son koşu <strong> {{lastSprint}} </strong> ;-)"
         },
-        "CREATE_EDIT_TASK": {
-            "TITLE": "Yeni görev",
-            "PLACEHOLDER_SUBJECT": "Bir görev konusu",
-            "PLACEHOLDER_STATUS": "Görev durumu",
-            "OPTION_UNASSIGNED": "Atama Yok",
-            "PLACEHOLDER_SHORT_DESCRIPTION": "Kısa bir tanım yaz",
-            "ACTION_EDIT": "Görevi düzenle",
-            "CONFIRM_CLOSE": "You have not saved changes.\nAre you sure you want to close the form?"
-        },
-        "CREATE_EDIT_US": {
-            "TITLE": "Yeni KH",
-            "PLACEHOLDER_DESCRIPTION": "Lütfen bu KH ye betimleyici bilgiler girerek diğerlerinin daha iyi anlamasına yardımcı olunuz.",
-            "NEW_US": "Yeni kullanıcı hikayesi",
-            "EDIT_US": "Kullanıcı hikayesini düzenle",
-            "CONFIRM_CLOSE": "You have not saved changes.\nAre you sure you want to close the form?"
+        "CREATE_EDIT": {
+            "TASK_PLACEHOLDER_DESCRIPTION": "Please add descriptive text to help others better understand this Task",
+            "ISSUE_PLACEHOLDER_DESCRIPTION": "Please add descriptive text to help others better understand this Issue",
+            "US_PLACEHOLDER_DESCRIPTION": "Please add descriptive text to help others better understand this User Story",
+            "NEW_TASK": "Yeni Görev",
+            "NEW_ISSUE": "New Issue",
+            "NEW_US": "New User Story",
+            "EDIT_TASK": "Görevi Düzenle",
+            "EDIT_ISSUE": "Edit Issue",
+            "EDIT_US": "Edit User Story",
+            "ADD_EXISTING_ISSUE": "Add Issue to {{ targetName }}",
+            "CONFIRM_CLOSE": "You have not saved changes.\nAre you sure you want to close the form?",
+            "EXISTING_ISSUE": "Existing Issue",
+            "CHOOSE_EXISTING_ISSUE": "Which Issue?",
+            "ADD_ISSUE": "Sorun Ekle",
+            "FILTER_ISSUES": "Filter Issues"
         },
         "DELETE_DUE_DATE": {
             "TITLE": "Delete due date",
@@ -1098,6 +1151,10 @@
         },
         "DELETE_SPRINT": {
             "TITLE": "Koşuyu sil"
+        },
+        "REMOVE_RELATIONSHIP_WITH_EPIC": {
+            "TITLE": "Remove relationship with Epic",
+            "MESSAGE": "Are you sure you want to remove the relationship of this User Story with the Epic <strong>{{epicSubject}}</strong>?"
         },
         "CREATE_MEMBER": {
             "PLACEHOLDER_INVITATION_TEXT": "(Opsiyonel) Davetinize kişiselleştirilmiş bir metin ekleyin. Yeni üyelerinize tatlı bir şeyler söyleyin ;-)",
@@ -1139,23 +1196,36 @@
                 "IN_THREE_MONTHS": "In three months"
             },
             "TITLE_ACTION_DELETE_DUE_DATE": "Delete due date"
+        },
+        "ADMIN_DUE_DATES": {
+            "TITLE_ACTION_DELETE_DUE_DATE": "Delete due date",
+            "SUBTITLE_ACTION_DELETE_DUE_DATE": "Are you sure you want to delete the due date status {{due_date_status_name}}?"
+        },
+        "RELATE_TO_EPIC": {
+            "TITLE": "Link to Epic",
+            "EXISTING_EPIC": "Existing epic",
+            "NEW_EPIC": "New epic",
+            "CHOOSE_PROJECT_FOR_CREATION": "Proje nedir?",
+            "CHOOSE_PROJECT_FROM": "Proje nedir?",
+            "SUBJECT": "Konu",
+            "CHOOSE_EPIC": "What's the epic?",
+            "FILTER_EPICS": "Filter epics",
+            "NO_EPICS_FOUND": "Arama kriterlerinize uyan bir kayıt bulunamadı"
         }
     },
     "EPIC": {
         "PAGE_TITLE": "{{epicSubject}} - Destan {{epicRef}} - {{projectName}}",
         "PAGE_DESCRIPTION": "Durum: {{epicStatus }}. Açıklama: {{epicDescription}}",
         "SECTION_NAME": "Destan",
-        "TITLE_LIGHTBOX_UNLINK_RELATED_USERSTORY": "İlgili kullanıcı hikayesinin ilişkisini kaldırın",
-        "MSG_LIGHTBOX_UNLINK_RELATED_USERSTORY": "It will delete the link to the related userstory '{{subject}}'",
         "ERROR_UNLINK_RELATED_USERSTORY": "Bağlantıyı koparamıyoruz: {{errorMessage}}",
         "CREATE_RELATED_USERSTORIES": "İlişki yarat: ",
         "NEW_USERSTORY": "Yeni kullanıcı hikayesi",
         "EXISTING_USERSTORY": "Var olan kullanıcı hikayesi",
-        "CHOOSE_PROJECT_FOR_CREATION": "Proje nedir?",
+        "CHOOSE_PROJECT_FOR_CREATION": "Hangi proje?",
         "SUBJECT": "Konu",
         "SUBJECT_BULK_MODE": "Konu (toplu giriş)",
-        "CHOOSE_PROJECT_FROM": "Proje nedir?",
-        "CHOOSE_USERSTORY": "Kullanıcı hikayesi nedir?",
+        "CHOOSE_PROJECT_FROM": "Hangi proje?",
+        "CHOOSE_USERSTORY": "Which user story?",
         "NO_USERSTORIES": "Bu projenin henüz Kullanıcı Hikayesi yok. Lütfen başka proje seçiniz.",
         "NO_USERSTORIES_FOUND": "Arama kriterlerinize uyan bir kayıt bulunamadı",
         "FILTER_USERSTORIES": "Filter user stories",
@@ -1171,12 +1241,16 @@
         "TOTAL_POINTS": "toplam puanlar",
         "ADD": "+ Yeni bir Kullanıcı Hikayesi ekle",
         "ADD_BULK": "Toplu halde yeni Kullanıcı Hikayeleri ekle",
-        "PROMOTED": "Bu hikayenin temelindeki sorun:",
+        "PROMOTED_FROM_ISSUE": "Bu hikayenin temelindeki sorun:",
+        "PROMOTED_FROM_TASK": "This US has been promoted from Task:",
         "TITLE_LINK_GO_TO_ISSUE": "Talebe git",
+        "TITLE_LINK_GO_TO_TASK": "Go to task",
         "TITLE_DELETE_ACTION": "Kullanıcı Hikayesi Sil",
         "LIGHTBOX_TITLE_BLOKING_US": "Bizi engelleyen",
         "NOT_ESTIMATED": "Kestirim yapılmamış",
         "OWNER_US": "This User Story belongs to",
+        "RELATE_TO_EPIC": "Link to Epic",
+        "REMOVE_RELATIONSHIP_WITH_EPIC": "Remove Epic relationship",
         "TRIBE": {
             "PUBLISH": "Taiga Tribe'da Gig olarak yayınla",
             "PUBLISH_INFO": "Daha fazla bilgi",
@@ -1187,10 +1261,6 @@
             "SYNCHRONIZE_LINK": "synchronize with Taiga Tribe",
             "PUBLISH_MORE_INFO_TITLE": "Do you need somebody for this task?",
             "PUBLISH_MORE_INFO_TEXT": "<p>If you need help with a particular piece of work you can easily create gigs on<a href='http://taigatribe.com' title='Taiga Tribe'> Taiga Tribe </a> and receive help from all over the world. You will be able to control and manage the gig enjoying a great community eager to contribute.</p><p><a href='http://taigatribe.com' title='Taiga Tribe'> TaigaTribe </a>  was born as a Taiga sibling. Both platforms can live separately but we believe that there is much power in using them combined so we are making sure the integration works like a charm.</p>"
-        },
-        "FIELDS": {
-            "TEAM_REQUIREMENT": "Takım Gereksinimi",
-            "CLIENT_REQUIREMENT": "İstemci Gereksinimi"
         }
     },
     "COMMENTS": {
@@ -1339,6 +1409,8 @@
         "SECTION_NAME": "Görev Panosu",
         "TITLE_ACTION_ADD": "Yeni bir Görev ekle",
         "TITLE_ACTION_ADD_BULK": "Toplu halde yeni bir kaç görev ekle",
+        "TITLE_ACTION_ADD_ISSUE": "Add a new Issue",
+        "TITLE_ACTION_ADD_ISSUE_BULK": "Add some new Issues in bulk",
         "TITLE_ACTION_ASSIGN": "Görev ata",
         "PLACEHOLDER_CARD_TITLE": "Bu bir görev olabilir",
         "PLACEHOLDER_CARD_TEXT": "Hikayeleri ve görevleri birbirinden ayırın ve öyle izleyin",
@@ -1349,7 +1421,8 @@
             "TITLE_ACTION_FOLD_ROW": "Satın Katla",
             "TITLE_ACTION_UNFOLD_ROW": "Satır katını aç",
             "FIELD_POINTS": "puanlar",
-            "ROW_UNASSIGED_TASKS_TITLE": "Atanmamış görevler"
+            "ROW_STORYLESS_TASKS_TITLE": "Storyless tasks",
+            "ROW_ISSUES_TITLE": "Sprint Issues"
         },
         "CHARTS": {
             "XAXIS_LABEL": "Günler",
@@ -1357,6 +1430,20 @@
             "OPTIMAL": "{{formattedDate}} günü için ideal kalan puan {{roundedValue}} olmalı",
             "REAL": "{{formattedDate}} günü gerçekten kalan puan {{roundedValue}}",
             "DATE": "DD MMMM YYYY"
+        },
+        "MOVE_TO_SPRINT": {
+            "TITLE_ACTION_MOVE_UNFINISHED": "Move unfinished items to another sprint",
+            "TITLE_MOVE_UNFINISHED": "Move unfinished items to another open sprint",
+            "MOVE_TO_OPEN_SPRINT": "Move to open sprint",
+            "NO_OPEN_SPRINTS": "There are no other open sprints. Please create one first.",
+            "SELECT_DESTINATION_PLACEHOLDER": "Select destination",
+            "UNFINISHED_USER_STORIES_COUNT": "{total, plural, one{<strong>#</strong> unfinished user story} other{<strong>#</strong> unfinished user stories}}",
+            "UNFINISHED_STORYLESS_TASKS_COUNT": "{total, plural, one{<strong>#</strong> unfinished storyless task} other{<strong>#</strong> unfinished storyless tasks}}",
+            "UNFINISHED_ISSUES_COUNT": "{total, plural, one{<strong>#</strong> unfinished issue} other{<strong>#</strong> unfinished issue}}",
+            "WARNING_ISSUES_NOT_MOVED_TITLE": "You just moved all user stories and taks, and the sprint'll be closed",
+            "WARNING_ISSUES_NOT_MOVED": "The issues'll remain in the sprint and don't be removed",
+            "WARNING_SPRINT_STILL_OPEN_TITLE": "{total, plural, one{You just moved # item!} other{You just moved # items!}}",
+            "WARNING_SPRINT_STILL_OPEN": "Please note that the sprint {{sprintName}} <strong>will remain open</strong> as long as it contains unfinished items."
         }
     },
     "TASK": {
@@ -1405,20 +1492,29 @@
         "PAGE_DESCRIPTION": "{{projectName}} projesinin sorun listesi paneli: {{projectDescription}}",
         "SECTION_NAME": "Sorun",
         "ACTION_NEW_ISSUE": "+ YENİ SORUN",
-        "ACTION_PROMOTE_TO_US": "Kullanıcı Hikayesine Terfi Ettir",
-        "PROMOTED": "Bu sorun, kullanıcı hikayesine yükseltildi:",
+        "ACTION_ATTACH_SPRINT": "Attach issue to Sprint",
+        "ACTION_DETACH_SPRINT": "Detach issue from Sprint",
         "EXTERNAL_REFERENCE": "Bu talebin oluşturulduğu ",
         "GO_TO_EXTERNAL_REFERENCE": "Kökenine git",
         "ACTION_DELETE": "Sorun sil",
         "LIGHTBOX_TITLE_BLOKING_ISSUE": "Engelleyen sorun",
+        "LINK_TASKBOARD": "Görev Panosu",
+        "TITLE_LINK_TASKBOARD": "Görev panosuna git",
+        "FILTER_SPRINTS": "Filter Sprints",
+        "CHOOSE_SPRINT": "Which Sprint?",
         "FIELDS": {
             "PRIORITY": "Öncelik",
             "SEVERITY": "Önem Durumu",
             "TYPE": "Tip"
         },
-        "CONFIRM_PROMOTE": {
-            "TITLE": "Bu talebi yeni bir kullanıcı hikayesi olacak şekilde terfi ettirin",
-            "MESSAGE": "Bu sorundan yeni bir hikaye oluşturmak istediğinize emin misiniz?"
+        "FILTER_ISSUES": "Filter Issues",
+        "CONFIRM_DETACH_FROM_SPRINT": {
+            "TITLE": "Detach issue from Sprint",
+            "MESSAGE": "You are about to detach the issue from the sprint <strong>{{ sprintName }}<strong>"
+        },
+        "CONFIRM_CHANGE_FROM_SPRINT": {
+            "TITLE": "Attach issue to Sprint",
+            "MESSAGE": "<strong>This issue is currently attached to sprint {{ oldSprintName }}</strong>. You are about to detach it from that sprint and attach it instead to sprint <strong>{{ newSprintName }}.</strong>"
         },
         "TABLE": {
             "COLUMNS": {
@@ -1428,7 +1524,7 @@
                 "SUBJECT": "Konu",
                 "VOTES": "Oylar",
                 "STATUS": "Durum",
-                "CREATED": "Oluşturuldu",
+                "MODIFIED": "Değiştirilmiş",
                 "ASSIGNED_TO": "Atanmış"
             },
             "TITLE_ACTION_CHANGE_STATUS": "Durumu değiştir",
@@ -1497,10 +1593,10 @@
         "AVATAR_MAX_SIZE": "[Max. boyut: {{maxFileSize}}]",
         "MENU": {
             "SECTION_TITLE": "Kullanıcı Ayarları",
-            "USER_PROFILE": "Kullanıcı profili",
             "CHANGE_PASSWORD": "Parolayı değiştir",
             "EMAIL_NOTIFICATIONS": "E-posta bildirimleri",
-            "DESKTOP_NOTIFICATIONS": "Desktop notifications"
+            "DESKTOP_NOTIFICATIONS": "Desktop notifications",
+            "EVENTS": "Events"
         },
         "NOTIFICATIONS": {
             "LIVE_SECTION_NAME": "Desktop Notifications",
@@ -1512,6 +1608,20 @@
             "OPTION_ALL": "Hepsi",
             "OPTION_INVOLVED": "İlgili",
             "OPTION_NONE": "Hiçbiri"
+        },
+        "PROJECT_SETTINGS": {
+            "SET_START_PAGES": "Set start pages",
+            "START_PAGES_PER_PROJECT": "Set start pages per project",
+            "COLUMN_PROJECT": "Proje",
+            "COLUMN_STARTPAGE": "Start page",
+            "DEFAULT_VALUE": "Default"
+        },
+        "EVENTS": {
+            "SECTION_NAME": "Events",
+            "SECTION_DESCRIPTION": "Important events in Taiga header",
+            "SECTION_DESCRIPTION_EXPANDED": "(direct mentions, updates in items that you are watching...)",
+            "COLUMN_ENABLED": "Enabled",
+            "COLUMN_PROJECT": "Proje"
         }
     },
     "USER_PROFILE": {
@@ -1609,7 +1719,26 @@
         "US_REMOVED_FROM_MILESTONE": "{{username}} havuza {{obj_name}} hikayesini ekledi",
         "BLOCKED": "{{obj_name}}, {{username}}  tarafından engellendi",
         "UNBLOCKED": "{{obj_name}} nin engeli {{username}} tarafından kaldırıldı ",
-        "NEW_USER": "{{username}}  Taiga ya katıldı"
+        "NEW_USER": "{{username}}  Taiga ya katıldı",
+        "ITEM_TYPES": {
+            "USERSTORY": "User Story",
+            "ISSUE": "Sorun",
+            "TASK": "Görev"
+        }
+    },
+    "EVENTS": {
+        "TITLE": "Events",
+        "MY_EVENTS": "My events",
+        "DISMISS_ALL": "Dismiss all",
+        "VIEW_ALL": "View all",
+        "NO_NEW_EVENTS": "No new events",
+        "NO_EVENTS_YET": "There are no events yet",
+        "ASSIGNED_YOU": "{{username}} assigned you to {{obj_name}}",
+        "ADDED_YOU_AS_WATCHER": "{{username}} added you as watcher on {{obj_name}}",
+        "ADDED_YOU_AS_MEMBER": "{{username}} added you as member",
+        "MENTIONED_YOU": "{{username}} mentioned you on {{obj_name}}",
+        "MENTIONED_YOU_IN_COMMENT": "{{username}} mentioned you in a comment on {{obj_name}}",
+        "COMMENTED": "{{username}} has commented on {{obj_name}}"
     },
     "LEGAL": {
         "TERMS_OF_SERVICE_AND_PRIVACY_POLICY_AD": "<span>When creating a new account, you agree to our </span><a href=\"{{ termsOfServiceUrl }}\" title=\"See terms of service\" target=\"_blank\">terms of service</a><span> and </span><a href=\"{{ privacyPolicyUrl }}\" title=\"See privacy policy\" target=\"_blank\">privacy policy</a>.",

@@ -1,10 +1,5 @@
 ###
-# Copyright (C) 2014-2017 Andrey Antukh <niwi@niwi.nz>
-# Copyright (C) 2014-2017 Jesús Espino Garcia <jespinog@gmail.com>
-# Copyright (C) 2014-2017 David Barragán Merino <bameda@dbarragan.com>
-# Copyright (C) 2014-2017 Alejandro Alonso <alejandro.alonso@kaleidos.net>
-# Copyright (C) 2014-2017 Juan Francisco Alcántara <juanfran.alcantara@kaleidos.net>
-# Copyright (C) 2014-2017 Xavi Julian <xavier.julian@kaleidos.net>
+# Copyright (C) 2014-2018 Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -60,7 +55,10 @@ class KanbanController extends mixOf(taiga.Controller, taiga.PageMixin, taiga.Fi
         "tgKanbanUserstories",
         "$tgStorage",
         "tgFilterRemoteStorageService",
-        "tgProjectService"
+        "tgProjectService",
+        "tgLightboxFactory",
+        "tgLoader",
+        "$timeout"
     ]
 
     storeCustomFiltersName: 'kanban-custom-filters'
@@ -68,7 +66,8 @@ class KanbanController extends mixOf(taiga.Controller, taiga.PageMixin, taiga.Fi
 
     constructor: (@scope, @rootscope, @repo, @confirm, @rs, @rs2, @params, @q, @location,
                   @appMetaService, @navUrls, @events, @analytics, @translate, @errorHandlingService,
-                  @model, @kanbanUserstoriesService, @storage, @filterRemoteStorageService, @projectService) ->
+                  @model, @kanbanUserstoriesService, @storage, @filterRemoteStorageService,
+                  @projectService, @lightboxFactory, @tgLoader, @timeout) ->
         bindMethods(@)
         @kanbanUserstoriesService.reset()
         @.openFilter = false
@@ -120,7 +119,7 @@ class KanbanController extends mixOf(taiga.Controller, taiga.PageMixin, taiga.Fi
                 @.isFirstLoad = false
                 @kanbanUserstoriesService.resetFolds()
 
-        else if @.zoomLevel > 1 && previousZoomLevel <= 1
+        else if @.zoomLevel > 2 && previousZoomLevel <= 2
             @.zoomLoading = true
 
             @.loadUserstories().then () =>
@@ -155,17 +154,18 @@ class KanbanController extends mixOf(taiga.Controller, taiga.PageMixin, taiga.Fi
         @scope.$on "kanban:us:deleted", (event, us) =>
             @.filtersReloadContent()
 
-        @scope.$on("assigned-to:added", @.onAssignedToChanged)
-        @scope.$on("assigned-user:added", @.onAssignedUsersChanged)
-        @scope.$on("assigned-user:deleted", @.onAssignedUsersDeleted)
         @scope.$on("kanban:us:move", @.moveUs)
         @scope.$on("kanban:show-userstories-for-status", @.loadUserStoriesForStatus)
         @scope.$on("kanban:hide-userstories-for-status", @.hideUserStoriesForStatus)
 
     addNewUs: (type, statusId) ->
         switch type
-            when "standard" then @rootscope.$broadcast("usform:new",
-                                                       @scope.projectId, statusId, @scope.usStatusList)
+            when "standard" then  @rootscope.$broadcast("genericform:new",
+                {
+                    'objType': 'us',
+                    'project': @scope.project,
+                    'statusId': statusId
+                })
             when "bulk" then @rootscope.$broadcast("usform:bulk",
                                                    @scope.projectId, statusId)
 
@@ -175,9 +175,15 @@ class KanbanController extends mixOf(taiga.Controller, taiga.PageMixin, taiga.Fi
         @kanbanUserstoriesService.replace(us)
 
         @rs.userstories.getByRef(us.getIn(['model', 'project']), us.getIn(['model', 'ref']))
-         .then (editingUserStory) =>
-            @rs2.attachments.list("us", us.get('id'), us.getIn(['model', 'project'])).then (attachments) =>
-                @rootscope.$broadcast("usform:edit", editingUserStory, attachments.toJS())
+        .then (editingUserStory) =>
+            @rs2.attachments.list(
+                "us", us.get('id'), us.getIn(['model', 'project'])).then (attachments) =>
+                    @rootscope.$broadcast("genericform:edit", {
+                        'objType': 'us',
+                        'obj': editingUserStory,
+                        'statusList': @scope.usStatusList,
+                        'attachments': attachments.toJS()
+                    })
 
                 us = us.set('loading-edit', false)
                 @kanbanUserstoriesService.replace(us)
@@ -213,68 +219,76 @@ class KanbanController extends mixOf(taiga.Controller, taiga.PageMixin, taiga.Fi
     isUsInArchivedHiddenStatus: (usId) ->
         return @kanbanUserstoriesService.isUsInArchivedHiddenStatus(usId)
 
-    changeUsAssignedTo: (id) ->
-        us = @kanbanUserstoriesService.getUsModel(id)
+    changeUsAssignedUsers: (id) =>
+        item = @kanbanUserstoriesService.getUsModel(id)
 
-        @rootscope.$broadcast("assigned-to:add", us)
+        onClose = (assignedUsersIds) =>
+            item.assigned_users = assignedUsersIds
+            if item.assigned_to not in assignedUsersIds and assignedUsersIds.length > 0
+                item.assigned_to = assignedUsersIds[0]
+            if assignedUsersIds.length == 0
+                item.assigned_to = null
+            @kanbanUserstoriesService.replaceModel(item)
 
-    changeUsAssignedUsers: (id) ->
-        us = @kanbanUserstoriesService.getUsModel(id)
-        @rootscope.$broadcast("assigned-user:add", us)
+            @repo.save(item).then =>
+                @.generateFilters()
+                if @.isFilterDataTypeSelected('assigned_users') || @.isFilterDataTypeSelected('role')
+                    @.filtersReloadContent()
 
-    onAssignedToChanged: (ctx, userid, usModel) ->
-        usModel.assigned_to = userid
-
-        @kanbanUserstoriesService.replaceModel(usModel)
-
-        @repo.save(usModel).then =>
-            @.generateFilters()
-            if @.isFilterDataTypeSelected('assigned_to') || @.isFilterDataTypeSelected('role')
-                @.filtersReloadContent()
-
-    onAssignedUsersChanged: (ctx, userid, usModel) ->
-        assignedUsers = _.clone(usModel.assigned_users, false)
-        assignedUsers.push(userid)
-        assignedUsers = _.uniq(assignedUsers)
-        usModel.assigned_users = assignedUsers
-        if not usModel.assigned_to
-            usModel.assigned_to = userid
-        @kanbanUserstoriesService.replaceModel(usModel)
-
-        @repo.save(usModel).then =>
-            @.generateFilters()
-            if @.isFilterDataTypeSelected('assigned_users') || @.isFilterDataTypeSelected('role')
-                @.filtersReloadContent()
-
-    onAssignedUsersDeleted: (ctx, userid, usModel) ->
-        assignedUsersIds = _.clone(usModel.assigned_users, false)
-        assignedUsersIds = _.pull(assignedUsersIds, userid)
-        assignedUsersIds = _.uniq(assignedUsersIds)
-        usModel.assigned_users = assignedUsersIds
-
-        # Update as
-        if usModel.assigned_to not in assignedUsersIds and assignedUsersIds.length > 0
-            usModel.assigned_to = assignedUsersIds[0]
-        if assignedUsersIds.length == 0
-            usModel.assigned_to = null
-
-        @kanbanUserstoriesService.replaceModel(usModel)
-
-        @repo.save(usModel).then =>
-            @.generateFilters()
-            if @.isFilterDataTypeSelected('assigned_users') || @.isFilterDataTypeSelected('role')
-                @.filtersReloadContent()
+        @lightboxFactory.create(
+            'tg-lb-select-user',
+            {
+                "class": "lightbox lightbox-select-user",
+            },
+            {
+                "currentUsers": _.compact(_.union(item.assigned_users, [item.assigned_to])),
+                "activeUsers": @scope.activeUsers,
+                "onClose": onClose,
+                "lbTitle": @translate.instant("COMMON.ASSIGNED_USERS.ADD"),
+            }
+        )
 
     refreshTagsColors: ->
         return @rs.projects.tagsColors(@scope.projectId).then (tags_colors) =>
             @scope.project.tags_colors = tags_colors._attrs
+
+    renderBatch: () ->
+        @.rendered = _.concat(@.rendered, _.take(@.queue, @.batchSize))
+        @.queue = _.drop(@.queue, @.batchSize)
+        @kanbanUserstoriesService.set(@.rendered)
+
+        if @.queue.length > 0
+            @timeout(@.renderBatch)
+        else
+            scopeDefer @scope, =>
+                # The broadcast must be executed when the DOM has been fully reloaded.
+                # We can't assure when this exactly happens so we need a defer
+                @rootscope.$broadcast("kanban:userstories:loaded", @.rendered)
+                @scope.$broadcast("userstories:loaded", @.rendered)
+
+    renderUserStories: (userstories) =>
+        userstories = _.sortBy(userstories, 'kanban_order')
+        userstoriesMap = _.groupBy(userstories, 'status')
+        @.rendered = []
+        @.queue = []
+        @.batchSize = 0
+
+        while (@.queue.length < userstories.length)
+            _.each @scope.project.us_statuses, (x) =>
+                if (userstoriesMap[x.id]?.length > 0)
+                    @.queue = _.concat(@.queue, _.take(userstoriesMap[x.id], 3))
+                    userstoriesMap[x.id] = _.drop(userstoriesMap[x.id], 3)
+            if !@.batchSize
+                @.batchSize = @.queue.length
+
+        @timeout(@.renderBatch)
 
     loadUserstories: () ->
         params = {
             status__is_archived: false
         }
 
-        if @.zoomLevel > 1
+        if @.zoomLevel > 2
             params.include_attachments = 1
             params.include_tasks = 1
 
@@ -282,13 +296,8 @@ class KanbanController extends mixOf(taiga.Controller, taiga.PageMixin, taiga.Fi
 
         promise = @rs.userstories.listAll(@scope.projectId, params).then (userstories) =>
             @kanbanUserstoriesService.init(@scope.project, @scope.usersById)
-            @kanbanUserstoriesService.set(userstories)
-
-            # The broadcast must be executed when the DOM has been fully reloaded.
-            # We can't assure when this exactly happens so we need a defer
-            scopeDefer @scope, =>
-                @scope.$broadcast("userstories:loaded", userstories)
-
+            @tgLoader.pageLoaded()
+            @.renderUserStories(userstories)
             return userstories
 
         promise.then( => @scope.$broadcast("redraw:wip"))
@@ -367,6 +376,8 @@ class KanbanController extends mixOf(taiga.Controller, taiga.PageMixin, taiga.Fi
 
         usList = _.map usList, (us) =>
             return @kanbanUserstoriesService.getUsModel(us.id)
+
+        @rootscope.$broadcast("kanban:userstories:loaded", usList, newStatusId, index)
 
         data = @kanbanUserstoriesService.move(usList, newStatusId, index)
 
@@ -537,7 +548,7 @@ KanbanSquishColumnDirective = (rs, projectService) ->
             $el.find('.kanban-table-inner').css("width", totalWidth)
 
         unwatch = $scope.$watch 'usByStatus', (usByStatus) ->
-            if usByStatus.size
+            if usByStatus?.size
                 $scope.folds = rs.kanban.getStatusColumnModes(projectService.project.get('id'))
                 updateTableWidth()
 

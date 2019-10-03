@@ -1,10 +1,5 @@
 ###
-# Copyright (C) 2014-2017 Andrey Antukh <niwi@niwi.nz>
-# Copyright (C) 2014-2017 Jesús Espino Garcia <jespinog@gmail.com>
-# Copyright (C) 2014-2017 David Barragán Merino <bameda@dbarragan.com>
-# Copyright (C) 2014-2017 Alejandro Alonso <alejandro.alonso@kaleidos.net>
-# Copyright (C) 2014-2017 Juan Francisco Alcántara <juanfran.alcantara@kaleidos.net>
-# Copyright (C) 2014-2017 Xavi Julian <xavier.julian@kaleidos.net>
+# Copyright (C) 2014-2018 Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -19,7 +14,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
-# File: modules/admin/project-profile.coffee
+# File: modules/admin/project-values.coffee
 ###
 
 taiga = @.taiga
@@ -32,7 +27,6 @@ groupBy = @.taiga.groupBy
 bindOnce = @.taiga.bindOnce
 debounce = @.taiga.debounce
 getDefaulColorList = @.taiga.getDefaulColorList
-
 
 module = angular.module("taigaAdmin")
 
@@ -113,8 +107,9 @@ class ProjectValuesController extends taiga.Controller
                 unwatch()
     loadValues: =>
         return @rs[@scope.resource].listValues(@scope.projectId, @scope.type).then (values) =>
-            @scope.values = values
-            @scope.maxValueOrder = _.maxBy(values, "order").order
+            if values.length
+                @scope.values = values
+                @scope.maxValueOrder = _.maxBy(values, "order").order
             return values
 
     moveValue: (ctx, itemValue, itemIndex) =>
@@ -125,10 +120,52 @@ class ProjectValuesController extends taiga.Controller
         _.each values, (value, index) ->
             value.order = index
 
-        @repo.saveAll(values)
+        @repo.saveAll(values).then () =>
+            @rootscope.$broadcast("admin:project-values:updated")
 
 module.controller("ProjectValuesController", ProjectValuesController)
 
+
+#############################################################################
+## Project due dates values Controller
+#############################################################################
+
+class ProjectDueDatesValuesController extends ProjectValuesController
+    @.$inject = [
+        "$scope",
+        "$rootScope",
+        "$tgRepo",
+        "$tgConfirm",
+        "$tgResources",
+    ]
+
+    loadValues: =>
+        return @rs[@scope.resource].listValues(@scope.projectId, @scope.type).then (values) =>
+            if values.length
+                @scope.maxValueOrder = _.maxBy(values, "order").order
+                @displayValues(values)
+            else
+                @createDefaultValues()
+            return values
+
+    createDefaultValues: =>
+        if !@rs[@scope.resource].createDefaultValues?
+            return
+        return @rs[@scope.resource].createDefaultValues(@scope.projectId, @scope.type).then (response) =>
+            @rootscope.$broadcast("admin:project-values:updated")
+            values = response.data
+            if values.length
+                @scope.maxValueOrder = _.maxBy(values, "order").order
+                @displayValues(values)
+            return values
+
+    displayValues: (values) =>
+        _.each values, (value, index) ->
+            value.days_to_due_abs = if value.days_to_due != null then Math.abs(value.days_to_due) else null
+            value.sign =  if value.days_to_due >= 0 then 1 else -1
+        @scope.values = values
+
+module.controller("ProjectDueDatesValuesController", ProjectDueDatesValuesController)
 
 #############################################################################
 ## Project values directive
@@ -209,10 +246,11 @@ ProjectValuesDirective = ($log, $repo, $confirm, $location, animationFrame, $tra
 
             value = formEl.scope().value
             promise = $repo.save(value)
-            promise.then =>
+            promise.then ->
                 row = target.parents(".row.table-main")
                 row.addClass("hidden")
                 row.siblings(".visualization").removeClass('hidden')
+                $rootscope.$broadcast("admin:project-values:updated")
 
                 projectService.fetchProject()
 
@@ -229,12 +267,12 @@ ProjectValuesDirective = ($log, $repo, $confirm, $location, animationFrame, $tra
             $scope.newValue.order = if $scope.maxValueOrder then $scope.maxValueOrder + 1 else 1
 
             promise = $repo.create(valueType, $scope.newValue)
-            promise.then (data) =>
+            promise.then (data) ->
                 target.addClass("hidden")
-
                 $scope.values.push(data)
                 $scope.maxValueOrder = data.order
                 initializeNewValue()
+                $rootscope.$broadcast("admin:project-values:updated")
 
             promise.then null, (data) ->
                 form.setErrors(data)
@@ -315,6 +353,7 @@ ProjectValuesDirective = ($log, $repo, $confirm, $location, animationFrame, $tra
             $confirm.askChoice(title, subtitle, choices, text).then (response) ->
                 onSucces = ->
                     $ctrl.loadValues().finally ->
+                        $rootscope.$broadcast("admin:project-values:updated")
                         response.finish()
                 onError = ->
                     $confirm.notify("error")
@@ -332,6 +371,107 @@ ProjectValuesDirective = ($log, $repo, $confirm, $location, animationFrame, $tra
 module.directive("tgProjectValues", ["$log", "$tgRepo", "$tgConfirm", "$tgLocation", "animationFrame",
                                      "$translate", "$rootScope", "tgProjectService", ProjectValuesDirective])
 
+#############################################################################
+## Project due dates values directive
+#############################################################################
+
+ProjectDueDatesValues = ($log, $repo, $confirm, $location, animationFrame, $translate, $rootscope, projectService) ->
+    parentDirective = ProjectValuesDirective($log, $repo, $confirm, $location, animationFrame,
+    $translate, $rootscope, projectService)
+
+    linkDueDateStatusValue = ($scope, $el, $attrs, $ctrl) ->
+        $ctrl = $el.controller()
+        valueType = $attrs.type
+
+        initializeNewValue = ->
+            $scope.newValue = {
+                "name": ""
+                "days_to_due": 0
+                "sign": 1
+            }
+
+        initializeNewValue()
+
+        _setDaysToDue = (value) ->
+            value.days_to_due = value.days_to_due_abs * value.sign
+
+        _valueFromEventTarget = (event) ->
+            target = angular.element(event.currentTarget)
+            row = target.parents(".row.table-main")
+            formEl = target.parents("form")
+            if not formEl.scope().value
+                return formEl.scope().newValue
+            else
+                return formEl.scope().value
+
+        saveNewValue = (target) ->
+            formEl = target.parents("form")
+            form = formEl.checksley()
+            return if not form.validate()
+
+            $scope.newValue.project = $scope.project.id
+
+            $scope.newValue.order = if $scope.maxValueOrder then $scope.maxValueOrder + 1 else 1
+
+            promise = $repo.create(valueType, $scope.newValue)
+            promise.then (data) ->
+                target.addClass("hidden")
+                data.sign = $scope.newValue.sign
+                data.days_to_due_abs = $scope.newValue.days_to_due_abs
+
+                $scope.values.push(data)
+                $rootscope.$broadcast("admin:project-values:updated")
+                initializeNewValue()
+
+            promise.then null, (data) ->
+                form.setErrors(data)
+
+        $el.on "input", ".days-to-due-abs", (event) ->
+            event.preventDefault()
+            value = _valueFromEventTarget(event)
+            $scope.$apply ->
+                _setDaysToDue(value)
+
+        $el.on "click", ".days-to-due-sign", (event) ->
+            event.preventDefault()
+            value = _valueFromEventTarget(event)
+            $scope.$apply ->
+                value.sign = value.sign * -1
+                _setDaysToDue(value)
+
+        $el.on "click", ".add-new-due-date", debounce 2000, (event) ->
+            event.preventDefault()
+            target = $el.find(".new-value")
+            saveNewValue(target)
+
+        $el.on "click", ".delete-due-date", (event) ->
+            event.preventDefault()
+            target = angular.element(event.currentTarget)
+            formEl = target.parents("form")
+            value = formEl.scope().value
+
+            title = $translate.instant("LIGHTBOX.ADMIN_DUE_DATES.TITLE_ACTION_DELETE_DUE_DATE")
+            subtitle = $translate.instant("LIGHTBOX.ADMIN_DUE_DATES.SUBTITLE_ACTION_DELETE_DUE_DATE",
+                                          {due_date_status_name:  value.name})
+
+            $confirm.ask(title, subtitle).then (response) ->
+                onSucces = ->
+                    $ctrl.loadValues().finally ->
+                        $rootscope.$broadcast("admin:project-values:updated")
+                        response.finish()
+                onError = ->
+                    $confirm.notify("error")
+                $repo.remove(value).then(onSucces, onError)
+
+
+    return {
+        link: ($scope, $el, $attrs) ->
+            parentDirective.link($scope, $el, $attrs)
+            linkDueDateStatusValue($scope, $el, $attrs)
+    }
+
+module.directive("tgProjectDueDatesValues", ["$log", "$tgRepo", "$tgConfirm", "$tgLocation", "animationFrame",
+                                             "$translate", "$rootScope", "tgProjectService", ProjectDueDatesValues])
 
 #############################################################################
 ## Color selection directive
@@ -411,6 +551,9 @@ MULTILINE_TYPE = "multiline"
 RICHTEXT_TYPE = "richtext"
 DATE_TYPE = "date"
 URL_TYPE = "url"
+DROPDOWN_TYPE = "dropdown"
+CHECKBOX_TYPE = "checkbox"
+NUMBER_TYPE = "number"
 
 
 TYPE_CHOICES = [
@@ -433,6 +576,18 @@ TYPE_CHOICES = [
     {
         key: URL_TYPE,
         name: "ADMIN.CUSTOM_FIELDS.FIELD_TYPE_URL"
+    },
+    {
+        key: DROPDOWN_TYPE,
+        name: "ADMIN.CUSTOM_FIELDS.FIELD_TYPE_DROPDOWN"
+    },
+    {
+        key: CHECKBOX_TYPE,
+        name: "ADMIN.CUSTOM_FIELDS.FIELD_TYPE_CHECKBOX"
+    },
+    {
+        key: NUMBER_TYPE,
+        name: "ADMIN.CUSTOM_FIELDS.FIELD_TYPE_NUMBER"
     }
 ]
 
@@ -472,21 +627,35 @@ class ProjectCustomAttributesController extends mixOf(taiga.Controller, taiga.Pa
     #########################
     # Custom Attribute
     #########################
+    _parseAttributesExtra: () ->
+        @scope.customAttributes = _.map(@scope.customAttributes, (x) => @._parseAttributeExtra(x))
+
+    _parseAttributeExtra: (attr) ->
+        if (attr.type == 'dropdown' && !attr.extra)
+            attr.extra = ['']
+        return attr
+
+    _onCustomAttributesModified: =>
+        @rootscope.$broadcast("admin:project-custom-attributes:updated")
 
     loadCustomAttributes: =>
         return @rs.customAttributes[@scope.type].list(@scope.projectId).then (customAttributes) =>
             @scope.customAttributes = customAttributes
             @scope.maxOrder = _.maxBy(customAttributes, "order")?.order
+            @._parseAttributesExtra()
             return customAttributes
 
     createCustomAttribute: (attrValues) =>
-        return @repo.create("custom-attributes/#{@scope.type}", attrValues)
+        return @repo.create("custom-attributes/#{@scope.type}", attrValues).then =>
+            @._onCustomAttributesModified()
 
     saveCustomAttribute: (attrModel) =>
-        return @repo.save(attrModel)
+        return @repo.save(attrModel).then =>
+            @._onCustomAttributesModified()
 
     deleteCustomAttribute: (attrModel) =>
-        return @repo.remove(attrModel)
+        return @repo.remove(attrModel).then =>
+            @._onCustomAttributesModified()
 
     moveCustomAttributes: (attrModel, newIndex) =>
         customAttributes = @scope.customAttributes
@@ -497,7 +666,8 @@ class ProjectCustomAttributesController extends mixOf(taiga.Controller, taiga.Pa
         _.each customAttributes, (val, idx) ->
             val.order = idx
 
-        @repo.saveAll(customAttributes)
+        @repo.saveAll(customAttributes).then =>
+            @._onCustomAttributesModified()
 
 
 module.controller("ProjectCustomAttributesController", ProjectCustomAttributesController)
@@ -514,23 +684,63 @@ ProjectCustomAttributesDirective = ($log, $confirm, animationFrame, $translate) 
         $scope.$on "$destroy", ->
             $el.off()
 
+        $scope.isExtraVisible = {}
+
+        _manageFormEvent = (event, callback) ->
+            event.preventDefault()
+            formEl = angular.element(event.currentTarget).closest("form")
+            callback(formEl)
+
         ##################################
         # Drag & Drop
         ##################################
-        sortableEl = $el.find(".js-sortable")
-        drake = dragula([sortableEl[0]], {
-            direction: 'vertical',
-            copySortSource: false,
-            copy: false,
-            mirrorContainer: sortableEl[0],
-            moves: (item) -> return $(item).is('div[tg-bind-scope]')
-        })
 
-        drake.on 'dragend', (item) ->
-            itemEl = $(item)
-            itemAttr = itemEl.scope().attr
-            itemIndex = itemEl.index()
-            $ctrl.moveCustomAttributes(itemAttr, itemIndex)
+        initDraggable = ->
+            sortableEl = $el.find(".js-sortable")
+            drake = dragula([sortableEl[0]], {
+                direction: 'vertical',
+                copySortSource: false,
+                copy: false,
+                mirrorContainer: sortableEl[0],
+                moves: (item, source, handle) ->
+                    childItem = $(handle).closest('.js-child-sortable')
+                    if childItem[0]
+                        return false
+                    return $(item).is('div[tg-bind-scope]')
+            })
+
+            drake.on 'dragend', (item) ->
+                itemEl = $(item)
+                itemAttr = itemEl.scope().attr
+                itemIndex = itemEl.index()
+                $ctrl.moveCustomAttributes(itemAttr, itemIndex)
+                
+            sortableChildren = $el.find(".js-child-sortable")
+            for el in sortableChildren
+                drake[el] = dragula([el], {
+                    direction: 'vertical',
+                    copySortSource: false,
+                    copy: false,
+                    mirrorContainer: el,
+                    moves: (item) -> return $(item).is('div[tg-bind-scope]')
+                })
+
+                drake[el].on 'dragend', (item) ->
+                    itemEl = $(item)
+                    attrExtra = itemEl.scope().attr.extra
+
+                    sourceIndex = itemEl.scope().$index
+                    targetIndex = itemEl.index()
+
+                    value = attrExtra[sourceIndex]
+
+                    attrExtra.splice(sourceIndex, 1)
+                    attrExtra.splice(targetIndex, 0, value)
+
+                    itemEl.scope().attr.setAttr('extra', attrExtra)
+                    $ctrl.saveCustomAttribute(itemEl.scope().attr).then ->
+                        $confirm.notify("success")
+
 
         ##################################
         # New custom attribute
@@ -562,13 +772,13 @@ ProjectCustomAttributesDirective = ($log, $confirm, animationFrame, $translate) 
             form = formEl.checksley()
             return if not form.validate()
 
-            onSucces = =>
+            onSucces = ->
                 $ctrl.loadCustomAttributes()
                 hideCreateForm()
                 resetNewAttr()
                 $confirm.notify("success")
 
-            onError = (data) =>
+            onError = (data) ->
                 form.setErrors(data)
 
             attr = $scope.newAttr
@@ -581,6 +791,22 @@ ProjectCustomAttributesDirective = ($log, $confirm, animationFrame, $translate) 
             hideCreateForm()
             resetNewAttr()
 
+        initAttrType = (formEl) ->
+            attr =  if formEl.scope().newAttr then formEl.scope().newAttr else formEl.scope().attr
+
+            if attr.type isnt "dropdown"
+                return
+
+            if attr.extra?.length
+                return
+
+            attr.extra = ['']
+            if attr.id
+                showEditForm(formEl)
+            else
+                showExtra(-1)
+                formEl.scope().$apply()
+
         $scope.$watch "customAttributes", (customAttributes) ->
             return if not customAttributes
 
@@ -592,17 +818,16 @@ ProjectCustomAttributesDirective = ($log, $confirm, animationFrame, $translate) 
                 hideCreateForm()
                 showAddButton()
                 showCancelButton()
+                initDraggable()
+
+        $el.on "change", ".custom-field-type select", (event) ->
+            _manageFormEvent(event, initAttrType)
 
         $el.on "click", ".js-add-custom-field-button", (event) ->
-            event.preventDefault()
-            showCreateForm()
+            _manageFormEvent(event, showCreateForm)
 
         $el.on "click", ".js-create-custom-field-button", debounce 2000, (event) ->
-            event.preventDefault()
-            target = angular.element(event.currentTarget)
-            formEl = target.closest("form")
-
-            create(formEl)
+            _manageFormEvent(event, create)
 
         $el.on "click", ".js-cancel-new-custom-field-button", (event) ->
             event.preventDefault()
@@ -610,9 +835,7 @@ ProjectCustomAttributesDirective = ($log, $confirm, animationFrame, $translate) 
 
         $el.on "keyup", ".js-new-custom-field input", (event) ->
             if event.keyCode == 13 # Enter
-                target = angular.element(event.currentTarget)
-                formEl = target.closest("form")
-                create(formEl)
+                _manageFormEvent(event, create)
             else if event.keyCode == 27 # Esc
                 cancelCreate()
 
@@ -624,64 +847,56 @@ ProjectCustomAttributesDirective = ($log, $confirm, animationFrame, $translate) 
             formEl.find(".js-view-custom-field").addClass("hidden")
             formEl.find(".js-edit-custom-field").removeClass("hidden")
             formEl.find(".js-edit-custom-field input:visible").first().focus().select()
-
-        hideEditForm = (formEl) ->
-            formEl.find(".js-edit-custom-field").addClass("hidden")
-            formEl.find(".js-view-custom-field").removeClass("hidden")
-
-        revertChangesInCustomAttribute = (formEl) ->
-            $scope.$apply ->
-                formEl.scope().attr.revert()
+            formEl.find(".js-view-custom-field-extra").addClass("hidden")
+            formEl.find(".js-edit-custom-field-extra").removeClass("hidden")
+            formEl.find(".custom-extra-actions").removeClass("hidden")
+            showExtra(formEl.scope().attr.id)
+            $scope.$apply()
 
         update = (formEl) ->
             form = formEl.checksley()
             return if not form.validate()
-
-            onSucces = =>
+            onSucces = ->
                 $ctrl.loadCustomAttributes()
                 hideEditForm(formEl)
                 $confirm.notify("success")
 
-            onError = (data) =>
+            onError = (data) ->
                 form.setErrors(data)
 
             attr = formEl.scope().attr
+            attr.setAttr('extra', attr.extra)
             $ctrl.saveCustomAttribute(attr).then(onSucces, onError)
 
         cancelUpdate = (formEl) ->
             hideEditForm(formEl)
             revertChangesInCustomAttribute(formEl)
 
+        hideEditForm = (formEl) ->
+            formEl.find(".js-edit-custom-field").addClass("hidden")
+            formEl.find(".js-view-custom-field").removeClass("hidden")
+            formEl.find(".js-edit-custom-field-extra").addClass("hidden")
+            formEl.find(".js-view-custom-field-extra").removeClass("hidden")
+            formEl.find(".custom-extra-actions").addClass("hidden")
+
+        revertChangesInCustomAttribute = (formEl) ->
+            $scope.$apply ->
+                formEl.scope().attr.revert()
+
         $el.on "click", ".js-edit-custom-field-button", (event) ->
-            event.preventDefault()
-            target = angular.element(event.currentTarget)
-            formEl = target.closest("form")
+            _manageFormEvent(event, showEditForm)
 
-            showEditForm(formEl)
-
-        $el.on "click", ".js-update-custom-field-button", debounce 2000, (event) ->
-            event.preventDefault()
-            target = angular.element(event.currentTarget)
-            formEl = target.closest("form")
-
-            update(formEl)
+        $el.on "click", ".js-update-custom-field-button", debounce 1000, (event) ->
+            _manageFormEvent(event, update)
 
         $el.on "click", ".js-cancel-edit-custom-field-button", (event) ->
-            event.preventDefault()
-            target = angular.element(event.currentTarget)
-            formEl = target.closest("form")
-
-            cancelUpdate(formEl)
+            _manageFormEvent(event, cancelUpdate)
 
         $el.on "keyup", ".js-edit-custom-field input", (event) ->
             if event.keyCode == 13 # Enter
-                target = angular.element(event.currentTarget)
-                formEl = target.closest("form")
-                update(formEl)
+                _manageFormEvent(event, update)
             else if event.keyCode == 27 # Esc
-                target = angular.element(event.currentTarget)
-                formEl = target.closest("form")
-                cancelUpdate(formEl)
+                _manageFormEvent(event, cancelUpdate)
 
         ##################################
         # Delete custom attribute
@@ -704,16 +919,67 @@ ProjectCustomAttributesDirective = ($log, $confirm, animationFrame, $translate) 
                 $ctrl.deleteCustomAttribute(attr).then(onSucces, onError)
 
         $el.on "click", ".js-delete-custom-field-button", debounce 2000, (event) ->
-            event.preventDefault()
-            target = angular.element(event.currentTarget)
-            formEl = target.closest("form")
+            _manageFormEvent(event, deleteCustomAttribute)
 
-            deleteCustomAttribute(formEl)
+        ##################################
+        # Custom attribute extra
+        ##################################
+
+        $scope.toggleExtraVisible = (index) ->
+            if not $scope.isExtraVisible[index]
+                showExtra(index)
+            else
+                hideExtra(index)
+
+        showExtra = (index) ->
+            $scope.isExtraVisible[index] = true
+
+        hideExtra = (index) ->
+            $scope.isExtraVisible[index] = false
+    
+        _manageExtraFormEvent = (event, callback) ->
+            event.preventDefault()
+            formEl = angular.element(event.currentTarget).closest("form")
+            formExtraEl = angular.element(event.currentTarget).closest(".js-form")
+            callback(formEl, formExtraEl)
+
+        addExtraOption = (formEl, formExtraEl) ->
+            formScope = formEl.scope()
+            attrExtra = if formScope.newAttr?.extra then formScope.newAttr.extra else formScope.attr.extra
+            attrExtra.push("")
+            formScope.$apply()
+
+            formEl.find(".js-edit-custom-field-extra").last().removeClass("hidden")
+            formEl.find(".js-view-custom-field-extra").last().addClass("hidden")
+            formEl.find(".js-edit-custom-field-extra input").last().focus()
+
+        removeExtraOption = (formEl, formExtraEl) ->
+            attrExtra = formEl.scope().attr.extra
+            attrExtra.splice(formExtraEl.scope().$index, 1)
+            formExtraEl.scope().$apply()
+
+        $el.on "keyup", ".js-edit-custom-field-extra input", (event) ->
+            if event.keyCode == 13 # Enter
+                _manageFormEvent(event, update)
+            else if event.keyCode == 27 # Esc
+                _manageFormEvent(event, cancelUpdate)
+
+        $el.on "keyup", ".js-new-custom-field-extra input", (event) ->
+            if event.keyCode == 13 # Enter
+                _manageFormEvent(event, create)
+            else if event.keyCode == 27 # Esc
+                cancelCreate()
+  
+        $el.on "click", ".js-add-option-custom-field-extra-button", debounce 500, (event) ->
+            _manageExtraFormEvent(event, addExtraOption)
+
+        $el.on "click", ".js-delete-custom-field-extra-button", debounce 500, (event) ->
+            _manageExtraFormEvent(event, removeExtraOption)
 
     return {link: link}
 
 module.directive("tgProjectCustomAttributes", ["$log", "$tgConfirm", "animationFrame", "$translate",
-                                               ProjectCustomAttributesDirective])
+ProjectCustomAttributesDirective])
 
 
 #############################################################################
@@ -848,7 +1114,7 @@ ProjectTagsDirective = ($log, $repo, $confirm, $location, animationFrame, $trans
             if focus
                 $el.find(".new-value input:visible").first().focus()
 
-        saveValue = (target) =>
+        saveValue = (target) ->
             formEl = target.parents("form")
             form = formEl.checksley()
             return if not form.validate()
@@ -859,18 +1125,19 @@ ProjectTagsDirective = ($log, $repo, $confirm, $location, animationFrame, $trans
 
             $scope.loadingEdit = true
             promise = $ctrl.editTag(originalTag.name, tag.name, tag.color)
-            promise.then =>
-                $ctrl.loadTags().then =>
+            promise.then ->
+                $ctrl.loadTags().then ->
                     row = target.parents(".row.table-main")
                     row.addClass("hidden")
                     $scope.loadingEdit = false
+                    $rootscope.$broadcast('tags:updated')
                     row.siblings(".visualization").removeClass('hidden')
 
             promise.then null, (response) ->
                 $scope.loadingEdit = false
                 form.setErrors(response.data)
 
-        saveNewValue = (target) =>
+        saveNewValue = (target) ->
             formEl = target.parents("form")
             formEl = target
             form = formEl.checksley()
@@ -878,10 +1145,11 @@ ProjectTagsDirective = ($log, $repo, $confirm, $location, animationFrame, $trans
 
             $scope.loadingCreate = true
             promise = $ctrl.createTag($scope.newValue.tag, $scope.newValue.color)
-            promise.then (data) =>
-                $ctrl.loadTags().then =>
+            promise.then (data) ->
+                $ctrl.loadTags().then ->
                     $scope.loadingCreate = false
                     target.addClass("hidden")
+                    $rootscope.$broadcast('tags:updated')
                     initializeNewValue()
 
             promise.then null, (response) ->
@@ -991,6 +1259,7 @@ ProjectTagsDirective = ($log, $repo, $confirm, $location, animationFrame, $trans
             $confirm.askOnDelete(title, tag.name).then (response) ->
                 onSucces = ->
                     $ctrl.loadTags().finally ->
+                        $rootscope.$broadcast('tags:updated')
                         response.finish()
                 onError = ->
                     $confirm.notify("error")
