@@ -34,12 +34,12 @@ SelectUserDirective = (
         lightboxService.open($el)
 
         getFilteredUsers = (text="") ->
-            selected = _.sortBy(
+            selected = _.compact(_.sortBy(
                 _.filter(users, (x) ->
                     _.includes($scope.currentUsers, x.id)
                 ),
                 'name'
-            )
+            ))
 
             _filterRows = (text, row) ->
                 if row.type == 'user' && _.find(selected, ['id', row.id])
@@ -143,10 +143,13 @@ SelectUserDirective = (
             $scope.searchText = ''
 
         confirmSelection = () ->
+            $scope.loading = true
             $scope.onClose($scope.currentUsers)
             closeLightbox()
+            $scope.loading = false
 
         $el.on "click", ".lb-select-user-confirm", (event) ->
+            return if $scope.loading
             event.preventDefault()
             confirmSelection()
 

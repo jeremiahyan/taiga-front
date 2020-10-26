@@ -55,6 +55,9 @@
             vertical-align: middle;
         }
     }
+    .tags-container .tag {
+        display: inline-block;
+    }
 }
 .project-privacy-settings {
     display: flex;
@@ -66,10 +69,10 @@
             margin-right: .5rem;
         }
     }
-    input[type="radio"] {
+    input[type='radio'] {
         display: none;
     }
-    input[type="text"] {
+    input[type='text'] {
         display: none;
     }
     label {
@@ -91,8 +94,14 @@
             vertical-align: middle;
         }
     }
+    .privacy-project + label {
+        @include font-type(text);
+        display: inline-flex;
+        width: 100%;
+    }
     .privacy-project:checked {
         + label {
+            @include font-type(text);
             background: $primary-light;
             color: $white;
             svg {
@@ -100,12 +109,13 @@
                 fill: $white;
             }
         }
-        ~input[type="text"] {
+        ~input[type='text'] {
             display: block;
         }
     }
     .privacy-project[disabled] {
         + label {
+            @include font-type(text);
             background: $mass-white;
             box-shadow: none;
             color: $gray-light;

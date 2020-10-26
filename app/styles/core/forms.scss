@@ -5,20 +5,25 @@ fieldset {
     position: relative;
     width: 100%;
 }
-input[type="text"],
-input[type="number"],
-input[type="password"],
-input[type="url"],
-input[type="email"],
-input[type="date"],
-input[type="password"],
+input[type='text'],
+input[type='number'],
+input[type='password'],
+input[type='url'],
+input[type='email'],
+input[type='date'],
 select,
 textarea {
-    border: 1px solid;
+    background: $grey-02;
+    border: 1px solid $gray-light;
+    color: $grayer;
     margin: 0;
     padding: 8px;
     width: 100%;
+    @include placeholder {
+        color: $gray-lighter;
+    }
     &.checksley-error {
+        border: 1px solid $red;
         transition: border .3s linear;
     }
 }

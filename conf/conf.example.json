@@ -9,6 +9,7 @@
     "defaultLanguage": "en",
     "themes": ["taiga"],
     "defaultTheme": "taiga",
+    "defaultLoginEnabled": true,
     "publicRegisterEnabled": true,
     "feedbackEnabled": true,
     "supportUrl": "https://tree.taiga.io/support/",
@@ -17,8 +18,9 @@
     "GDPRUrl": null,
     "maxUploadFileSize": null,
     "contribPlugins": [],
+    "tagManager": { "accountId": null },
     "tribeHost": null,
     "importers": [],
-    "gravatar": true,
+    "gravatar": false,
     "rtlLanguages": ["fa"]
 }

@@ -17,32 +17,25 @@
 # File: components/promote-to-us/promote-to-us.directive.coffee
 ###
 
-PromoteToUsButtonDirective = ($rootScope, $repo, $confirm, $translate) ->
+PromoteToUsButtonDirective = ($rootScope, $rs, $confirm, $translate) ->
     link = ($scope, $el, $attrs, $model) ->
         itemType = null
 
         save = (item, askResponse) ->
             data = {
-                "generated_from_#{itemType}": item.id,
-                project: item.project,
-                subject: item.subject
-                description: item.description
-                tags: item.tags
-                is_blocked: item.is_blocked
-                blocked_note: item.blocked_note
-                due_date: item.due_date
+                project: item.project
             }
 
-            onSuccess = ->
+            onSuccess = (response) ->
                 askResponse.finish()
                 $confirm.notify("success")
-                $rootScope.$broadcast("promote-#{itemType}-to-us:success")
+                $rootScope.$broadcast("promote-#{itemType}-to-us:success", response.data[0])
 
             onError = ->
                 askResponse.finish()
                 $confirm.notify("error")
 
-            $repo.create("userstories", data).then(onSuccess, onError)
+            $rs[item._name].promoteToUserStory(item.id, item.project).then(onSuccess, onError)
 
         $el.on "click", "a", (event) ->
             event.preventDefault()
@@ -53,7 +46,6 @@ PromoteToUsButtonDirective = ($rootScope, $repo, $confirm, $translate) ->
             title = $translate.instant("#{ctx}.TITLE")
             message = $translate.instant("#{ctx}.MESSAGE")
             subtitle = item.subject
-
             $confirm.ask(title, subtitle, message).then (response) ->
                 save(item, response)
 
@@ -68,4 +60,4 @@ PromoteToUsButtonDirective = ($rootScope, $repo, $confirm, $translate) ->
     }
 
 angular.module("taigaComponents").directive("tgPromoteToUsButton",
-    ["$rootScope", "$tgRepo", "$tgConfirm", "$translate", PromoteToUsButtonDirective])
+    ["$rootScope", "$tgResources", "$tgConfirm", "$translate", PromoteToUsButtonDirective])

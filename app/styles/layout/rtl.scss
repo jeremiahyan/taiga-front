@@ -702,11 +702,12 @@
         }
     }
 
-    .lightbox-create-related-user-stories {
-        .related-with-selector .related-with-selector-single:first-child {
-            margin-left: .5rem;
-            margin-right: 0;
-        }
+    .button-group .button-group-single:first-child {
+        margin-left: .5rem;
+        margin-right: 0;
+    }
+
+    .lightbox-create-related-user-stories .new-user-story-options {
         .new-user-story-options {
             margin-left: 0;
             margin-right: auto;
@@ -900,7 +901,13 @@
         100% { transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 400, 0, 0, 1); }
     }
     @keyframes animSlideOutRTL {
-        100% { opacity: 1; transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 30, 0, 0, 0, 1); }
-        0% { opacity: 0; transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 30, 0, 0, 0, 1); }
+        100% {
+            opacity: 1;
+            transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 30, 0, 0, 0, 1);
+        }
+        0% {
+            opacity: 0;
+            transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 30, 0, 0, 0, 1);
+        }
     }
 }

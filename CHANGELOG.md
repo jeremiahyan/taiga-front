@@ -2,6 +2,179 @@
 
 ## Unreleased
 
+## 5.5.6 (2020-10-07)
+
+### Misc
+
+- Improve userpilot integration.
+
+- Fix typo.
+
+## 5.5.5 (2020-09-16)
+
+### Misc
+
+- Minor bug fix.
+
+## 5.5.4 (2020-09-08)
+
+### Misc
+
+- Several fixes.
+
+### i18n
+
+- Update French translation.
+
+## 5.5.3 (2020-09-02)
+
+### Misc
+
+- Fix CSS bug with WYSIWYG toolbar.
+
+## 5.5.0 (2020-08-19)
+
+### Features
+
+- Verify user email.
+
+- Task promotion creates user story and deletes original task.
+
+### Misc
+
+- Upgraded node, gulp and other development dependencies.
+
+- Several minor bugfixes.
+
+## 5.0.15 (2020-08-07)
+
+### Features
+
+- Added integration with userpilot.
+
+### Misc
+
+- Fixed redirect after change email confirmation.
+
+### i18n
+
+- Updated translations (fa and fr).
+
+## 5.0.13 (2020-06-08)
+
+### i18n
+
+- Updated translations (pt-br).
+
+## 5.0.12 (2020-05-12)
+
+### Misc
+
+- Fixed several minor bugs.
+
+### i18n
+
+- Updated translations (pl).
+
+## 5.0.11 (2020-05-04)
+
+### Misc
+
+- Fixed several minor bugs.
+
+### i18n
+
+- Updated translations (de, pl, ru, tr, uk).
+
+## 5.0.10 (2020-03-12)
+
+### Misc
+
+- Fixed CSS bug.
+
+## 5.0.9 (2020-03-11)
+
+### Misc
+
+- Fixed several minor bugs.
+
+### i18n
+
+- Updated lots of strings and updated their translations. Finally, oompa loompas have been substituted by the Taiga.
+
+## 5.0.8 (2020-02-17)
+
+### i18n
+
+- Update Latvian translation.
+
+### Misc
+
+- Add Google tag manager integration.
+
+## 5.0.7 (2020-02-06)
+
+### i18n
+
+- Update Korean translation.
+- Add Latvian translation.
+
+### Misc
+
+- Several minor bugfixes.
+
+## 5.0.6 (2020-01-15)
+
+### Features
+
+- Refresh default theme.
+
+### Misc
+
+- Several minor bugfixes.
+
+## 5.0.5 (2020-01-08)
+
+### Features
+
+- Set login form visibility based on instance configuration.
+
+- Promote task and issues to user story with watchers, attachments and comments.
+
+### Misc
+
+- Several minor bugfixes.
+
+## 5.0.4 (2019-12-04)
+
+- Fix translation problem with pluralization.
+
+## 5.0.3 (2019-12-02)
+
+- Fix several minor CSS bugs.
+
+## 5.0.2 (2019-11-21)
+
+- Update search counters on backlog when an US is moved.
+
+- Fix several minor CSS bugs.
+
+## 5.0.1 (2019-11-15)
+
+- Fix CSS issue.
+
+## 5.0.0 (2019-11-13)
+
+- BREAKING CHANGE Big refactor of base CSS for themes that can break custom themes.
+
+- Change comment box position based on comments order.
+
+- Refresh attachment URL on markdown fields to support protected backend.
+
+- Fixed drag&drop of attachments to text fields.
+
+- Redesign detail header.
+
 ## 4.2.14 (2019-10-01)
 
 - Disabled malfunctioning notification infinite scroll.

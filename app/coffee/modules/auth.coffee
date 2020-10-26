@@ -60,13 +60,14 @@ class AuthService extends taiga.Service
                  "$tgHttp",
                  "$tgUrls",
                  "$tgConfig",
+                 "$tgUserPilot",
                  "$translate",
                  "tgCurrentUserService",
                  "tgThemeService",
                  "$tgAnalytics",
                  "tgTermsAnnouncementService"]
 
-    constructor: (@rootscope, @storage, @model, @rs, @http, @urls, @config, @translate, @currentUserService,
+    constructor: (@rootscope, @storage, @model, @rs, @http, @urls, @config, @userpilot, @translate, @currentUserService,
                   @themeService, @analytics, @termsAnnouncementService) ->
         super()
 
@@ -84,7 +85,12 @@ class AuthService extends taiga.Service
         @analytics.setUserId()
 
     _getUserTheme: ->
-        return @rootscope.user?.theme || @config.get("defaultTheme") || "taiga" # load on index.jade
+        defaultTheme = @config.get("defaultTheme") || "taiga"
+
+        if !_.includes(@config.get("themes"), @rootscope.user?.theme)
+            return defaultTheme
+
+        return @rootscope.user?.theme
 
     _setTheme: ->
         newTheme = @._getUserTheme()
@@ -240,6 +246,10 @@ class AuthService extends taiga.Service
             return
         @termsAnnouncementService.show()
 
+    sendVerificationEmail: () ->
+        url = @urls.resolve("user-send-verification-email")
+        return @http.post(url)
+
 module.service("$tgAuth", AuthService)
 
 
@@ -279,6 +289,7 @@ module.directive("tgPublicRegisterMessage", ["$tgConfig", "$tgNavUrls", "$routeP
 LoginDirective = ($auth, $confirm, $location, $config, $routeParams, $navUrls, $events, $translate, $window, $analytics) ->
     link = ($scope, $el, $attrs) ->
         form = new checksley.Form($el.find("form.login-form"))
+        $scope.defaultLoginEnabled = $config.get("defaultLoginEnabled", true)
 
         if $routeParams['next'] and $routeParams['next'] != $navUrls.resolve("login")
             $scope.nextUrl = decodeURIComponent($routeParams['next'])
@@ -391,6 +402,16 @@ RegisterDirective = ($auth, $confirm, $location, $navUrls, $config, $routeParams
 
 module.directive("tgRegister", ["$tgAuth", "$tgConfirm", "$tgLocation", "$tgNavUrls", "$tgConfig",
                                 "$routeParams", "$tgAnalytics", "$translate", "$window", RegisterDirective])
+
+
+#############################################################################
+## Register Options Directive
+#############################################################################
+
+RegisterOptionsDirective = () ->
+    return { }
+
+module.directive("tgRegisterOptions", [RegisterOptionsDirective])
 
 
 #############################################################################
@@ -596,11 +617,9 @@ ChangeEmailDirective = ($repo, $model, $auth, $confirm, $location, $params, $nav
             if $auth.isAuthenticated()
                 $repo.queryOne("users", $auth.getUser().id).then (data) =>
                     $auth.setUser(data)
-                    $location.path($navUrls.resolve("home"))
-                    $location.replace()
+                $location.url($navUrls.resolve("home"))
             else
-                $location.path($navUrls.resolve("login"))
-                $location.replace()
+                $location.url($navUrls.resolve("login"))
 
             text = $translate.instant("CHANGE_EMAIL_FORM.SUCCESS")
             $confirm.success(text)

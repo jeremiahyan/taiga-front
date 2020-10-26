@@ -469,6 +469,8 @@ configure = ($routeProvider, $locationProvider, $httpProvider, $provide, $tgEven
         {templateUrl: "user/web-notifications.html"})
     $routeProvider.when("/change-email/:email_token",
         {templateUrl: "user/change-email.html"})
+    $routeProvider.when("/verify-email/:email_token",
+        {templateUrl: "user/verify-email.html"})
     $routeProvider.when("/cancel-account/:cancel_token",
         {templateUrl: "user/cancel-account.html"})
 
@@ -779,7 +781,7 @@ i18nInit = (lang, $translate) ->
     checksley.updateMessages('default', messages)
 
 
-init = ($log, $rootscope, $auth, $events, $analytics, $translate, $location, $navUrls, appMetaService,
+init = ($log, $rootscope, $auth, $events, $analytics, $tagManager, $userPilot, $translate, $location, $navUrls, appMetaService,
         loaderService, navigationBarService, errorHandlingService, lightboxService, $tgConfig,
         projectService) ->
     $log.debug("Initialize application")
@@ -863,8 +865,16 @@ init = ($log, $rootscope, $auth, $events, $analytics, $translate, $location, $na
     if $auth.isAuthenticated()
         user = $auth.getUser()
         $auth.showTerms()
+
     # Analytics
     $analytics.initialize()
+
+    # Tag Manager
+    $tagManager.initialize()
+
+    # UserPilot
+    $userPilot.initialize()
+    $userPilot.identify()
 
     # Initialize error handling service when location change start
     $rootscope.$on '$locationChangeStart',  (event) ->
@@ -971,7 +981,7 @@ modules = [
     "ngAria",
     "pascalprecht.translate",
     "infinite-scroll",
-    "tgRepeat"
+    "tgRepeat",
 ].concat(pluginsModules)
 
 # Main module definition
@@ -996,6 +1006,8 @@ module.run([
     "$tgAuth",
     "$tgEvents",
     "$tgAnalytics",
+    "$tgTagManager",
+    "$tgUserPilot",
     "$translate",
     "$tgLocation",
     "$tgNavUrls",
