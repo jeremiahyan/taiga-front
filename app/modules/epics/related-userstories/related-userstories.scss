@@ -12,7 +12,7 @@
     min-height: 36px;
     .related-userstories-title {
         @include font-size(medium);
-        @include font-type(semibold);
+        @include font-type(medium);
         color: $grey-70;
         margin-left: 1rem;
     }
@@ -21,15 +21,6 @@
 .related-userstories-body {
     width: 100%;
     .row.blocked {
-        background: $red-light;
-        a,
-        span,
-        div {
-            color: $white;
-        }
-        svg {
-            fill: $white;
-            stroke: $white;
-        }
+        background: $color-solid-red;
     }
 }

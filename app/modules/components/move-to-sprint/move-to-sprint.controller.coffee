@@ -1,5 +1,5 @@
 ###
-# Copyright (C) 2014-2018 Taiga Agile LLC
+# Copyright (C) 2014-present Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -53,7 +53,7 @@ class MoveToSprintController
             _.map @.openItems, (itemsList, itemsType) ->
                 if itemsList.length
                     openItems[itemsType] = itemsList
-  
+
             @lightboxFactory.create('tg-lb-move-to-sprint', {
                 "class": "lightbox lightbox-move-to-sprint"
                 "sprint": "sprint"
@@ -77,7 +77,8 @@ class MoveToSprintController
     getOpenStorylessTasks: () ->
         return if !@.unnasignedTasks or @.permissions.indexOf("modify_task") == -1
         @.openItems.tasks = []
-        @.unnasignedTasks.map (column) => column.map (task) =>
+        @.unnasignedTasks.map (column) => column.map (taskId) =>
+            task = @.taskMap.get(taskId)
             if task.get('model').get('is_closed') is false
                 @.openItems.tasks.push({
                     task_id: task.get('model').get('id')

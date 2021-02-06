@@ -1,5 +1,5 @@
 ###
-# Copyright (C) 2014-2018 Taiga Agile LLC
+# Copyright (C) 2014-present Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -107,6 +107,7 @@ urls = {
     "project-admin-project-values-custom-fields": "/project/:project/admin/project-values/custom-fields"
     "project-admin-project-values-tags": "/project/:project/admin/project-values/tags"
     "project-admin-project-values-due-dates": "/project/:project/admin/project-values/due-dates"
+    "project-admin-project-values-kanban-power-ups": "/project/:project/admin/project-values/kanban-power-ups"
 
     "project-admin-memberships": "/project/:project/admin/memberships"
     "project-admin-roles": "/project/:project/admin/roles"

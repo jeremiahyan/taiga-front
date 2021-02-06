@@ -8,7 +8,6 @@ div.wrapper(
     .main.detail
         .detail-header-container(ng-class="{blocked: us.is_blocked}")
             tg-detail-nav(item="us")
-            .detail-ref {{'#' + us.ref}}
             .detail-header
                 tg-detail-header(
                     item="us"
@@ -20,13 +19,29 @@ div.wrapper(
                 )
 
                 //- User Story belongs to epic
-                .detail-header-line.belong-to-epics-wrapper(ng-if="project.is_epics_activated")
+                .detail-header-line.belong-to-epics-wrapper(ng-if="!!project.is_epics_activated")
                     .related-to-epics
                         tg-belong-to-epics(
                             epics="::us.epics"
                             item="::us"
                             format="text"
                         )
+
+                //- User Story relate to Epic
+                .relate-to-epic(
+                    ng-if="project.is_epics_activated",
+                    tg-check-permission="modify_epic"
+                )
+                    a.relate-to-epic-button.ng-animate-disabled(
+                        href=""
+                        title="{{'US.RELATE_TO_EPIC' | translate}}"
+                        ng-click="relateToEpic(us)"
+                    )
+                        tg-svg(
+                            svg-icon="icon-epics"
+                            svg-title-translate="US.RELATE_TO_EPIC"
+                        )
+                        span.relate-to-epic-text(translate="US.RELATE_TO_EPIC")
 
                 //- User Story promoted from task
                 .detail-header-line.item-origin-task(
@@ -61,32 +76,18 @@ div.wrapper(
                         ng-bind-html="'#' + us.origin_issue.ref + ' ' + us.origin_issue.subject | emojify"
                     )
 
-                .action-buttons
-                    a.button.button-gray(
+                .action-buttons(
+                    ng-if="sprint && project.is_backlog_activated"
+                )
+                    a.btn-small(
+                        variant="secondary"
                         href=""
                         tg-check-permission="view_milestones"
                         tg-nav="project-taskboard:project=project.slug,sprint=sprint.slug"
-                        ng-if="sprint && project.is_backlog_activated"
                         title="{{'US.TITLE_LINK_TASKBOARD' | translate}}"
                         translate="US.LINK_TASKBOARD"
                     )
                 .subheader(ng-class="{'has-tags': us.tags.length}")
-
-                    //- User Story relate to Epic
-                    .detail-header-line.relate-to-epic(
-                        ng-if="project.is_epics_activated",
-                        tg-check-permission="modify_epic"
-                    )
-                        a.relate-to-epic-button.ng-animate-disabled(
-                            href=""
-                            title="{{'US.RELATE_TO_EPIC' | translate}}"
-                            ng-click="relateToEpic(us)"
-                        )
-                            tg-svg(
-                                svg-icon="icon-epics"
-                                svg-title-translate="US.RELATE_TO_EPIC"
-                            )
-                            span.relate-to-epic-text(translate="US.RELATE_TO_EPIC")
 
                     tg-tag-line.tags-block(
                         ng-if="us && project"
@@ -96,7 +97,7 @@ div.wrapper(
                     )
                     tg-created-by-display.ticket-created-by(ng-model="us")
 
-        .detail-content
+        .detail-content(ng-if="attachmentsReady")
             section.duty-content
                 tg-item-wysiwyg(
                     type="us",
@@ -126,10 +127,10 @@ div.wrapper(
                 type="us"
                 name="us"
                 id="us.id"
-                project-id="projectId"
+                project="project"
             )
 
-    sidebar.menu-secondary.sidebar.ticket-data
+    sidebar.sidebar.ticket-data
 
         section.ticket-header
             span.ticket-title(
@@ -161,13 +162,6 @@ div.wrapper(
             required-perm="modify_us"
         )
 
-        section.ticket-section.upvote-btn(
-            tg-vote-button
-            item="us"
-            on-upvote="ctrl.onUpvote"
-            on-downvote="ctrl.onDownvote"
-        )
-
         section.ticket-section.ticket-to-tribe(ng-if="tribeEnabled && !us.tribe_gig")
             tg-tribe-button(
                 us-id="us.id"
@@ -188,8 +182,14 @@ div.wrapper(
                 obj-type="us"
                 tg-check-permission="modify_us"
             )
-            tg-us-team-requirement-button(ng-model="us")
-            tg-us-client-requirement-button(ng-model="us")
+            tg-us-team-requirement-button(
+                ng-model="us"
+                tg-check-permission="modify_us"
+            )
+            tg-us-client-requirement-button(
+                ng-model="us"
+                tg-check-permission="modify_us"
+            )
             tg-block-button(
                 tg-check-permission="modify_us"
                 ng-model="us"

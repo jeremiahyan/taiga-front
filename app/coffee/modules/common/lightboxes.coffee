@@ -1,5 +1,5 @@
 ###
-# Copyright (C) 2014-2018 Taiga Agile LLC
+# Copyright (C) 2014-present Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -72,10 +72,11 @@ class LightboxService extends taiga.Service
                         @.close($el)
 
 
+        @rootScope.$broadcast("lightbox:opened")
         return defered.promise
 
     close: ($el) ->
-        return new Promise (resolve) =>
+        return @q (resolve) =>
             if _.isString($el)
                 $el = $($el)
             docEl = angular.element(document)
@@ -103,6 +104,8 @@ class LightboxService extends taiga.Service
                 scope = $el.data("scope")
                 scope.$destroy() if scope
                 $el.remove()
+
+            @rootScope.$broadcast("lightbox:closed")
 
 
     getLightboxOpen: ->
@@ -183,6 +186,31 @@ LightboxDirective = (lightboxService) ->
 
 module.directive("lightbox", ["lightboxService", LightboxDirective])
 
+
+#############################################################################
+## Lightbox Close Directive
+#############################################################################
+
+LightboxClose = () ->
+    template = """
+        <a class="close" ng-click="onClose()" href="" title="{{'COMMON.CLOSE' | translate}}">
+            <tg-svg svg-icon="icon-close"></tg-svg>
+        </a>
+    """
+
+    link = (scope, elm, attrs) ->
+
+    return {
+        scope: {
+            onClose: '&'
+        },
+        link: link,
+        template: template
+    }
+
+module.directive("tgLightboxClose", [LightboxClose])
+
+
 #############################################################################
 ## Block Lightbox Directive
 #############################################################################
@@ -217,7 +245,7 @@ BlockLightboxDirective = ($rootscope, $tgrepo, $confirm, lightboxService, $loadi
 
         block = () ->
             currentLoading = $loading()
-                .target($el.find(".button-green"))
+                .target($el.find(".js-block-item"))
                 .start()
 
             transform = $modelTransform.save (item) ->
@@ -247,7 +275,7 @@ BlockLightboxDirective = ($rootscope, $tgrepo, $confirm, lightboxService, $loadi
         $scope.$on "$destroy", ->
             $el.off()
 
-        $el.on "click", ".button-green", (event) ->
+        $el.on "click", ".js-block-item", (event) ->
             event.preventDefault()
 
             block()
@@ -295,18 +323,41 @@ module.directive("tgBlockingMessageInput", ["$log", "$tgTemplate", "$compile", B
 ## Creare Bulk Userstories Lightbox Directive
 #############################################################################
 
-CreateBulkUserstoriesDirective = ($repo, $rs, $rootscope, lightboxService, $loading, $model) ->
+CreateBulkUserstoriesDirective = ($repo, $rs, $rootscope, lightboxService, $loading, $model, $timeout, $confirm, $translate) ->
     link = ($scope, $el, attrs) ->
         form = null
+        $scope.displayStatusSelector = false
 
-        $scope.$on "usform:bulk", (ctx, projectId, status) ->
+        getCurrentStatus = () =>
+            $scope.currentStatus = $scope.project.us_statuses.filter((status) ->
+                status.id == $scope.new.statusId
+            ).pop()
+
+        $scope.toggleStatus = () ->
+            $scope.displayStatusSelector = !$scope.displayStatusSelector
+
+        $scope.displayStatus = () ->
+            $scope.displayStatusSelector = true
+
+        $scope.hideStatus = () ->
+            $scope.displayStatusSelector = false
+            $scope.$apply()
+
+        $scope.setStatus = (status) =>
+            $scope.new.statusId = status.id
+            getCurrentStatus()
+            $scope.displayStatusSelector = false
+
+        $scope.$on "usform:bulk", (ctx, projectId, status, swimlaneId) ->
             form.reset() if form
 
             $scope.new = {
                 projectId: projectId
                 statusId: status
                 bulk: ""
+                swimlaneId: swimlaneId
             }
+            getCurrentStatus()
             lightboxService.open($el)
 
         submit = debounce 2000, (event) =>
@@ -316,26 +367,49 @@ CreateBulkUserstoriesDirective = ($repo, $rs, $rootscope, lightboxService, $load
             if not form.validate()
                 return
 
+            swimlaneId = null
+            if $scope.project.is_kanban_activated
+                swimlaneId = $scope.new.swimlane
+
+                if swimlaneId == undefined
+                    swimlaneId = $scope.project.default_swimlane
+
             currentLoading = $loading()
                 .target(submitButton)
                 .start()
 
-            promise = $rs.userstories.bulkCreate($scope.new.projectId, $scope.new.statusId, $scope.new.bulk)
+            promise = $rs.userstories.bulkCreate($scope.new.projectId, $scope.new.statusId, $scope.new.bulk, swimlaneId)
             promise.then (result) ->
                 result =  _.map(result.data, (x) => $model.make_model('userstories', x))
                 currentLoading.finish()
                 $rootscope.$broadcast("usform:bulk:success", result)
                 lightboxService.close($el)
 
-            promise.then null, (data) ->
+            promise.then null, (response) ->
                 currentLoading.finish()
-                form.setErrors(data)
-                if data._error_message
-                    $confirm.notify("error", data._error_message)
+                form.setErrors(response)
+                if response.data.status
+                    text = $translate.instant("LIGHTBOX.CREATE_EDIT.ERROR_STATUS")
+                    $confirm.notify("error", text)
+                if response.data.swimlane_id
+                    text = $translate.instant("LIGHTBOX.CREATE_EDIT.ERROR_SWIMLANE")
+                    $confirm.notify("error", text)
+                if response._error_message
+                    $confirm.notify("error", response._error_message)
 
         submitButton = $el.find(".submit-button")
 
         $el.on "submit", "form", submit
+
+        $el.on "click", (event) =>
+            target = angular.element(event.target)
+
+            parentNodes = _.filter(target.parents(), (parent) ->
+                return parent.className == "bulk-status-selector-wrapper"
+            )
+
+            if (!parentNodes.length)
+                $scope.hideStatus()
 
         $scope.$on "$destroy", ->
             $el.off()
@@ -349,6 +423,9 @@ module.directive("tgLbCreateBulkUserstories", [
     "lightboxService",
     "$tgLoading",
     "$tgModel",
+    "$timeout",
+    "$tgConfirm",
+    "$translate",
     CreateBulkUserstoriesDirective
 ])
 
@@ -488,6 +565,7 @@ $confirm, $q, attachmentsService, $template, $compile) ->
                         description: ""
                         tags: []
                         points : {}
+                        swimlane: if data.project.is_kanban_activated then data.project.default_swimlane else null
                         status: if data.statusId then data.statusId else data.project.default_us_status
                         is_archived: false
                     }
@@ -690,7 +768,6 @@ $confirm, $q, attachmentsService, $template, $compile) ->
             item.setAttr($scope.relatedField, $scope.relatedObjectId)
             $repo.save(item, true).then(onSuccess, onError)
 
-
         isDisabledExisting = (item) ->
             return item && item[$scope.relatedField] == $scope.relatedObjectId
 
@@ -727,11 +804,18 @@ $confirm, $q, attachmentsService, $template, $compile) ->
                         if data.ref
                             $rs[schema.model].getByRef(data.project, data.ref, schema.params).then (obj) ->
                                 $rootScope.$broadcast(broadcastEvent, obj)
-            promise.then null, (data) ->
+            promise.then null, (response) ->
                 currentLoading.finish()
-                form.setErrors(data)
-                if data._error_message
-                    $confirm.notify("error", data._error_message)
+                form.setErrors(response)
+                console.log({response})
+                if response.status
+                    text = $translate.instant("LIGHTBOX.CREATE_EDIT.ERROR_STATUS")
+                    $confirm.notify("error", text)
+                if response.swimlane
+                    text = $translate.instant("LIGHTBOX.CREATE_EDIT.ERROR_SWIMLANE")
+                    $confirm.notify("error", text)
+                if response._error_message
+                    $confirm.notify("error", response._error_message)
 
         checkClose = () ->
             if !$scope.obj.isModified()
@@ -791,6 +875,7 @@ $confirm, $q, attachmentsService, $template, $compile) ->
 
         $el.on "click", ".iocaine", (event) ->
             $scope.obj.is_iocaine = not $scope.obj.is_iocaine
+            $scope.$apply()
             $scope.$broadcast("isiocaine:changed", $scope.obj)
 
         $scope.isTeamRequirement = () ->
@@ -951,3 +1036,5 @@ tgResources, $tgResources, $epicsService, tgAnalytics) ->
 module.directive("tgLbRelatetoepic", [
     "$rootScope", "$tgConfirm", "lightboxService", "tgCurrentUserService", "tgResources",
     "$tgResources", "tgEpicsService", "$tgAnalytics", RelateToEpicLightboxDirective])
+
+

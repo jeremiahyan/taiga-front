@@ -1,73 +1,53 @@
 .button,
 %button {
-    @include font-type(text);
+    @include font-type(medium);
     @include font-size(small);
-    align-content: center;
     align-items: center;
     background: transparent;
     border: 0;
-    border-radius: 3px;
-    color: $white;
+    border-radius: 4px;
+    color: $color-black600;
     cursor: pointer;
     display: inline-flex;
     justify-content: center;
-    line-height: 21px;
-    min-height: 37px;
-    padding: 9px 2rem;
-    text-align: center;
+    padding: .5rem 1.5rem;
     text-transform: uppercase;
     vertical-align: middle;
     white-space: normal;
-    &:hover,
-    &.active {
-        color: $white;
-    }
-    &:visited,
-    &:visited:hover {
-        color: $white;
-    }
     &.loading {
         span {
             animation: loading .5s linear;
         }
     }
-    span {
-        color: $white;
-    }
     .icon {
-        color: $white;
+        fill: currentColor;
+        height: 1rem;
+        margin-right: .25rem;
+        width: 1rem;
     }
     &.disabled,
     &[disabled] {
-        background-color: $grey-10;
+        background-color: $color-gray400;
         box-shadow: none;
-        color: $grey-30;
+        color: rgba($color-black900, .5);
         cursor: not-allowed;
-        opacity: .65;
         &:hover {
-            background-color: $grey-10;
-            color: $grey-30;
+            background-color: $color-gray400;
+            color: currentColor;
         }
     }
-    &.button-small {
-        border-radius: 0;
-        padding: 0 .5rem;
-        width: 38px;
-    }
     &.button-large {
-        @include font-size(large);
-        display: flex;
-        flex-direction: column;
-        min-height: 50px;
-        padding: 1rem 4rem;
-        width: 100%;
+        padding: .75rem 4rem;
     }
     &.button-block {
-        width: 100%;
+        display: flex;
+    }
+    span {
+        color: currentColor;
     }
     svg {
-        fill: $white;
-        stroke: $white;
+        fill: currentColor;
+        stroke: none;
     }
 }
 
@@ -78,16 +58,6 @@
     &.active,
     &:visited:hover {
         background: lighten($secondary, 5%);
-    }
-}
-
-.button-primary {
-    @extend %button;
-    background: $primary;
-    &:hover,
-    &.active,
-    &:visited:hover {
-        background: lighten($primary, 5%);
     }
 }
 
@@ -143,12 +113,6 @@
     }
 }
 
-.add-button svg {
-    height: 1.25rem;
-    margin-bottom: -.2rem;
-    width: 1.25rem;
-}
-
 .menu-button {
     @extend %button;
     border-radius: 0;
@@ -177,10 +141,16 @@
 .button-bulk {
     @include font-size(large);
     margin-left: .5rem;
+
+    .icon {
+        height: 1rem;
+        margin: 0;
+        width: 1rem;
+    }
 }
 .button-auth {
     @extend %button;
-    @include font-type(light);
+    @include font-type(regular);
     background: $grayer;
     display: flex;
     width: 100%;
@@ -225,69 +195,33 @@
     width: 100%;
 }
 
-.button-filter {
-    @extend %button;
-    background-color: $grey-10;
-    margin-left: 1rem;
-    position: relative;
-    &:hover {
-        background: $gray-light;
-        svg {
-            fill: $whitish;
-            stroke: $whitish;
-        }
-    }
-    svg {
-        fill: $grey-90;
-        height: 1.1rem;
-        stroke: $grey-90;
-        width: 1.1rem;
-    }
-    .filter-num {
-        @include font-size(small);
-        @include font-type(medium);
-        align-items: center;
-        background: $red;
-        border-radius: 50%;
-        display: inline-flex;
-        height: 1rem;
-        justify-content: center;
-        left: -.5rem;
-        position: absolute;
-        top: -.5rem;
-        width: 1rem;
-    }
-}
-
 .button-group {
+    background-color: $color-gray100;
+    border-bottom: 1px solid $color-link-primary;
     display: flex;
     margin-bottom: 1rem;
     width: 100%;
     input {
         display: none;
         &:checked+label {
-            background-color: $grey-70;
-            color: $white;
-        }
-        &:checked+label:hover {
-            background-color: $grey-70;
+            background-color: $color-white;
+            border: 1px solid $color-link-primary;
+            border-bottom: 1px solid $color-white;
+            border-radius: 4px 4px 0 0;
+            color: $color-link-primary;
         }
         +label {
-            background-color: $grey-20;
+            @include font-type(bold);
+            @include font-size(small);
+            color: $color-link-tertiary;
             cursor: pointer;
             display: block;
-            padding: 2rem 1rem;
-            text-align: center;
-            text-transform: uppercase;
+            padding: .5rem 1.5rem;
+            position: relative;
+            top: 1px;
         }
         +label:hover {
-            background: $grey-10;
-        }
-    }
-    .button-group-single {
-        flex: 1;
-        &:first-child {
-            margin-right: .5rem;
+            color: $color-link-primary;
         }
     }
 }
@@ -297,7 +231,7 @@
         display: none;
         &:checked {
             +label {
-                background-color: $grey-70;
+                background-color: $color-link-primary;
                 transition: background .3s linear;
             }
         }
@@ -309,9 +243,89 @@
         display: block;
         padding: .5rem;
         &:hover {
-            background: $primary-light;
+            background: $color-link-tertiary;
             cursor: pointer;
             transition: background .3s linear;
         }
+    }
+}
+
+// TAIGA 6
+
+.button-primary {
+    @extend %button;
+    background: $color-solid-primary;
+    padding: .25rem;
+
+    &:hover {
+        background: $color-link-primary;
+        color: $color-white;
+    }
+}
+
+.button-secondary {
+    @extend %button;
+    background: $color-gray400;
+    color: $color-black600;
+}
+
+.icon-button-primary {
+    @extend %button;
+    background: $color-solid-primary;
+
+    span {
+        color: $color-black900;
+    }
+}
+
+.form-button {
+    @extend %button;
+    background: none;
+    border-radius: 0;
+    padding: .25rem;
+
+    .icon {
+        @include svg-size(1rem);
+        fill: $color-link-primary;
+        margin: 0;
+    }
+
+    &:hover {
+        background: $color-gray400;
+    }
+}
+
+.filter-button {
+    @extend %button;
+    background: $color-gray100;
+    color: $color-link-primary;
+    padding: 7px 1rem;
+    text-transform: none;
+
+    .text {
+        color: currentColor;
+    }
+
+    svg {
+        fill: $color-link-primary;
+    }
+
+    &:hover,
+    &.active {
+        background: $color-gray400;
+        color: $color-link-primary;
+    }
+
+    .selected-filters {
+        @include font-size(xsmall);
+        align-items: center;
+        background-color: $color-link-red;
+        border-radius: 50%;
+        color: $color-white;
+        display: flex;
+        height: 1rem;
+        justify-content: center;
+        margin-inline-start: .25rem;
+        width: 1rem;
     }
 }

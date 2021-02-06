@@ -1,72 +1,42 @@
 .due-date-button {
-    background: $gray-light;
-    display: inline-block;
-    margin-right: .5rem;
-    padding: 1rem;
-    transition: background .2s linear;
-    transition-delay: .1s;
+    background: $color-gray200;
+    cursor: pointer;
+    &.date-set {
+        color: $color-white;
+    }
     &.closed,
     &.text-button.closed:hover {
-        background: $gray-lighter;
-        border-color: $gray-lighter;
+        background: $color-gray200;
     }
     &.due-set,
     &.text-button.due-set:hover {
-        background: $primary-light;
-        border-color: $primary-light;
+        background: $color-link-primary;
     }
     &.due-soon,
     &.text-button.due-soon:hover {
-        background: $my-sin;
-        border-color: $my-sin;
+        background: $color-solid-red;
     }
     &.past-due,
     &.text-button.past-due:hover {
-        background: $red-light;
-        border-color: $red-light;
+        background: $color-solid-red;
     }
-    &:hover {
-        background: $gray;
-    }
+
     &.editable {
         cursor: pointer;
     }
     &.text-button {
-        color: $white;
+        color: $color-white;
         margin: 0;
         padding: .5rem;
         &.not-set:hover {
-            color: $white;
+            color: $color-white;
         }
         &.not-set {
-            color: $gray;
+            color: $color-gray200;
         }
     }
 }
 
-.due-date-icon {
-    display: inline-block;
-    margin: 0 .25rem;
-    position: relative;
-    svg {
-        fill: $gray-light;
-        transition: fill .2s ease-in;
-    }
-    &.closed svg {
-        fill: $gray-lighter;
-    }
-    &.due-set svg {
-        fill: $primary;
-    }
-    &.due-soon svg {
-        fill: $my-sin;
-    }
-    &.past-due svg {
-        fill: $red-light;
-    }
-}
-
-.backlog-table-body .user-story-name,
 .related-tasks .task-name {
     .due-date-icon {
         top: .1rem;
@@ -100,13 +70,9 @@
     left: 0;
     overflow: visible;
     position: absolute;
-    top: 0;
+    top: 2rem;
     width: auto;
-    z-index: 9999;
-    .pika-single.is-bound {
-        border: 0;
-        box-shadow: none;
-    }
+    z-index: $first-layer;
 }
 
 .date-picker-popover-footer {

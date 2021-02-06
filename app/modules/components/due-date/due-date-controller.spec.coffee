@@ -1,5 +1,5 @@
 ###
-# Copyright (C) 2014-2018 Taiga Agile LLC
+# Copyright (C) 2014-present Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -80,10 +80,11 @@ describe "DueDate", ->
             return null
 
     _inject = ->
-        inject ($controller) ->
+        inject ($controller, _tgDueDateService_) ->
             controller = $controller
 
     beforeEach ->
+        module "taigaCommon"
         module "taigaComponents"
         _mocks()
         _inject()
@@ -101,9 +102,9 @@ describe "DueDate", ->
             expect(ctrl.color()).to.be.eql(null)
 
     describe "when is set", ->
-        normalDue = ['normal due', '#9dce0a']
-        dueSoon = ['due soon', '#ff9900']
-        pastDue = ['past due', '#ff8a84']
+        normalDue = ['normal due', '#93C45D']
+        dueSoon = ['due soon', '#EA7B4B']
+        pastDue = ['past due', '#E44057']
 
         runs = [
             { objType: 'us', days: -1, expect: pastDue },

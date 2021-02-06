@@ -1,5 +1,5 @@
 ###
-# Copyright (C) 2014-2018 Taiga Agile LLC
+# Copyright (C) 2014-present Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -20,6 +20,8 @@
 describe "tgProjectService", ->
     $provide = null
     $interval = null
+    $rootScope = null
+    $q = null
     mocks = {}
     projectService = null
 
@@ -59,8 +61,10 @@ describe "tgProjectService", ->
         _mocks()
 
     _inject = () ->
-        inject (_tgProjectService_, _$interval_) ->
+        inject (_tgProjectService_, _$interval_, _$rootScope_, _$q_) ->
             projectService = _tgProjectService_
+            $rootScope = _$rootScope_
+            $q = _$q_
             $interval = _$interval_
 
     beforeEach ->
@@ -93,8 +97,13 @@ describe "tgProjectService", ->
             members: []
         })
 
-        mocks.projectsService.getProjectBySlug.withArgs('slug-1').promise().resolve(project)
-        mocks.projectsService.getProjectBySlug.withArgs('slug-2').promise().resolve(project)
+        getProjectBySlug1Deferred = $q.defer()
+        mocks.projectsService.getProjectBySlug.withArgs('slug-1').returns(getProjectBySlug1Deferred.promise)
+        getProjectBySlug1Deferred.resolve(project)
+
+        getProjectBySlug2Deferred = $q.defer()
+        mocks.projectsService.getProjectBySlug.withArgs('slug-2').returns(getProjectBySlug2Deferred.promise)
+        getProjectBySlug2Deferred.resolve(project)
 
         projectService.setProjectBySlug('slug-1')
             .then () -> projectService.setProjectBySlug('slug-1')
@@ -102,6 +111,8 @@ describe "tgProjectService", ->
             .finally () ->
                 expect(projectService.setProject).to.be.called.twice
                 done()
+
+        $rootScope.$apply()
 
     it "set project and set active members", () ->
         project = Immutable.fromJS({

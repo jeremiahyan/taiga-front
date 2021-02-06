@@ -1,5 +1,5 @@
 ###
-# Copyright (C) 2014-2018 Taiga Agile LLC
+# Copyright (C) 2014-present Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -48,17 +48,21 @@ class WikiDetailController extends mixOf(taiga.Controller, taiga.PageMixin)
         "$tgAnalytics",
         "$translate",
         "tgErrorHandlingService",
-        "tgProjectService"
+        "tgProjectService",
+        "tgAttachmentsFullService",
     ]
 
     constructor: (@scope, @rootscope, @repo, @model, @confirm, @rs, @params, @q, @location,
-                  @filter, @log, @appMetaService, @navUrls, @analytics, @translate, @errorHandlingService, @projectService) ->
+                  @filter, @log, @appMetaService, @navUrls, @analytics, @translate, @errorHandlingService, @projectService, @attachmentsFullService) ->
         @scope.$on("wiki:links:move", @.moveLink)
         @scope.$on("wikipage:add", @.loadWiki)
         @scope.projectSlug = @params.pslug
         @scope.wikiSlug = @params.slug
         @scope.sectionName = "Wiki"
         @scope.linksVisible = false
+        @scope.attachmentsReady = false
+        @scope.$on "attachments:loaded", () =>
+            @scope.attachmentsReady = true
 
         promise = @.loadInitialData()
 
@@ -81,6 +85,9 @@ class WikiDetailController extends mixOf(taiga.Controller, taiga.PageMixin)
 
         @appMetaService.setAll(title, description)
 
+    loadAttachments: ->
+        @attachmentsFullService.loadAttachments('wikipage', @scope.wikiId, @scope.projectId)
+
     loadProject: ->
         project = @projectService.project.toJS()
 
@@ -97,10 +104,14 @@ class WikiDetailController extends mixOf(taiga.Controller, taiga.PageMixin)
         promise.then (wiki) =>
             @scope.wiki = wiki
             @scope.wikiId = wiki.id
+
+            @.loadAttachments()
+
             return @scope.wiki
 
         promise.then null, (xhr) =>
             @scope.wikiId = null
+            @scope.attachmentsReady = true
 
             if @scope.project.my_permissions.indexOf("add_wiki_page") == -1
                 return null
@@ -238,13 +249,13 @@ $qqueue, $repo, $analytics, activityService) ->
 
             promise.finally(cb)
 
-        uploadFile = (file, cb) ->
-            return attachmentsFullService.addAttachment($scope.project.id, $scope.item.id, 'wiki_page', file).then (result) ->
-                cb(result.getIn(['file', 'name']), result.getIn(['file', 'url']), 'wiki_page', result.getIn(['file', 'id']))
+        $scope.uploadFiles = (file, cb) ->
+            attachmentsFullService.addAttachment($scope.project.id, $scope.item.id, 'wiki_page', file).then (result) ->
+                cb({
+                    default: result.getIn(['file', 'url'])
+                })
 
-        $scope.uploadFiles = (files, cb) ->
-            for file in files
-                uploadFile(file, cb)
+            return
 
         $scope.$watch $attrs.model, (value) ->
             return if not value
@@ -264,18 +275,20 @@ $qqueue, $repo, $analytics, activityService) ->
             <div>
                 <tg-wysiwyg
                     ng-if="editableDescription"
+                    html-read-mode="true"
+                    placeholder="'COMMON.DESCRIPTION.EMPTY '| translate"
                     version='version'
+                    project="project"
                     storage-key='storageKey'
                     content='item.content'
                     on-save='saveDescription(text, cb)'
-                    on-upload-file='uploadFiles(files, cb)'>
+                    on-upload-file='uploadFiles'>
                 </tg-wysiwyg>
 
                 <div
                     class="wysiwyg"
                     ng-if="!editableDescription && item.content.length"
                     ng-bind-html="item.content | markdownToHTML"></div>
-
                 <div
                     class="wysiwyg"
                     ng-if="!editableDescription && !item.content.length">

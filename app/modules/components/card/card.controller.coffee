@@ -1,5 +1,5 @@
 ###
-# Copyright (C) 2014-2018 Taiga Agile LLC
+# Copyright (C) 2014-present Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -26,6 +26,11 @@ class CardController
     hasTasks: () ->
         tasks = @.item.getIn(['model', 'tasks'])
         return tasks and tasks.size > 0
+
+    getTagColor: (color) ->
+        if color
+            return color
+        return "#A9AABC"
 
     hasMultipleAssignedUsers: () ->
         assignedUsers = @.item.getIn(['model', 'assigned_users'])
@@ -55,16 +60,14 @@ class CardController
             slides: @.visible('attachments')
         }
 
-        if!_.isUndefined(@.item.get('foldStatusChanged'))
-            if @.visible('related_tasks') && @.visible('attachments')
+        if !_.isUndefined(@.item.get('foldStatusChanged')) && @.visible('unfold')
+            # by default attachments & task are folded in level 2, see also card-unfold.jadee
+            if @.zoomLevel == 2
+                visibility.related = @.item.get('foldStatusChanged')
+                visibility.slides = @.item.get('foldStatusChanged')
+            else
                 visibility.related = !@.item.get('foldStatusChanged')
                 visibility.slides = !@.item.get('foldStatusChanged')
-            else if @.visible('attachments')
-                visibility.related = @.item.get('foldStatusChanged')
-                visibility.slides = @.item.get('foldStatusChanged')
-            else if !@.visible('related_tasks') && !@.visible('attachments')
-                visibility.related = @.item.get('foldStatusChanged')
-                visibility.slides = @.item.get('foldStatusChanged')
 
         if !@.item.getIn(['model', 'tasks']) || !@.item.getIn(['model', 'tasks']).size
             visibility.related = false

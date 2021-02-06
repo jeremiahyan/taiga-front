@@ -41,10 +41,15 @@ if (argv.theme) {
     themes.set(argv.theme);
 }
 
+const availableThemes = JSON.stringify(themes.availableThemes.map((theme) => {
+    return theme.name;
+}));
+
 var version = "v-" + Date.now();
 
 // userpilot config
 var userpilotToken = process.env.USERPILOT_TOKEN || null;
+var zendeskToken = process.env.ZENDESK_TOKEN || null;
 
 var paths = {};
 paths.app = "app/";
@@ -72,9 +77,8 @@ paths.css_vendor = [
     paths.modules + "dragula/dist/dragula.css",
     paths.modules + "awesomplete/awesomplete.css",
     paths.app + "styles/vendor/*.css",
-    paths.modules + "medium-editor/dist/css/medium-editor.css",
-    paths.modules + "medium-editor/dist/css/themes/default.css",
-    paths.modules + "prismjs/themes/prism-okaidia.css"
+    paths.modules + "@highlightjs/cdn-assets/styles/default.min.css",
+    paths.modules + "@highlightjs/cdn-assets/styles/dracula.min.css"
 ];
 paths.locales = paths.app + "locales/**/*.json";
 paths.modulesLocales = paths.app + "modules/**/locales/*.json";
@@ -152,13 +156,11 @@ paths.coffee_order = [
 ];
 
 paths.libs = [
-    paths.modules + "bluebird/js/browser/bluebird.js",
     paths.modules + "jquery/dist/jquery.js",
     paths.modules + "lodash/lodash.js",
     paths.modules + "messageformat/messageformat.js",
     paths.modules + "angular/angular.js",
     paths.modules + "angular-route/angular-route.js",
-    paths.modules + "angular-sanitize/angular-sanitize.js",
     paths.modules + "angular-animate/angular-animate.js",
     paths.modules + "angular-aria/angular-aria.js",
     paths.modules + "angular-translate/dist/angular-translate.js",
@@ -180,21 +182,19 @@ paths.libs = [
     paths.modules + "intro.js/intro.js",
     paths.modules + "dragula/dist/dragula.js",
     paths.modules + "awesomplete/awesomplete.js",
-    paths.modules + "medium-editor/dist/js/medium-editor.js",
-    paths.modules + "to-markdown/dist/to-markdown.js",
-    paths.modules + "markdown-it/dist/markdown-it.js",
-    paths.modules + "prismjs/prism.js",
-    paths.modules + "prismjs/plugins/custom-class/prism-custom-class.js",
-    paths.modules + "medium-editor-autolist/dist/autolist.js",
     paths.modules + "autolinker/dist/Autolinker.js",
-    paths.app + "js/dom-autoscroller.js",
+    paths.modules + "dom-autoscroller/dist/dom-autoscroller.js",
+    paths.app + "js/angular-sanitize.js",
     paths.app + "js/dragula-drag-multiple.js",
+    paths.app + "js/boards.js",
     paths.app + "js/tg-repeat.js",
     paths.app + "js/sha1-custom.js",
-    paths.app + "js/murmurhash3_gc.js",
-    paths.app + "js/medium-mention.js",
-    paths.app + "js/markdown-it-lazy-headers.js"
+    paths.app + "js/murmurhash3_gc.js"
 ];
+
+if (fs.existsSync(`./elements.js`)) {
+    paths.libs.push(`./elements.js`);
+}
 
 paths.libs.forEach(function(file) {
     try {
@@ -228,7 +228,7 @@ gulp.task("jade", function() {
     return gulp.src(paths.jade)
         .pipe(plumber())
         .pipe(cached("jade"))
-        .pipe(jade({pretty: true, locals:{v:version, userpilotToken: userpilotToken}}))
+        .pipe(jade({pretty: true, locals:{v:version, userpilotToken: userpilotToken, zendeskToken: zendeskToken, availableThemes: availableThemes}}))
         .pipe(gulp.dest(paths.tmp));
 });
 
@@ -237,7 +237,7 @@ gulp.task("jade-inheritance", function() {
         .pipe(plumber())
         .pipe(cached("jade"))
         .pipe(jadeInheritance({basedir: "./app/"}))
-        .pipe(jade({pretty: true, locals:{v: version, userpilotToken: userpilotToken}}))
+        .pipe(jade({pretty: true, locals:{v: version, userpilotToken: userpilotToken, zendeskToken: zendeskToken, availableThemes: availableThemes}}))
         .pipe(gulp.dest(paths.tmp));
 });
 
@@ -327,12 +327,7 @@ gulp.task("app-css", function() {
 });
 
 gulp.task("vendor-css", function() {
-    var isPrism = function(file) {
-        return file.path.indexOf('prism-okaidia') !== -1;
-    };
-
     return gulp.src(paths.css_vendor)
-        .pipe(gulpif(isPrism, classPrefix('prism-')))
         .pipe(concat("vendor.css"))
         .pipe(gulp.dest(paths.tmp));
 });
@@ -387,29 +382,6 @@ gulp.task("styles-dependencies", gulp.series(
 # JS Related tasks
 ##############################################################################
 */
-
-gulp.task("prism-languages", function(cb) {
-    var files = fs.readdirSync(paths.modules + "prismjs/components");
-
-    files = files.filter(function(file) {
-        return file.indexOf('.min.js') != -1;
-    });
-
-    files = files.map(function(file) {
-        return {
-            file: file,
-            name: /prism-(.*)\.min\.js/g.exec(file)[1]
-        };
-    });
-
-    var filesStr = JSON.stringify(files);
-
-    fs.writeFileSync(__dirname + '/prism-languages.json', filesStr, {
-        flag: 'w+'
-    });
-
-    cb();
-});
 
 gulp.task("emoji", function(cb) {
     // don't add to package.json
@@ -545,7 +517,7 @@ gulp.task("moment-locales", function() {
 });
 
 gulp.task("jslibs-watch", function() {
-    return gulp.src(paths.libs)
+    return gulp.src([...paths.libs, paths.modules + "@highlightjs/cdn-assets/highlight.min.js"])
         .pipe(plumber())
         .pipe(concat("libs.js"))
         .pipe(gulp.dest(paths.distVersion + "js/"));
@@ -557,6 +529,9 @@ gulp.task("jslibs-deploy", function() {
         .pipe(sourcemaps.init())
         .pipe(concat("libs.js"))
         .pipe(uglify())
+        //  we can't uglify highlightjs
+        .pipe(gulp.src([paths.modules + "@highlightjs/cdn-assets/highlight.min.js"]))
+        .pipe(concat("libs.js"))
         .pipe(sourcemaps.write("./maps"))
         .pipe(gulp.dest(paths.distVersion + "js/"));
 });
@@ -609,17 +584,6 @@ gulp.task("copy-emojis", function() {
         .pipe(gulp.dest(paths.distVersion + "/emojis/"));
 });
 
-gulp.task("copy-prism", gulp.series("prism-languages", function() {
-    var prismLanguages = require(__dirname + '/prism-languages.json');
-
-    prismLanguages = prismLanguages.map(function(it) {
-        return paths.modules + "prismjs/components/" + it.file;
-    });
-
-    return gulp.src(prismLanguages.concat(__dirname + '/prism-languages.json'))
-        .pipe(gulp.dest(paths.distVersion + "/prism/"));
-}));
-
 gulp.task("copy-theme-images", function() {
     return gulp.src(themes.current.path + "/images/**/*")
         .pipe(gulpif(isDeploy, imagemin({progressive: true})))
@@ -629,6 +593,11 @@ gulp.task("copy-theme-images", function() {
 gulp.task("copy-extras", function() {
     return gulp.src(paths.extras + "/*")
         .pipe(gulp.dest(paths.dist + "/"));
+});
+
+gulp.task("copy-ckeditor-translations", function() {
+    return gulp.src(paths.modules + "taiga-html-editor/packages/ckeditor5-build-classic/build/translations/*")
+        .pipe(gulp.dest(paths.distVersion + "/ckeditor-translations/"));
 });
 
 gulp.task("link-images", gulp.series("copy-images", function(cb) {
@@ -645,11 +614,11 @@ gulp.task("copy", gulp.parallel([
     "copy-theme-fonts",
     "copy-images",
     "copy-emojis",
-    "copy-prism",
     "copy-theme-images",
     "copy-svg",
     "copy-theme-svg",
-    "copy-extras"
+    "copy-extras",
+    "copy-ckeditor-translations"
 ]));
 
 gulp.task("delete-old-version", function() {
@@ -677,7 +646,7 @@ gulp.task("express", function(cb) {
     app.use("/" + version + "/fonts", express.static(__dirname + "/dist/" + version + "/fonts"));
     app.use("/" + version + "/locales", express.static(__dirname + "/dist/" + version + "/locales"));
     app.use("/" + version + "/maps", express.static(__dirname + "/dist/" + version + "/maps"));
-    app.use("/" + version + "/prism", express.static(__dirname + "/dist/" + version + "/prism"));
+    app.use("/" + version + "/ckeditor-translations", express.static(__dirname + "/dist/" + version + "/ckeditor-translations"));
     app.use("/plugins", express.static(__dirname + "/dist/plugins"));
     app.use("/conf.json", express.static(__dirname + "/dist/conf.json"));
     app.use(require('connect-livereload')({

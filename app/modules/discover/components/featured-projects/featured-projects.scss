@@ -3,7 +3,7 @@
 .featured-projects {
     @include centered;
     .title {
-        @include font-type(semibold);
+        @include font-type(medium);
         @include font-size(larger);
         color: $grayer;
         text-align: center;
@@ -14,7 +14,7 @@
     display: flex;
     flex-grow: 0;
     flex-wrap: wrap;
-    justify-content: space-between;
+    justify-content: flex-start;
     margin: 0 -.5rem;
 }
 

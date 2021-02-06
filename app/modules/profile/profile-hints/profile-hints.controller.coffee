@@ -1,5 +1,5 @@
 ###
-# Copyright (C) 2014-2018 Taiga Agile LLC
+# Copyright (C) 2014-present Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -20,10 +20,10 @@
 class ProfileHints
     HINTS: [
         { #hint1
-            url: "https://tree.taiga.io/support/admin/import-export-projects/"
+            url: "https://resources.taiga.io/extend/import-export-projects/"
         },
         { #hint2
-            url: "https://tree.taiga.io/support/admin/custom-fields/"
+            url: "https://resources.taiga.io/features/customisation/#tier-4-custom-fields-and-due-dates"
         },
         { #hint3
         },

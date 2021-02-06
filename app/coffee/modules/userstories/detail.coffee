@@ -1,5 +1,5 @@
 ###
-# Copyright (C) 2014-2018 Taiga Agile LLC
+# Copyright (C) 2014-present Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -49,17 +49,23 @@ class UserStoryDetailController extends mixOf(taiga.Controller, taiga.PageMixin)
         "tgErrorHandlingService",
         "$tgConfig",
         "tgProjectService",
-        "tgWysiwygService"
+        "tgWysiwygService",
+        "tgAttachmentsFullService",
+        "$tgModel"
     ]
 
     constructor: (@scope, @rootscope, @repo, @confirm, @rs, @params, @q, @location,
                   @log, @appMetaService, @navUrls, @analytics, @translate, @modelTransform,
-                  @errorHandlingService, @configService, @projectService, @wysiwigService) ->
+                  @errorHandlingService, @configService, @projectService, @wysiwigService,
+                  @attachmentsFullService, @tgmodel) ->
         bindMethods(@)
 
         @scope.usRef = @params.usref
         @scope.sectionName = @translate.instant("US.SECTION_NAME")
         @scope.tribeEnabled = @configService.config.tribeHost
+        @scope.attachmentsReady = false
+        @scope.$on "attachments:loaded", () =>
+            @scope.attachmentsReady = true
 
         @.initializeEventHandlers()
 
@@ -94,6 +100,9 @@ class UserStoryDetailController extends mixOf(taiga.Controller, taiga.PageMixin)
 
         @appMetaService.setAll(title, description)
 
+    loadAttachments: ->
+        @attachmentsFullService.loadAttachments('us', @scope.usId, @scope.projectId)
+
     initializeEventHandlers: ->
         @scope.relateToEpic = (us) =>
             @scope.$broadcast("relate-to-epic:add", us)
@@ -118,14 +127,18 @@ class UserStoryDetailController extends mixOf(taiga.Controller, taiga.PageMixin)
     initializeOnDeleteGoToUrl: ->
         ctx = {project: @scope.project.slug}
         @scope.onDeleteGoToUrl = @navUrls.resolve("project", ctx)
-        if @scope.project.is_backlog_activated
-            if @scope.us.milestone
-                ctx.sprint = @scope.sprint.slug
-                @scope.onDeleteGoToUrl = @navUrls.resolve("project-taskboard", ctx)
-            else
-                @scope.onDeleteGoToUrl = @navUrls.resolve("project-backlog", ctx)
-        else if @scope.project.is_kanban_activated
+
+        if @params["kanban-status"] && @scope.project.is_kanban_activated
             @scope.onDeleteGoToUrl = @navUrls.resolve("project-kanban", ctx)
+
+        else
+            if @scope.project.is_backlog_activated
+                if @scope.us.milestone
+                    ctx.sprint = @scope.sprint.slug
+                    @scope.onDeleteGoToUrl = @navUrls.resolve("project-taskboard", ctx)
+                else
+                    @scope.onDeleteGoToUrl = @navUrls.resolve("project-backlog", ctx)
+
 
     loadProject: ->
         project = @projectService.project.toJS()
@@ -171,6 +184,13 @@ class UserStoryDetailController extends mixOf(taiga.Controller, taiga.PageMixin)
             @scope.us = us
             @scope.usId = us.id
             @scope.commentModel = us
+
+            @.loadAttachments()
+
+            window.legacyChannel.next({
+                type: 'SET_DETAIL_OBJ',
+                value: us._attrs
+            })
 
             @modelTransform.setObject(@scope, 'us')
 
@@ -282,6 +302,8 @@ class UserStoryDetailController extends mixOf(taiga.Controller, taiga.PageMixin)
         }
 
         return @rs.tasks.reorder(task.id, data, setOrders).then (newTask) =>
+            newTask = @tgmodel.make_model("tasks", newTask)
+
             @scope.tasks =  _.map(@scope.tasks, (it) ->
                 return if it.id == newTask.id then newTask else it
             )

@@ -1,5 +1,5 @@
 ###
-# Copyright (C) 2014-2018 Taiga Agile LLC
+# Copyright (C) 2014-present Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -34,7 +34,7 @@ class TagManagerService extends taiga.Service
 
     initialize: ->
         if not @.accountId
-            @log.debug "Tag Manager: no acount id provided. Disabling."
+            @log.debug "Tag Manager: no account id provided. Disabling."
             return
 
         @.injectTagManager()

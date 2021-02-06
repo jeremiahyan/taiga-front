@@ -1,5 +1,5 @@
 ###
-# Copyright (C) 2014-2018 Taiga Agile LLC
+# Copyright (C) 2014-present Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -68,7 +68,9 @@ class UserSettingsController extends mixOf(taiga.Controller, taiga.PageMixin)
         promise.then null, @.onInitialDataError.bind(@)
 
     loadInitialData: ->
-        @scope.availableThemes = @config.get("themes", [])
+        compiledThemes = window._taigaAvailableThemes
+        @scope.availableThemes = @config.get("themes", []).filter (theme) =>
+            return compiledThemes.includes(theme)
 
         return @rs.locales.list().then (locales) =>
             @scope.locales = locales
@@ -82,9 +84,16 @@ class UserSettingsController extends mixOf(taiga.Controller, taiga.PageMixin)
                @translate.preferredLanguage()
 
     getTheme: ->
-        return @scope.user.theme ||
+        compiledThemes = window._taigaAvailableThemes
+
+        theme = @scope.user.theme ||
                @config.get("defaultTheme") ||
                "taiga"
+
+        if !compiledThemes.includes(theme)
+            theme = "taiga"
+
+        return theme
 
     exportProfile: ->
         onSuccess = (result) ->
@@ -176,7 +185,8 @@ UserAvatarDirective = ($auth, $model, $rs, $confirm) ->
             $confirm.notify('error', response.data._error_message)
 
         # Change photo
-        $el.on "click", ".js-change-avatar", ->
+        $el.on "click", ".js-change-avatar", (e) ->
+            e.preventDefault()
             $el.find("#avatar-field").click()
 
         $el.on "change", "#avatar-field", (event) ->

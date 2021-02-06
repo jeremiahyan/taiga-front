@@ -1,5 +1,5 @@
 ###
-# Copyright (C) 2014-2018 Taiga Agile LLC
+# Copyright (C) 2014-present Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -187,9 +187,10 @@ CustomAttributeValueDirective = ($template, $selectedText, $compile, $translate,
             }
 
             scope = $scope.$new()
-            scope.attributeHtml = wysiwygService.getHTML(value)
+            scope.attributeHtml = wysiwygService.getHTML("#{value}")  # value could be a number
             scope.extra = attributeValue.extra
             scope.model = value
+            scope.project = $scope.project
 
             if editable and (edit or not value)
                 html = templateEdit(ctx)

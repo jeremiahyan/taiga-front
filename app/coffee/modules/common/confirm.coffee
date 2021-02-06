@@ -1,5 +1,5 @@
 ###
-# Copyright (C) 2014-2018 Taiga Agile LLC
+# Copyright (C) 2014-present Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -61,20 +61,23 @@ class ConfirmService extends taiga.Service
         el.find(".message").html(message || '')
 
         # Assign event handlers
-        el.on "click.confirm-dialog", ".button-green", debounce 2000, (event) =>
+        el.on "click.confirm-dialog", ".js-confirm", debounce 2000, (event) =>
             event.preventDefault()
             target = angular.element(event.currentTarget)
+            currentWidth = target.width()
+            target.width(currentWidth)
             currentLoading = @loading()
                 .target(target)
                 .start()
             defered.resolve {
                 finish: (ok=true) =>
+                    target.css("width", "");
                     currentLoading.finish()
                     if ok
                         @.hide(el)
             }
 
-        el.on "click.confirm-dialog", ".button-red", (event) =>
+        el.on "click.confirm-dialog", ".js-cancel", (event) =>
             event.preventDefault()
             defered.reject()
             @.hide(el)
@@ -86,10 +89,51 @@ class ConfirmService extends taiga.Service
 
         return defered.promise
 
+    askDelete: (title, subtitle, message, lightboxSelector=".lightbox-generic-delete") ->
+        defered = @q.defer()
+
+        lightbox = angular.element(lightboxSelector)
+
+        # Render content
+        lightbox.find(".title").text(title || '')
+        lightbox.find(".subtitle").text(subtitle || '')
+        if message
+            message = @filter('textToHTML')(message)
+        lightbox.find(".message").html(message || '')
+
+        # Assign event handlers
+        lightbox.on "click.confirm-dialog", ".js-confirm", debounce 2000, (event) =>
+            event.preventDefault()
+            target = angular.element(event.currentTarget)
+            currentWidth = target.width()
+            target.width(currentWidth)
+            currentLoading = @loading()
+                .target(target)
+                .start()
+            defered.resolve {
+                finish: (ok=true) =>
+                    target.css("width", "");
+                    currentLoading.finish()
+                    if ok
+                        @.hide(lightbox)
+            }
+
+        lightbox.on "click.confirm-dialog", ".js-cancel", (event) =>
+            event.preventDefault()
+            defered.reject()
+            @.hide(lightbox)
+
+        onEsc = () =>
+            @.hide(lightbox)
+
+        @lightboxService.open(lightbox, null, onEsc)
+
+        return defered.promise
+
     askOnDelete: (title, message, subtitle) ->
         if not subtitle?
             subtitle = @translate.instant("NOTIFICATION.ASK_DELETE")
-        return @.ask(title, subtitle, message)
+        return @.askDelete(title, subtitle, message)
 
     askChoice: (title, subtitle, choices, replacement, warning, lightboxSelector=".lightbox-ask-choice") ->
         defered = @q.defer()
@@ -117,7 +161,7 @@ class ConfirmService extends taiga.Service
             choicesField.append(angular.element("<option value='#{key}'>#{value}</option>"))
 
         # Assign event handlers
-        el.on "click.confirm-dialog", "a.button-green", debounce 2000, (event) =>
+        el.on "click.confirm-dialog", ".js-confirm-ask", debounce 2000, (event) =>
             event.preventDefault()
             target = angular.element(event.currentTarget)
             currentLoading = @loading()
@@ -131,7 +175,7 @@ class ConfirmService extends taiga.Service
                         @.hide(el)
             }
 
-        el.on "click.confirm-dialog", ".button-red", (event) =>
+        el.on "click.confirm-dialog", ".js-cancel-ask", (event) =>
             event.preventDefault()
             defered.reject()
             @.hide(el)
@@ -194,11 +238,11 @@ class ConfirmService extends taiga.Service
         el.find(".title").html(title) if title
         el.find(".message").html(message) if message
         if action
-            el.find(".button-green").html(action)
-            el.find(".button-green").attr('title', action)
+            el.find(".js-confirm").html(action)
+            el.find(".js-confirm").attr('title', action)
 
         # Assign event handlers
-        el.on "click.confirm-dialog", ".button-green", (event) =>
+        el.on "click.confirm-dialog", ".js-confirm", (event) =>
             event.preventDefault()
             defered.resolve()
             @.hide(el)

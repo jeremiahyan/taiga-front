@@ -1,5 +1,5 @@
 ###
-# Copyright (C) 2014-2018 Taiga Agile LLC
+# Copyright (C) 2014-present Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -50,16 +50,20 @@ class IssueDetailController extends mixOf(taiga.Controller, taiga.PageMixin)
         "$translate",
         "$tgQueueModelTransformation",
         "tgErrorHandlingService",
-        "tgProjectService"
+        "tgProjectService",
+        "tgAttachmentsFullService",
     ]
 
     constructor: (@scope, @rootscope, @repo, @confirm, @rs, @params, @q, @location,
                   @log, @appMetaService, @analytics, @navUrls, @translate, @modelTransform,
-                  @errorHandlingService, @projectService) ->
+                  @errorHandlingService, @projectService, @attachmentsFullService) ->
         bindMethods(@)
 
         @scope.issueRef = @params.issueref
         @scope.sectionName = @translate.instant("ISSUES.SECTION_NAME")
+        @scope.attachmentsReady = false
+        @scope.$on "attachments:loaded", () =>
+            @scope.attachmentsReady = true
         @.initializeEventHandlers()
 
         promise = @.loadInitialData()
@@ -86,6 +90,9 @@ class IssueDetailController extends mixOf(taiga.Controller, taiga.PageMixin)
             issueDescription: angular.element(@scope.issue.description_html or "").text()
         })
         @appMetaService.setAll(title, description)
+
+    loadAttachments: ->
+        @attachmentsFullService.loadAttachments('issue', @scope.issueId, @scope.projectId)
 
     initializeEventHandlers: ->
         @scope.$on "attachment:create", =>
@@ -138,6 +145,8 @@ class IssueDetailController extends mixOf(taiga.Controller, taiga.PageMixin)
             @scope.issue = issue
             @scope.issueId = issue.id
             @scope.commentModel = issue
+
+            @.loadAttachments()
 
             @modelTransform.setObject(@scope, 'issue')
 

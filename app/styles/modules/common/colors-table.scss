@@ -2,7 +2,7 @@
     overflow-x: inherit;
     .table-header {
         @include font-size(medium);
-        @include font-type(semibold);
+        @include font-type(medium);
         border-bottom: 3px solid $whitish;
         &:hover {
             background: transparent;
@@ -48,6 +48,13 @@
             padding-left: 50px;
             &:hover {
                 cursor: auto;
+            }
+        }
+        &.new-value {
+            padding-left: 3rem;
+            .icon-check-empty,
+            .icon-close {
+                fill: $color-link-primary;
             }
         }
         .color-column {
@@ -192,7 +199,7 @@
         }
         &.icon-check {
             cursor: default;
-            fill: $primary;
+            fill: $color-link-primary;
             opacity: 1;
         }
         &.icon-merge {
@@ -201,14 +208,14 @@
         }
         &.icon-search {
             cursor: none;
-            fill: $primary;
+            fill: $color-link-primary;
             opacity: 1;
         }
         &.icon-drag {
             cursor: move;
         }
         &.icon-trash {
-            fill: $red-light;
+            fill: $color-link-red;
         }
     }
     .gu-mirror {

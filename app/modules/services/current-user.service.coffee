@@ -1,5 +1,5 @@
 ###
-# Copyright (C) 2014-2018 Taiga Agile LLC
+# Copyright (C) 2014-present Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -25,10 +25,11 @@ class CurrentUserService
     @.$inject = [
         "tgProjectsService",
         "$tgStorage",
-        "tgResources"
+        "tgResources",
+        "$q"
     ]
 
-    constructor: (@projectsService, @storageService, @rs) ->
+    constructor: (@projectsService, @storageService, @rs, @q) ->
         @._user = null
         @._projects = Immutable.Map()
         @._projectsById = Immutable.Map()
@@ -90,7 +91,7 @@ class CurrentUserService
         @rs.user.setUserStorage('joyride', @._joyride)
 
     loadJoyRideConfig: () ->
-        return new Promise (resolve) =>
+        return @q (resolve) =>
             if @._joyride != null
                 resolve(@._joyride)
                 return
@@ -112,13 +113,13 @@ class CurrentUserService
                     resolve(@._joyride)
 
     _loadUserInfo: () ->
-        return Promise.all([
+        return @q.all([
             @.loadProjectsList()
         ])
 
     setProjects: (projects) ->
         @._projects = @._projects.set("all", projects)
-        @._projects = @._projects.set("recents", projects.slice(0, 10))
+        @._projects = @._projects.set("recents", projects.slice(0, 4))
         @._projects = @._projects.set("unblocked",
                                       projects.filter((project) -> project.toJS().blocked_code == null))
 

@@ -1,5 +1,5 @@
 ###
-# Copyright (C) 2014-2018 Taiga Agile LLC
+# Copyright (C) 2014-present Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -24,7 +24,10 @@ describe "ImportProjectCtrl", ->
 
     _mockConfig = ->
         mocks.config = Immutable.fromJS({
-            importers: ['trello', 'github', 'jira', 'asana']
+            enableAsanaImporter: true,
+            enableGithubImporter: true,
+            enableJiraImporter: true,
+            enableTrelloImporter: true,
         })
 
         $provide.value("$tgConfig", mocks.config)

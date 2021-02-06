@@ -1,5 +1,5 @@
 ###
-# Copyright (C) 2014-2018 Taiga Agile LLC
+# Copyright (C) 2014-present Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -31,6 +31,17 @@ class ProjectMenuController
         @.project = @projectService.project
         @.sprints = @.project.get('milestones')?.toJS()
         @.active = @._getActiveSection()
+
+        @.projectMenu = {
+            component: 'tg-project-navigation',
+            params: {
+                project: @projectService.project.toJS(),
+            },
+            events: {
+                search: () =>
+                    @.search()
+            }
+        }
 
         @._setVideoConference()
         @._setMenuPermissions()

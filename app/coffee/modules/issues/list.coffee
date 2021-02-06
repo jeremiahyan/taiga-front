@@ -1,5 +1,5 @@
 ###
-# Copyright (C) 2014-2018 Taiga Agile LLC
+# Copyright (C) 2014-present Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -78,6 +78,7 @@ class IssuesController extends mixOf(taiga.Controller, taiga.PageMixin, taiga.Fi
                   @navUrls, @events, @analytics, @translate, @errorHandlingService, @storage, @filterRemoteStorageService, @projectService) ->
         bindMethods(@)
 
+        @showTags = true
         @scope.sectionName = @translate.instant("PROJECT.SECTION.ISSUES")
         @.voting = false
 
@@ -113,6 +114,9 @@ class IssuesController extends mixOf(taiga.Controller, taiga.PageMixin, taiga.Fi
             if @.isFilterDataTypeSelected('status') ||\
                 @.isOrderedBy('status') || @.isOrderedBy('modified')
                     @.loadIssues()
+
+    toggleShowTags: ->
+        @showTags = !@showTags
 
     isOrderedBy: (fieldName) ->
         pattern = new RegExp("-*"+fieldName)
@@ -369,31 +373,10 @@ class IssuesController extends mixOf(taiga.Controller, taiga.PageMixin, taiga.Fi
         })
 
     addIssuesInBulk: ->
-        @rootscope.$broadcast("issueform:bulk", @scope.projectId)
+        project = @projectService.project.toJS()
+        @rootscope.$broadcast("issueform:bulk", project.id)
 
-    upVoteIssue: (issueId) ->
-        @.voting = issueId
-        onSuccess = =>
-            @.loadIssues()
-            @.voting = null
-        onError = =>
-            @confirm.notify("error")
-            @.voting = null
-
-        return @rs.issues.upvote(issueId).then(onSuccess, onError)
-
-    downVoteIssue: (issueId) ->
-        @.voting = issueId
-        onSuccess = =>
-            @.loadIssues()
-            @.voting = null
-        onError = =>
-            @confirm.notify("error")
-            @.voting = null
-
-        return @rs.issues.downvote(issueId).then(onSuccess, onError)
-
-    getOrderBy: ->
+    getIssuesOrderBy: ->
         if _.isString(@location.search().order_by)
             return @location.search().order_by
         else
@@ -402,10 +385,10 @@ class IssuesController extends mixOf(taiga.Controller, taiga.PageMixin, taiga.Fi
 module.controller("IssuesController", IssuesController)
 
 #############################################################################
-## Issues Directive
+## Issues Pagination Directive
 #############################################################################
 
-IssuesDirective = ($log, $location, $template, $compile) ->
+IssuesPaginationDirective = ($log, $location, $template, $compile) ->
     ## Issues Pagination
     template = $template.get("issue/issue-paginator.html", true)
 
@@ -489,25 +472,43 @@ IssuesDirective = ($log, $location, $template, $compile) ->
                 $ctrl.selectFilter("page", pagenum)
                 $ctrl.loadIssues()
 
+    ## Issues Link
+    link = ($scope, $el, $attrs) ->
+        $ctrl = $el.controller()
+        linkPagination($scope, $el, $attrs, $ctrl)
+
+        $scope.$on "$destroy", ->
+            $el.off()
+
+    return {link:link}
+
+module.directive("tgIssuesPagination", ["$log", "$tgLocation", "$tgTemplate", "$compile", IssuesPaginationDirective])
+
+#############################################################################
+## Issues Ordering Directive
+#############################################################################
+
+IssuesOrderingDirective = ($log, $location, $template, $compile) ->
     ## Issues Filters
     linkOrdering = ($scope, $el, $attrs, $ctrl) ->
         # Draw the arrow the first time
 
-        currentOrder = $ctrl.getOrderBy()
+        currentOrder = $ctrl.getIssuesOrderBy()
 
         if currentOrder
             icon = if startswith(currentOrder, "-") then "icon-arrow-up" else "icon-arrow-down"
             colHeadElement = $el.find(".row.title > div[data-fieldname='#{trim(currentOrder, "-")}']")
 
-            svg = $("<tg-svg>").attr("svg-icon", icon)
+            svg = colHeadElement.find('svg')
 
-            colHeadElement.append(svg)
+            svg.addClass(icon)
             $compile(colHeadElement.contents())($scope)
 
-        $el.on "click", ".row.title > div", (event) ->
+        $el.on "click", ".row.title > div:not(.skip-order)", (event) ->
+            event.preventDefault();
             target = angular.element(event.currentTarget)
 
-            currentOrder = $ctrl.getOrderBy()
+            currentOrder = $ctrl.getIssuesOrderBy()
             newOrder = target.data("fieldname")
 
             if newOrder == 'total_voters' and currentOrder != "-total_voters"
@@ -517,31 +518,30 @@ IssuesDirective = ($log, $location, $template, $compile) ->
             $scope.$apply ->
                 $ctrl.replaceFilter("order_by", finalOrder)
 
-                $ctrl.storeFilters($ctrl.params.pslug, $location.search(), $ctrl.filtersHashSuffix)
+                if $ctrl.filtersHashSuffix
+                    $ctrl.storeFilters($ctrl.params.pslug, $location.search(), $ctrl.filtersHashSuffix)
+
                 $ctrl.loadIssues().then ->
                     # Update the arrow
-                    $el.find(".row.title > div > tg-svg").remove()
+                    $el.find('.row.title svg').removeClass()
+                    colHeadElement = $el.find(".row.title > div[data-fieldname='#{trim(finalOrder, "-")}']")
                     icon = if startswith(finalOrder, "-") then "icon-arrow-up" else "icon-arrow-down"
 
-                    svg = $("<tg-svg>")
-                        .attr("svg-icon", icon)
+                    colHeadElement.find('svg').addClass(icon)
 
-                    target.append(svg)
                     $compile(target.contents())($scope)
 
     ## Issues Link
     link = ($scope, $el, $attrs) ->
         $ctrl = $el.controller()
         linkOrdering($scope, $el, $attrs, $ctrl)
-        linkPagination($scope, $el, $attrs, $ctrl)
 
         $scope.$on "$destroy", ->
             $el.off()
 
     return {link:link}
 
-module.directive("tgIssues", ["$log", "$tgLocation", "$tgTemplate", "$compile", IssuesDirective])
-
+module.directive("tgIssuesOrdering", ["$log", "$tgLocation", "$tgTemplate", "$compile", IssuesOrderingDirective])
 
 #############################################################################
 ## Issue status Directive (popover for change status)
@@ -622,7 +622,6 @@ module.directive("tgIssueStatusInlineEdition", ["$tgRepo", "$tgTemplate", "$root
 IssueAssignedToInlineEditionDirective = ($repo, $rootscope, $translate, avatarService, $lightboxFactory) ->
     template = _.template("""
     <img style="background-color: <%- bg %>" src="<%- imgurl %>" alt="<%- name %>"/>
-    <figcaption><%- name %></figcaption>
     """)
 
     link = ($scope, $el, $attrs) ->

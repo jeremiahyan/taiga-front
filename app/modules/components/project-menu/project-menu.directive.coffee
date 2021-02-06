@@ -1,5 +1,5 @@
 ###
-# Copyright (C) 2014-2018 Taiga Agile LLC
+# Copyright (C) 2014-present Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -31,15 +31,18 @@ ProjectMenuDirective = (projectService, lightboxFactory) ->
             return projectService.project
         ), projectChange
 
-        scope.vm.fixed = false
-        $(window).on "scroll", () ->
+        fixed = false
+        topBarHeight = 48
+
+        window.addEventListener "scroll", () ->
             position = $(window).scrollTop()
-            if position > 100 && scope.vm.fixed == false
-                scope.vm.fixed = true
-                scope.$digest()
-            else if position < 100 && scope.vm.fixed == true
-                scope.vm.fixed = false
-                scope.$digest()
+
+            if position > topBarHeight && fixed == false
+                el.find('.sticky-project-menu').addClass('unblock')
+                fixed = true
+            else if position == 0 && fixed == true
+                el.find('.sticky-project-menu').removeClass('unblock')
+                fixed = false
 
     return {
         scope: {},

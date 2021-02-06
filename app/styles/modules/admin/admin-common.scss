@@ -1,18 +1,14 @@
 .admin-common {
-    header {
-        h1 {
-            margin-bottom: 0;
+    header h1 {
+        display: flex;
+
+        .icon-bell {
+            margin-left: .25rem;
         }
     }
     .admin-subtitle {
-        color: $gray-light;
-        margin-bottom: 2rem;
-        a {
-            color: $primary;
-            &:hover {
-                color: $primary-light;
-            }
-        }
+        color: $color-black600;
+        margin-block-end: 1rem;
     }
     .total {
         @include font-size(large);

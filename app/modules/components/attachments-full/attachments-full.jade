@@ -1,4 +1,4 @@
-section.attachments(
+section.attachments.attachment-full(
     tg-attachments-drop="vm.addAttachments(files, false)"
     ng-show="vm.showAttachments()"
 )
@@ -19,12 +19,16 @@ section.attachments(
                 title="{{ 'ATTACHMENT.LIST_VIEW_MODE' | translate }}"
             )
                 tg-svg(svg-icon="icon-list")
+
             .add-attach(
                 tg-check-permission="modify_{{vm.type}}"
                 title!="{{'ATTACHMENT.ADD' | translate}}"
             )
-
-                label.add-attachment-button.button-primary.button-small(for="add-attach")
+                button.btn-icon.add-attachment-button(
+                    type="button"
+                    variant="primary"
+                    ng-click="displayAttachmentInput()"
+                )
                     tg-svg(svg-icon="icon-add")
 
                 input(

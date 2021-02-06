@@ -1,5 +1,5 @@
 ###
-# Copyright (C) 2014-2018 Taiga Agile LLC
+# Copyright (C) 2014-present Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -134,7 +134,11 @@ class FiltersMixin
         ns = "#{projectSlug}:#{filtersHashSuffix}"
         hash = taiga.generateHash([projectSlug, ns])
 
-        return @storage.get(hash) or {}
+        data = @storage.get(hash) or {}
+
+        delete data.q
+
+        return data
 
     formatSelectedFilters: (type, list, urlIds, mode="include") ->
         selectedIds = urlIds.split(',')
@@ -182,11 +186,11 @@ class UsFiltersMixin
         "epic",
         "role",
     ]
+    excludeFilters: []
 
     changeQ: (q) ->
-        @.replaceFilter("q", q)
+        @.filterQ = q
         @.filtersReloadContent()
-        @.generateFilters()
 
     removeFilter: (filter) ->
         @.unselectFilter(filter.dataType, filter.id, false, filter.mode)
@@ -237,7 +241,6 @@ class UsFiltersMixin
 
         loadFilters = {}
         loadFilters.project = @scope.projectId
-        loadFilters.q = urlfilters.q
 
         for key in @.filterCategories
             excludeKey = @.excludePrefix.concat(key)
@@ -318,42 +321,51 @@ class UsFiltersMixin
                     selected = @.formatSelectedFilters(key, dataCollection[key], loadFilters[excludeKey], "exclude")
                     @.selectedFilters = @.selectedFilters.concat(selected)
 
-            @.filterQ = loadFilters.q
+            @.filters = []
 
-            @.filters = [
-                {
+            if !@.excludeFilters.includes('status')
+                @.filters.push({
                     title: @translate.instant("COMMON.FILTERS.CATEGORIES.STATUS"),
                     dataType: "status",
                     content: dataCollection.status
-                },
-                {
+                })
+
+            if !@.excludeFilters.includes('tags')
+                @.filters.push({
                     title: @translate.instant("COMMON.FILTERS.CATEGORIES.TAGS"),
                     dataType: "tags",
                     content: dataCollection.tags,
                     hideEmpty: true,
                     totalTaggedElements: tagsWithAtLeastOneElement.length
-                },
-                {
-                    title: @translate.instant("COMMON.FILTERS.CATEGORIES.ASSIGNED_USERS"),
+                })
+
+            if !@.excludeFilters.includes('assigned_to')
+                @.filters.push({
+                    title: @translate.instant("COMMON.FILTERS.CATEGORIES.ASSIGNED_TO"),
                     dataType: "assigned_users",
                     content: dataCollection.assigned_users
-                },
-                {
+                })
+
+            if !@.excludeFilters.includes('role')
+                @.filters.push({
                     title: @translate.instant("COMMON.FILTERS.CATEGORIES.ROLE"),
                     dataType: "role",
                     content: dataCollection.role
-                },
-                {
+                })
+
+            if !@.excludeFilters.includes('created_by')
+                @.filters.push({
                     title: @translate.instant("COMMON.FILTERS.CATEGORIES.CREATED_BY"),
                     dataType: "owner",
                     content: dataCollection.owner
-                },
-                {
+                })
+
+            if !@.excludeFilters.includes('epic')
+                @.filters.push({
                     title: @translate.instant("COMMON.FILTERS.CATEGORIES.EPIC"),
                     dataType: "epic",
                     content: dataCollection.epic
-                }
-            ]
+                })
 
             @.customFilters = []
             _.forOwn customFiltersRaw, (value, key) =>

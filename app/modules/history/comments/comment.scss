@@ -6,7 +6,6 @@
     }
     .read-mode {
         border: 1px solid $gray-light;
-        height: 55px;
         .wysiwyg {
             padding: .5rem;
         }
@@ -64,7 +63,7 @@
         margin-bottom: 1rem;
     }
     .comment-creator {
-        color: $primary;
+        color: $color-link-primary;
         margin-right: .5rem;
     }
     .comment-date {

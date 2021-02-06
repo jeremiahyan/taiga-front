@@ -1,5 +1,5 @@
 ###
-# Copyright (C) 2014-2018 Taiga Agile LLC
+# Copyright (C) 2014-present Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -38,6 +38,8 @@ dueDatePopoverDirective = ($translate, datePickerConfigService) ->
             el.picker = new Pikaday(datePickerConfig)
 
             el.on "click", ".due-date-button", (event) ->
+                event.preventDefault()
+                event.stopPropagation()
                 if scope.open
                     el.picker.hide()
                     return

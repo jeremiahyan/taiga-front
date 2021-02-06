@@ -1,5 +1,5 @@
 ###
-# Copyright (C) 2014-2018 Taiga Agile LLC
+# Copyright (C) 2014-present Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -18,7 +18,11 @@
 ###
 
 class FilterController
-    @.$inject = ['$translate']
+    @.$inject = [
+        '$translate',
+    ]
+
+    @.activeCustomFilter = null
 
     constructor: (@translate) ->
         @.opened = null
@@ -28,12 +32,17 @@ class FilterController
             "exclude": @translate.instant("COMMON.FILTERS.ADVANCED_FILTERS.EXCLUDE"),
         }
         @.filterMode = 'include'
-        @.showAdvancedFilter = false
         @.customFilterForm = false
         @.customFilterName = ''
 
-    toggleAdvancedFilter: () ->
-        @.showAdvancedFilter = !@.showAdvancedFilter
+        @.$onChanges = (changes) ->
+            if changes.selectedFilters
+                @.getIncludedFilters()
+                @.getExcludedFilters()
+
+        @.includedFilters = @.getIncludedFilters()
+        @.excludedFilters = @.getExcludedFilters()
+
 
     toggleFilterCategory: (filterName) ->
         if @.opened == filterName
@@ -50,13 +59,8 @@ class FilterController
         @.opened = 'custom-filter'
         @.customFilterName = ''
 
-    changeQ: () ->
-        @.onChangeQ({q: @.q})
-
     unselectFilter: (filter) ->
-        @.onRemoveFilter({filter: filter})
-
-    unselectFilter: (filter) ->
+        @.activeCustomFilter = null
         @.onRemoveFilter({filter: filter})
 
     selectFilter: (filterCategory, filter) ->
@@ -65,14 +69,24 @@ class FilterController
             filter: filter
             mode: @.filterMode
         }
-
+        @.activeCustomFilter = null
         @.onAddFilter({filter: filter})
 
     removeCustomFilter: (filter) ->
+        @.activeCustomFilter = null
         @.onRemoveCustomFilter({filter: filter})
 
     selectCustomFilter: (filter) ->
+        @.activeCustomFilter = filter.id
         @.onSelectCustomFilter({filter: filter})
+
+    getIncludedFilters: () ->
+        @.includedFilters = _.filter @.selectedFilters, (it) ->
+            return it.mode == 'include'
+
+    getExcludedFilters: () ->
+        @.excludedFilters = _.filter @.selectedFilters, (it) ->
+            return it.mode == 'exclude'
 
     isFilterSelected: (filterCategory, filter) ->
         return !!_.find @.selectedFilters, (it) ->

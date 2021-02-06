@@ -1,6 +1,69 @@
 # Changelog
 
-## Unreleased
+## 6.0.3 (2021-02-07)
+
+### Misc
+
+- Debug mode now is disabled by default
+- Minor bug fix.
+
+## 6.0.0 (2021-02-02)
+
+### Features
+
+- Swimlanes
+
+- Generate docker image
+
+- Major UI changes
+
+### Misc
+
+- Improved performance in Kanban
+
+## 5.5.10 (2021-01-04)
+
+### Fix
+
+- Fix comments style.
+
+## 5.5.9 (2020-12-21)
+
+### Features
+
+- Render custom fields and block reason as Markdown.
+
+### Fix
+
+- Fix attachment refresh feature.
+
+- Fix welcome email template layout.
+
+### Misc
+
+- Several minor changes.
+
+### i18n
+
+- Add Arabic.
+
+- Update Russian.
+
+## 5.5.8 (2020-11-11)
+
+### Misc
+
+- Fix error when zendesk is not loaded.
+
+## 5.5.7 (2020-11-11) [YANKED]
+
+### i18n
+
+- Update Japanese and Italian translations.
+
+### Misc
+
+- Add Zendesk for integrated support.
 
 ## 5.5.6 (2020-10-07)
 

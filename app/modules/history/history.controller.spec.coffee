@@ -1,5 +1,5 @@
 ###
-# Copyright (C) 2014-2018 Taiga Agile LLC
+# Copyright (C) 2014-present Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -62,6 +62,12 @@ describe "HistorySection", ->
         }
         provide.value "tgActivityService", mocks.tgActivityService
 
+    _mockTgWysiwygService = () ->
+        mocks.tgWysiwygService = {
+            refreshAttachmentURL: sinon.stub()
+        }
+        provide.value "tgWysiwygService", mocks.tgWysiwygService
+
     _mocks = () ->
         module ($provide) ->
             provide = $provide
@@ -70,6 +76,7 @@ describe "HistorySection", ->
             _mocktgStorage()
             _mockTgProjectService()
             _mockTgActivityService()
+            _mockTgWysiwygService()
             return null
 
     beforeEach ->

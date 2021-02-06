@@ -1,5 +1,5 @@
 ###
-# Copyright (C) 2014-2018 Taiga Agile LLC
+# Copyright (C) 2014-present Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -28,6 +28,19 @@ class AttachmentsService
     ]
 
     constructor: (@confirm, @config, @translate, @rs) ->
+        @.types = {
+            epics: "epic",
+            userstories: "us",
+            userstory: "us",
+            issues: "issue",
+            tasks: "task",
+            epic: "epic",
+            us: "us"
+            issue: "issue",
+            task: "task",
+            wiki: "wiki",
+            wikipage: "wiki"
+        }
         @.maxFileSize = @.getMaxFileSize()
 
         if @.maxFileSize
@@ -58,7 +71,7 @@ class AttachmentsService
             return attachments.sortBy (attachment) => attachment.get('order')
 
     get: (type, id) ->
-        return @rs.attachments.get(type, id)
+        return @rs.attachments.get(@.types[type], id)
 
     delete: (type, id) ->
         return @rs.attachments.delete(type, id)

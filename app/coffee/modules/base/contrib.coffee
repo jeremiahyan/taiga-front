@@ -1,5 +1,5 @@
 ###
-# Copyright (C) 2014-2018 Taiga Agile LLC
+# Copyright (C) 2014-present Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -28,10 +28,11 @@ class ContribController extends taiga.Controller
         "$tgRepo",
         "$tgResources",
         "$tgConfirm",
-        "tgProjectService"
+        "tgProjectService",
+        "tgErrorHandlingService"
     ]
 
-    constructor: (@rootScope, @scope, @params, @repo, @rs, @confirm, @projectService) ->
+    constructor: (@rootScope, @scope, @params, @repo, @rs, @confirm, @projectService, @errorHandlingService) ->
         @scope.currentPlugin = _.head(_.filter(@rootScope.adminPlugins, {"slug": @params.plugin}))
         @scope.projectSlug = @params.pslug
 
@@ -39,6 +40,9 @@ class ContribController extends taiga.Controller
 
     loadProject: ->
         project = @projectService.project.toJS()
+
+        if not project.i_am_admin
+            @errorHandlingService.permissionDenied()
 
         @scope.projectId = project.id
         @scope.project = project

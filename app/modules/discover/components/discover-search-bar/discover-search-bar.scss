@@ -8,15 +8,15 @@
         margin: 0 auto;
     }
     .title {
-        @include font-type(light);
+        @include font-type(regular);
         @include font-size(xxlarge);
         line-height: 3rem;
         margin-bottom: 0;
     }
     .project-number {
-        @include font-type(light);
+        @include font-type(regular);
         @include font-size(large);
-        color: $primary;
+        color: $color-black600;
     }
     form {
         margin: 0 30%;

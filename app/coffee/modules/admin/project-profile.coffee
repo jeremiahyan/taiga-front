@@ -1,5 +1,5 @@
 ###
-# Copyright (C) 2014-2018 Taiga Agile LLC
+# Copyright (C) 2014-present Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -264,9 +264,9 @@ ProjectModulesDirective = ($rootScope, $repo, $confirm, $loading) ->
 
             $scope.$applyAsync(submit)
 
+
         $el.on "submit", "form", (event) ->
             event.preventDefault()
-
             submit()
 
         $el.on "click", ".save", (event) ->
@@ -361,7 +361,7 @@ ProjectExportDirective = ($window, $rs, $confirm, $translate, $analytics) ->
             hideResult()
             showButtons()
 
-        $el.on "click", "a.button-export", debounce 2000, (event) =>
+        $el.on "click", ".button-export", debounce 2000, (event) =>
             event.preventDefault()
 
             onSuccess = (result) =>

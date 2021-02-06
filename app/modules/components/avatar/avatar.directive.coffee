@@ -1,5 +1,5 @@
 ###
-# Copyright (C) 2014-2018 Taiga Agile LLC
+# Copyright (C) 2014-present Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -28,8 +28,8 @@ AvatarDirective = (avatarService) ->
             avatar = avatarService.getAvatar(user, attributeName)
 
             el.attr('src', avatar.url)
-            el.attr('title', "#{avatar.username}")
-            el.attr('alt', "#{avatar.username}")
+            el.attr('title', "#{avatar.fullName}")
+            el.attr('alt', "#{avatar.fullName}")
             el.css('background', avatar.bg or "")
 
     return {

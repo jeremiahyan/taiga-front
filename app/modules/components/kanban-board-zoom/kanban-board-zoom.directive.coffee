@@ -1,5 +1,5 @@
 ###
-# Copyright (C) 2014-2018 Taiga Agile LLC
+# Copyright (C) 2014-present Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -19,19 +19,24 @@
 
 KanbanBoardZoomDirective = (storage, projectService) ->
     link = (scope, el, attrs, ctrl) ->
-        scope.zoomIndex = storage.get("kanban_zoom") or 2
-        scope.levels = 5
+        scope.zoomIndex = storage.get("kanban_zoom", 1)
+
+        scope.levels = 4
 
         zooms = [
-            ["ref"],
-            ["subject"],
-            ["owner", "tags", "extra_info"],
-            ["unfold"],
-            ["attachments", "related_tasks", "empty_extra_info"]
+            ["assigned_to", "ref"],
+            ["subject", "card-data", "assigned_to_extended"],
+            ["tags", "extra_info", "unfold"],
+            ["related_tasks", "attachments"]
         ]
 
         getZoomView = (zoomIndex = 0) ->
-            if storage.get("kanban_zoom") != zoomIndex
+            if zoomIndex > 3
+                zoomIndex = 3
+
+            zoomIndex = Number(zoomIndex)
+
+            if Number(storage.get("kanban_zoom")) != zoomIndex
                 storage.set("kanban_zoom", zoomIndex)
 
             return _.reduce zooms, (result, value, key) ->
@@ -43,14 +48,6 @@ KanbanBoardZoomDirective = (storage, projectService) ->
         scope.$watch 'zoomIndex', (zoomLevel) ->
             zoom = getZoomView(zoomLevel)
             scope.onZoomChange({zoomLevel: zoomLevel, zoom: zoom})
-
-        unwatch = scope.$watch () ->
-            return projectService.project
-        , (project) ->
-            if project
-                if project.get('my_permissions').indexOf("view_tasks") == -1
-                    scope.levels = 4
-                unwatch()
 
     return {
         scope: {

@@ -1,5 +1,5 @@
 ###
-# Copyright (C) 2014-2018 Taiga Agile LLC
+# Copyright (C) 2014-present Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -25,10 +25,11 @@ class ProjectService
         "tgProjectsService",
         "tgXhrErrorService",
         "tgUserActivityService",
-        "$interval"
+        "$interval",
+        "$q"
     ]
 
-    constructor: (@rootScope,  @projectsService, @xhrError, @userActivityService, @interval) ->
+    constructor: (@rootScope,  @projectsService, @xhrError, @userActivityService, @interval, @q) ->
         @._project = null
         @._section = null
         @._sectionsBreadcrumb = Immutable.List()
@@ -90,7 +91,7 @@ class ProjectService
         @._activeMembers = @._project.get('members').filter (member) -> member.get('is_active')
 
     setProjectBySlug: (pslug) ->
-        return new Promise (resolve, reject) =>
+        return @q (resolve, reject) =>
             if !@.project || @.project.get('slug') != pslug
                 @projectsService
                     .getProjectBySlug(pslug)

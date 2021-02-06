@@ -1,5 +1,5 @@
 ###
-# Copyright (C) 2014-2018 Taiga Agile LLC
+# Copyright (C) 2014-present Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -37,7 +37,7 @@ PromoteToUsButtonDirective = ($rootScope, $rs, $confirm, $translate) ->
 
             $rs[item._name].promoteToUserStory(item.id, item.project).then(onSuccess, onError)
 
-        $el.on "click", "a", (event) ->
+        $el.on "click", ".promote-button", (event) ->
             event.preventDefault()
             item = $model.$modelValue
             itemType = _.get({ tasks: 'task', issues: 'issue' }, item._name)

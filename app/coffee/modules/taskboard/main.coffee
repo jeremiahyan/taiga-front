@@ -1,5 +1,5 @@
 ###
-# Copyright (C) 2014-2018 Taiga Agile LLC
+# Copyright (C) 2014-present Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -55,7 +55,9 @@ class TaskboardController extends mixOf(taiga.Controller, taiga.PageMixin, taiga
         "tgTaskboardIssues",
         "$tgStorage",
         "tgFilterRemoteStorageService",
-        "tgLightboxFactory"
+        "tgLightboxFactory",
+        "$timeout",
+        "tgProjectService"
     ]
 
     excludePrefix: "exclude_"
@@ -69,11 +71,16 @@ class TaskboardController extends mixOf(taiga.Controller, taiga.PageMixin, taiga
 
     constructor: (@scope, @rootscope, @repo, @confirm, @rs, @rs2, @params, @q, @appMetaService, @location, @navUrls,
                   @events, @analytics, @translate, @errorHandlingService, @taskboardTasksService,
-                  @taskboardIssuesService, @storage, @filterRemoteStorageService, @lightboxFactory) ->
+                  @taskboardIssuesService, @storage, @filterRemoteStorageService, @lightboxFactory, @timeout, @projectService) ->
         bindMethods(@)
         @taskboardTasksService.reset()
         @scope.userstories = []
         @.openFilter = false
+        @.filterQ = ''
+        @.backToBacklogUrl = @navUrls.resolve('project-backlog', {
+            project: @projectService.project.get('slug'),
+            ref: @params.ref
+        })
 
         return if @.applyStoredFilters(@params.pslug, "tasks-filters")
 
@@ -83,8 +90,23 @@ class TaskboardController extends mixOf(taiga.Controller, taiga.PageMixin, taiga
         taiga.defineImmutableProperty @.scope, "usTasks", () =>
             return @taskboardTasksService.usTasks
 
+        taiga.defineImmutableProperty @.scope, "taskMap", () =>
+            return @taskboardTasksService.taskMap
+
         taiga.defineImmutableProperty @.scope, "milestoneIssues", () =>
             return @taskboardIssuesService.milestoneIssues
+
+        taiga.defineImmutableProperty @.scope, "tasksByUs", () =>
+            return @taskboardTasksService.tasksByUs
+
+        @scope.issues = []
+
+        @scope.$watch 'milestoneIssues', () =>
+            if @scope.milestoneIssues
+                @scope.issues = @scope.milestoneIssues.toJS().map (milestoneIssue) =>
+                    return @taskboardIssuesService.issuesRaw.find (rawIssue) => milestoneIssue.model.id == rawIssue.id
+            else
+                @scope.issues = []
 
     firstLoad: () ->
         promise = @.loadInitialData()
@@ -95,7 +117,7 @@ class TaskboardController extends mixOf(taiga.Controller, taiga.PageMixin, taiga
         promise.then null, @.onInitialDataError.bind(@)
 
     setZoom: (zoomLevel, zoom) ->
-        if @.zoomLevel == zoomLevel
+        if @.zoomLevel == Number(zoomLevel)
             return null
 
         @.isFirstLoad = !@.zoomLevel
@@ -116,11 +138,8 @@ class TaskboardController extends mixOf(taiga.Controller, taiga.PageMixin, taiga
                 @.zoomLoading = false
                 @taskboardTasksService.resetFolds()
 
-        if @.zoomLevel == '0'
-            @rootscope.$broadcast("sprint:zoom0")
-
     changeQ: (q) ->
-        @.replaceFilter("q", q)
+        @.filterQ = q
         @.loadTasks()
         @.generateFilters()
 
@@ -172,7 +191,6 @@ class TaskboardController extends mixOf(taiga.Controller, taiga.PageMixin, taiga
         loadFilters = {}
         loadFilters.project = @scope.projectId
         loadFilters.milestone = @scope.sprintId
-        loadFilters.q = urlfilters.q
 
         for key in @.filterCategories
             excludeKey = @.excludePrefix.concat(key)
@@ -233,8 +251,6 @@ class TaskboardController extends mixOf(taiga.Controller, taiga.PageMixin, taiga
                 if loadFilters[excludeKey]
                     selected = @.formatSelectedFilters(key, dataCollection[key], loadFilters[excludeKey], "exclude")
                     @.selectedFilters = @.selectedFilters.concat(selected)
-
-            @.filterQ = loadFilters.q
 
             @.filters = [
                 {
@@ -436,7 +452,7 @@ class TaskboardController extends mixOf(taiga.Controller, taiga.PageMixin, taiga
         return @rs.issues.listInProject(@scope.projectId, @scope.sprintId, params).then (issues) =>
             @taskboardIssuesService.init(@scope.project, @scope.usersById, @scope.issueStatusById)
             @taskboardIssuesService.set(issues)
-            @scope.taskBoardLoading = false
+            @.initIssues = true
 
     loadTasks: ->
         params = {}
@@ -445,7 +461,14 @@ class TaskboardController extends mixOf(taiga.Controller, taiga.PageMixin, taiga
             params.include_attachments = 1
 
         params = _.merge params, @location.search()
+        params.q = @.filterQ
+
         return @rs.tasks.list(@scope.projectId, @scope.sprintId, null, params).then (tasks) =>
+            @.notFoundTasks = false
+
+            if !tasks.length && ((@.filterQ && @.filterQ.length) || Object.keys(@location.search()).length)
+                @.notFoundTasks = true
+
             @taskboardTasksService.init(@scope.project, @scope.usersById)
             @taskboardTasksService.set(tasks)
 
@@ -460,6 +483,8 @@ class TaskboardController extends mixOf(taiga.Controller, taiga.PageMixin, taiga
         ])
 
     loadInitialData: ->
+        @.initialLoad = false
+        @.initIssues = false
         params = {
             pslug: @params.pslug
             sslug: @params.sslug
@@ -475,7 +500,12 @@ class TaskboardController extends mixOf(taiga.Controller, taiga.PageMixin, taiga
                       .then =>
                           @.generateFilters()
 
-                          return @.loadTaskboard().then(=> @.setRolePoints())
+                          return @.loadTaskboard()
+                            .then () =>
+                                @timeout () =>
+                                    @.initialLoad = true
+                                , 0, false
+                                @.setRolePoints()
 
     showPlaceHolder: (statusId, usId) ->
         if !@taskboardTasksService.tasksRaw.length
@@ -710,7 +740,7 @@ class TaskboardController extends mixOf(taiga.Controller, taiga.PageMixin, taiga
         pointsByRole = _.reduce @scope.userstories, (result, us, key) =>
             _.forOwn us.points, (pointId, roleId) ->
                 role = getRole(roleId)
-                point = getPoint(pointId)
+                point = getPoint(pointId) || { value: 0 }
 
                 if !result[role.id]
                     result[role.id] = role
@@ -722,6 +752,12 @@ class TaskboardController extends mixOf(taiga.Controller, taiga.PageMixin, taiga
         , {}
 
         @scope.pointsByRole = Object.keys(pointsByRole).map (key) -> return pointsByRole[key]
+
+    getIssuesOrderBy: ->
+        if _.isString(@location.search().order_by)
+            return @location.search().order_by
+        else
+            return "created_date"
 
 module.controller("TaskboardController", TaskboardController)
 
@@ -740,10 +776,10 @@ TaskboardDirective = ($rootscope) ->
             target.toggleClass('active')
             $rootscope.$broadcast("taskboard:graph:toggle-visibility")
 
-        tableBodyDom = $el.find(".taskboard-table-body")
+        tableBodyDom = $el.find('[data-js="taskboard-table-hscroll"]')
         tableBodyDom.on "scroll", (event) ->
             target = angular.element(event.currentTarget)
-            tableHeaderDom = $el.find(".taskboard-table-header .taskboard-table-inner")
+            tableHeaderDom = $el.find(".taskboard-table-inner")
             tableHeaderDom.css("left", -1 * target.scrollLeft())
 
         $scope.$on "$destroy", ->
@@ -758,12 +794,19 @@ module.directive("tgTaskboard", ["$rootScope", TaskboardDirective])
 #############################################################################
 
 TaskboardSquishColumnDirective = (rs) ->
-    avatarWidth = 40
-    maxColumnWidth = 300
+    gridGap = 5
+    horizontalPadding = 32
+    avatarWidth = 30
+    maxColumnWidth = 292
+    zoom0ColumnWidth = 182
+    minWidth = avatarWidth + horizontalPadding
+    maxRows = 3
+    firstLoad = false
 
     link = ($scope, $el, $attrs) ->
-        $scope.$on "sprint:zoom0", () =>
-            recalculateTaskboardWidth()
+        $scope.$watch "ctrl.zoom", () =>
+            if firstLoad
+                recalculateTaskboardWidth()
 
         $scope.$on "sprint:task:moved", () =>
             recalculateTaskboardWidth()
@@ -781,6 +824,9 @@ TaskboardSquishColumnDirective = (rs) ->
 
             recalculateTaskboardWidth()
 
+        $foldStatusArchived = (status) ->
+            $scope.foldStatus(status)
+
         $scope.foldUs = (rowId) ->
             $scope.usFolded[rowId] = !!!$scope.usFolded[rowId]
             rs.tasks.storeUsRowModes($scope.projectId, $scope.sprintId, $scope.usFolded)
@@ -788,67 +834,72 @@ TaskboardSquishColumnDirective = (rs) ->
             recalculateTaskboardWidth()
 
         getCeilWidth = (usId, statusId) =>
+            isStatusFolded = !!$scope.statusesFolded[statusId]
+            isUSFolded = !!$scope.usFolded[usId]
+
             if usId
                 tasks = $scope.usTasks.getIn([usId.toString(), statusId.toString()]).size
             else
                 tasks = $scope.usTasks.getIn(['null', statusId.toString()]).size
 
-            if $scope.statusesFolded[statusId]
-                if tasks and $scope.usFolded[usId]
-                    tasksMatrixSize = Math.round(Math.sqrt(tasks))
-                    width = avatarWidth * tasksMatrixSize
-                else
+            if tasks && (isUSFolded || isStatusFolded)
+                if isUSFolded
+                    columns = Math.ceil(tasks / maxRows)
+                    width = avatarWidth * columns + ((columns - 1) * gridGap) + horizontalPadding
+                else if isStatusFolded
                     width = avatarWidth
+            else
+                width = 0
 
-                return width
-
-            return 0
+            return width
 
         setStatusColumnWidth = (statusId, width) =>
             column = $el.find(".squish-status-#{statusId}")
 
-            if width
-                column.css('max-width', width)
-            else
-                if $scope.ctrl.zoomLevel == '0'
-                    column.css("max-width", 148)
-                else
-                    column.css("max-width", maxColumnWidth)
+            if width < minWidth
+                width = minWidth
 
-        refreshTaskboardTableWidth = () =>
-            columnWidths = []
-
-            columns = $el.find(".task-colum-name")
-
-            columnWidths = _.map columns, (column) ->
-                return $(column).outerWidth(true)
-
-            totalWidth = _.reduce columnWidths, (total, width) ->
-                return total + width
-
-            $el.find('.taskboard-table-inner').css("width", totalWidth)
-
-            issuesBoxWidth = $el.find('.issues-row .taskboard-row-title-box').outerWidth(true)
-            $el.find('.issues-row').css("width", totalWidth - columnWidths.pop())
-
-            issueCardMaxWidth = if $scope.ctrl.zoomLevel == '0' then 128 else 280
-            $el.find('.issues-row .taskboard-cards-box .card').css("max-width", issueCardMaxWidth)
+            column.css('max-width', width)
+            return width
 
         recalculateStatusColumnWidth = (statusId) =>
+            isStatusFolded = !!$scope.statusesFolded[statusId]
+            initialWidth = 0
+
+            if isStatusFolded
+                initialWidth = avatarWidth
+            else
+                initialWidth = maxColumnWidth
+
+                if Number($scope.ctrl.zoomLevel) == 0
+                    initialWidth = zoom0ColumnWidth
+
             #unassigned ceil
+            folded = !!$scope.statusesFolded[statusId]
             statusFoldedWidth = getCeilWidth(null, statusId)
 
+            if statusFoldedWidth < initialWidth
+                statusFoldedWidth = initialWidth
+
             _.forEach $scope.userstories, (us) ->
+                isUSFolded = !!$scope.usFolded[us.id]
                 width = getCeilWidth(us.id, statusId)
+
                 statusFoldedWidth = width if width > statusFoldedWidth
 
-            setStatusColumnWidth(statusId, statusFoldedWidth)
+            return setStatusColumnWidth(statusId, statusFoldedWidth)
 
         recalculateTaskboardWidth = () =>
-            _.forEach $scope.taskStatusList, (status) ->
-                recalculateStatusColumnWidth(status.id)
+            total = _.reduce $scope.taskStatusList, (acc, status) ->
+                return acc + recalculateStatusColumnWidth(status.id) + 5
+            , 0
 
-            refreshTaskboardTableWidth()
+            $el.find('.taskboard-table-inner').css("width", maxColumnWidth + total)
+            if !firstLoad
+                requestAnimationFrame () ->
+                    $el.addClass('animations')
+
+            firstLoad = true
 
             return
 

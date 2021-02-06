@@ -3,7 +3,7 @@
         "YES": "Si",
         "NO": "No",
         "OR": "o",
-        "I_GET_IT": "OK, I get it",
+        "I_GET_IT": "Ok, entés",
         "LOADING": "Carregant...",
         "DATE": "DD MMM YYYY",
         "DATETIME": "DD MMM YYYY HH:mm",
@@ -11,18 +11,18 @@
         "CANCEL": "Següent",
         "ACCEPT": "Acceptar",
         "DELETE": "Esborrar",
-        "UNLINK": "Unlink",
+        "UNLINK": "Desconnecta",
         "CREATE": "Crear",
         "ADD": "Afegir",
-        "BACK": "Back",
-        "COPY_TO_CLIPBOARD": "Copy to clipboard",
-        "COPIED_TO_CLIPBOARD": "Text has been copied to clipboard",
+        "BACK": "Enrere",
+        "COPY_TO_CLIPBOARD": "Copia al porta-retalls",
+        "COPIED_TO_CLIPBOARD": "El text ha sigut copiat al porta-retalls",
         "EDIT": "edita",
         "DRAG": "Moure",
         "TAG_LINE": "La teua eïna de gestió de projectes àgil, gratuita i de codi obert ",
         "TAG_LINE_2": "ESTIMA EL TEU PROJECTE",
         "BLOCK": "Bloquejar",
-        "BLOCK_TITLE": "Block this item, for example if it has a dependency that can not be satisfied",
+        "BLOCK_TITLE": "Bloqueja aquest element, per exemple, si té una dependència que no pot ser satisfeta",
         "BLOCKED": "Bloquejat",
         "UNBLOCK": "Desbloquejar",
         "UNBLOCK_TITLE": "Desbloquejar aquest element",
@@ -34,7 +34,7 @@
         "PLUGINS": "Plugins",
         "ONE_ITEM_LINE": "In item per línia",
         "NEW_BULK": "Nova inserció en grup",
-        "SUBTASKS": "Subtasks",
+        "RELATED_TASKS": "Tasques",
         "PREVIOUS": "Previous",
         "NEXT": "Següent",
         "LOGOUT": "Surt",
@@ -53,7 +53,13 @@
             "EDIT": "Edit card",
             "DELETE": "Delete card",
             "DELETE_ISSUE": "Esborrar incidència",
-            "DETACH_ISSUE_FROM_SPRINT": "Detach issue from sprint"
+            "DETACH_ISSUE_FROM_SPRINT": "Detach from sprint",
+            "PTS": "{{pts}} pts",
+            "DUE_DATE": "Due date: {{date}}",
+            "NO_PTS": "N/E",
+            "ESTIMATION": "Estimation",
+            "TASKS": "{{completed}} tasks of {{total}} completed",
+            "EXTRA_ASSIGNED_USERS": "{{total}} more assigned users"
         },
         "FORM_ERRORS": {
             "DEFAULT_MESSAGE": "Aquest valor pareix invàlid.",
@@ -124,7 +130,7 @@
         "USER_STORY": "Història d'usuari",
         "TASK": "Tasca",
         "ISSUE": "incidència",
-        "EPIC": "Epic",
+        "EPIC": "Èpica",
         "TAGS": {
             "PLACEHOLDER": "Enter tag",
             "DELETE": "Elimina l'etiqueta",
@@ -147,7 +153,7 @@
             "TYPE": "Tipus",
             "SEVERITY": "Severitat",
             "PRIORITY": "Prioritat",
-            "ASSIGNED": "Assigned",
+            "ASSIGNED": "Assignat",
             "ASSIGNED_TO": "Assignat a",
             "ASSIGNED_USERS": "Assigned users",
             "POINTS": "Punts",
@@ -159,7 +165,7 @@
             "DUE_DATE_REASON": "Due date reason"
         },
         "ROLES": {
-            "ALL": "Tot"
+            "ALL": "All points"
         },
         "ASSIGNED_TO": {
             "NOT_ASSIGNED": "Sense assignar",
@@ -196,14 +202,13 @@
             "UNWATCH": "Unwatch",
             "WATCHERS": "Watchers",
             "BUTTON_TITLE": "Watch/Unwatch this item",
-            "COUNTER_TITLE": "{total, plural, =1{one watcher} other{# watchers}}"
+            "COUNTER_TITLE": "{total, plural, =1{un seguidor} altre{# seguidors}}"
         },
         "VOTE_BUTTON": {
             "BUTTON_TITLE": "Upvote/Downvote this item",
             "COUNTER_TITLE": "{total, plural, =1{one vote} other{# votes}}"
         },
         "PROMOTE_TO_US": "Promote to user story",
-        "PROMOTE_TASK_TO_US": "Promote task to user story",
         "PROMOTED_ISSUES": "This issue has been promoted to",
         "PROMOTED_TASKS": "This task has been promoted to",
         "CONFIRM_PROMOTE": {
@@ -220,21 +225,24 @@
             "CUSTOM_FIELDS": "Camps personalitzats",
             "SAVE": "Save custom field",
             "EDIT": "Edit custom field",
-            "DELETE": "Esborrar atribut personalitzat",
-            "CONFIRM_DELETE": "Remember that all values in this custom field will be deleted.\n Are you sure you want to continue?"
+            "DELETE": "Delete custom fields",
+            "CONFIRM_DELETE": "Remember that all values in this custom field will be deleted."
         },
         "FILTERS": {
-            "INPUT_PLACEHOLDER": "Descripció o referència",
+            "INPUT_PLACEHOLDER": "subject or reference",
             "TITLE_ACTION_FILTER_BUTTON": "cerca",
-            "TITLE": "Filtres",
+            "TITLE": "Filtres personalitzats",
             "TITLE_ACTION_SEARCH": "Cerca",
-            "ACTION_SAVE_CUSTOM_FILTER": "Guarda com a filtre",
+            "ACTION_ADD": "Afegir",
+            "ACTION_SAVE_CUSTOM_FILTER": "save filter",
             "PLACEHOLDER_FILTER_NAME": "Escriu el filtre i pressiona Intro",
             "APPLIED_FILTERS_NUM": "filters applied",
             "TITLE_ADVANCED_FILTER": "Advanced",
             "ADVANCED_FILTERS": {
                 "INCLUDE": "Include",
-                "EXCLUDE": "Exclude"
+                "EXCLUDE": "Exclude",
+                "INCLUDED": "Filtered by:",
+                "EXCLUDED": "Excluded:"
             },
             "CATEGORIES": {
                 "TYPE": "Tipus",
@@ -247,7 +255,7 @@
                 "ROLE": "Rol",
                 "CREATED_BY": "Creat per",
                 "CUSTOM_FILTERS": "Filtres personalitzats",
-                "EPIC": "Epic"
+                "EPIC": "Èpica"
             }
         },
         "WYSIWYG": {
@@ -260,7 +268,7 @@
         },
         "PERMISIONS_CATEGORIES": {
             "EPICS": {
-                "NAME": "Epics",
+                "NAME": "Èpiques",
                 "VIEW_EPICS": "View epics",
                 "ADD_EPICS": "Add epics",
                 "MODIFY_EPICS": "Modify epics",
@@ -328,11 +336,11 @@
         "ACTION_ENTER": "Entrar",
         "ACTION_SIGN_IN": "Entrar",
         "PLACEHOLDER_AUTH_PASSWORD": "Contrasenya (sensible a majúscules i minúscules)",
-        "ALT_LOGIN": "Or login with"
+        "ALT_LOGIN": "O inicia sessió amb"
     },
     "LOGIN_FORM": {
-        "ERROR_AUTH_INCORRECT": "According to the Taiga, your username/email or password are incorrect.",
-        "SUCCESS": "Welcome to Taiga."
+        "ERROR_AUTH_INCORRECT": "Segons la Taiga, el vostre nom d'usuari/correu electrònic o contrasenya són incorrectes.",
+        "SUCCESS": "Benvinguts a Taiga"
     },
     "REGISTER": {
         "PAGE_TITLE": "Registre - Taiga",
@@ -358,9 +366,9 @@
         "PLACEHOLDER_FIELD": "Nom d'usuari o correu electrònic",
         "ACTION_RESET_PASSWORD": "Resetejar contrasenya",
         "LINK_CANCEL": "No, porta'm enrere, crec que ja ho recordo.",
-        "SUCCESS_TITLE": "Check your inbox!",
-        "SUCCESS_TEXT": "We sent you an email with the instructions to set a new password",
-        "ERROR": "According to the Taiga, you are not registered yet."
+        "SUCCESS_TITLE": "Revisa el teu correu",
+        "SUCCESS_TEXT": "T'hem enviat un correu amb les instruccions per a crear una nova contrasenya.",
+        "ERROR": "Segons Taiga, no estàs registrat."
     },
     "CHANGE_PASSWORD": {
         "PAGE_TITLE": "Canvi de contrasenya - Taiga",
@@ -371,7 +379,7 @@
         "PLACEHOLDER_NEW_PASSWORD": "Escriu una nova contrasenya",
         "FIELD_RETYPE_PASSWORD": "Reescriu contrasenya",
         "PLACEHOLDER_RETYPE_PASSWORD": "Reescriu contrasenya",
-        "ERROR_PASSWORD_MATCH": "The passwords don't match"
+        "ERROR_PASSWORD_MATCH": "Les contrasenyes no coincideixen"
     },
     "CHANGE_PASSWORD_RECOVERY_FORM": {
         "TITLE": "Crea una nova contrasenya",
@@ -379,53 +387,52 @@
         "PLACEHOLDER_NEW_PASSWORD": "nova contrasenya",
         "PLACEHOLDER_RE_TYPE_NEW_PASSWORD": "Reescriu la nova contrasenya",
         "ACTION_RESET_PASSWORD": "Resetejar contrasenya",
-        "ERROR": "The Taiga can't find your request to recover your password. Try to ask for it again.",
-        "SUCCESS": "The Taiga saved your new password.<br /> Try to <strong>sign in</strong> with it."
+        "SUCCESS": "Taiga ha salvat la teua contrasenya <br /> Prova <strong>d'accedir</strong> amb ella."
     },
     "INVITATION": {
         "PAGE_TITLE": "Acceptar invitació - Taiga",
         "PAGE_DESCRIPTION": "Accepta la invitació a un projecte en Taiga, una plataforma de gestió de projectes per a empreses àgils que necessiten una eïna sencilla i elegant que et permet gaudir del teu treball"
     },
     "INVITATION_LOGIN_FORM": {
-        "NOT_FOUND": "The Taiga can't find your invitation.",
+        "NOT_FOUND": "Taiga no troba la teua invitació.",
         "SUCCESS": "T'has incorporat a este projecte. Vos donem la benvinguda a {{project_name}}"
     },
     "HOME": {
         "PAGE_TITLE": "Home - Taiga",
         "PAGE_DESCRIPTION": "La home de Taiga amb els teus projectes principals, totes les històries d'usuari, tasques i incidències que tens assignades i aquelles que estàs Watching",
-        "EMPTY_WORKING_ON": "<strong>It feels empty, doesn't it?</strong> Start working with Taiga and you'll see here the stories, tasks and issues you are working on.",
-        "EMPTY_WATCHING": "<strong>Follow</strong> user stories, tasks, issues in your projects and be notified about their changes :)",
-        "EMPTY_PROJECT_LIST": "You don't have any project yet",
+        "EMPTY_WORKING_ON": "<strong>Sembla buit, no?</strong> Comença a treballar amb Taiga i ací veuràs un resum de les històries, tasques i incidències en les quals estàs treballant.",
+        "EMPTY_WATCHING": "<strong>Segueix</strong> històries d'usuari, tasques i incidències en els teus projectes i rep notificacions dels canvis :)",
+        "EMPTY_PROJECT_LIST": "No tens cap projecte encara",
         "WORKING_ON_SECTION": "En Progrés",
         "WATCHING_SECTION": "Observant",
         "DASHBOARD": "Panell principal",
-        "SET_HIDDEN": "Set as hidden",
-        "SET_VISIBLE": "Set as visible",
-        "NO_HIDDEN_ITEMS": "You have no hidden items",
-        "HIDE_HIDDEN": "Do not show hidden objects",
-        "SHOW_HIDDEN": "Show hidden objects"
+        "SET_HIDDEN": "Amaga",
+        "SET_VISIBLE": "Mostra",
+        "NO_HIDDEN_ITEMS": "No tens elements amagats",
+        "HIDE_HIDDEN": "No mostres els elements amagats",
+        "SHOW_HIDDEN": "Mostra els objectes amagats"
     },
     "EPICS": {
         "TITLE": "EPICS",
-        "SECTION_NAME": "Epics",
-        "EPIC": "EPIC",
-        "PAGE_TITLE": "Epics - {{projectName}}",
-        "PAGE_DESCRIPTION": "The epics list of the project {{projectName}}: {{projectDescription}}",
+        "SECTION_NAME": "Èpiques",
+        "EPIC": "ÈPICA",
+        "PAGE_TITLE": "Èpiques - {{projectName}}",
+        "PAGE_DESCRIPTION": "La llista d'èpiques del projecte {{projectName}}: {{projectDescription}}",
         "DASHBOARD": {
-            "ADD": "+ ADD EPIC",
+            "ADD": "+ AFEGIR ÈPICA",
             "UNASSIGNED": "Sense assignar"
         },
         "EMPTY": {
-            "TITLE": "It looks like there aren't any epics yet",
-            "EXPLANATION": "Epics are items at a higher level that encompass user stories.<br />Epics are at the top of the hierarchy and can be used to group user stories together.",
-            "HELP": "Learn more about epics"
+            "TITLE": "Sembla que no tens cap èpica encara",
+            "EXPLANATION": "Èpiques són elements a un nivell superior que engloben històries d'usuari. <br /> Èpiques estan a la part superior de la jerarquia i poden ser emprades per a agrupar històries d'usuari.",
+            "HELP": "Llig més sobre èpiques"
         },
         "TABLE": {
             "VOTES": "Vots",
             "NAME": "Nom",
             "PROJECT": "Projecte",
             "SPRINT": "Sprint",
-            "ASSIGNED_TO": "Assigned",
+            "ASSIGNED_TO": "Assignat",
             "STATUS": "Estats",
             "PROGRESS": "Progress",
             "CLOSED_US": "Closed user stories",
@@ -433,10 +440,10 @@
             "VIEW_OPTIONS": "View options"
         },
         "CREATE": {
-            "TITLE": "New Epic",
-            "PLACEHOLDER_DESCRIPTION": "Please add descriptive text to help others better understand this epic",
-            "TEAM_REQUIREMENT": "Team requirement",
-            "CLIENT_REQUIREMENT": "Client requirement",
+            "TITLE": "Nova èpica",
+            "PLACEHOLDER_DESCRIPTION": "Per favor, afegeix una descripció per ajudar que altres puguen entendre millor aquesta èpica",
+            "TEAM_REQUIREMENT": "Requeriment d'equip",
+            "CLIENT_REQUIREMENT": "Requeriment de client",
             "BLOCKED": "Bloquejat",
             "BLOCKED_NOTE_PLACEHOLDER": "Why is this epic blocked?",
             "CREATE_EPIC": "Create epic"
@@ -488,8 +495,8 @@
             "PAGE_TITLE": "Afiliacions - {{projectName}}",
             "ADD_BUTTON": "+ Nou membre",
             "ADD_BUTTON_TITLE": "Afegir nou membre",
-            "UPGRADE_BUTTON": "Upgrade your plan",
-            "LIMIT_USERS_WARNING_MESSAGE_FOR_ADMIN": "If you would like to <strong>add more members</strong>, please contact the project owner <a href='mailto:{{ owner_email }}' title='{{ owner_email }}'>{{ owner_email }}</a>",
+            "UPGRADE_BUTTON": "Millora el teu pla",
+            "LIMIT_USERS_WARNING_MESSAGE_FOR_ADMIN": "Si vols <strong>afegir més membres</strong>, contacta amb el propietari del projecte <a href='mailto:{{ owner_email }}' title='{{ owner_email }}'>{{ owner_email }}</a>",
             "LIMIT_USERS_WARNING_MESSAGE_FOR_OWNER": "This project has reached its limit of <strong>({{members}})</strong> allowed members. If you would like to increase that limit please contact the administrator."
         },
         "PROJECT_EXPORT": {
@@ -507,9 +514,9 @@
         },
         "MODULES": {
             "TITLE": "Mòdules",
-            "EPICS": "Epics",
-            "EPICS_DESCRIPTION": "Visualize and manage the most strategic part of your project",
-            "BACKLOG": "Backlog",
+            "EPICS": "Èpiques",
+            "EPICS_DESCRIPTION": "Visualitza i gestiona la part més estratègica del teu projecte",
+            "BACKLOG": "Scrum",
             "BACKLOG_DESCRIPTION": "Organitza les històries d'usuari per a mantindre una vista organitzada i prioritzada del treball.",
             "NUMBER_SPRINTS": "Expected number of sprints",
             "NUMBER_SPRINTS_HELP": "0 for an undetermined number",
@@ -572,7 +579,7 @@
             "DELETE_SUBTITLE": "You are going to delete the current CSV data access url. Are you sure?"
         },
         "CSV": {
-            "SECTION_TITLE_EPIC": "epics reports",
+            "SECTION_TITLE_EPIC": "Informe d'èpiques",
             "SECTION_TITLE_US": "informes d'històries d'usuari",
             "SECTION_TITLE_TASK": "infome de tasques",
             "SECTION_TITLE_ISSUE": "informe d'incidències",
@@ -663,6 +670,20 @@
             "BEFORE_AFTER": "Before/after",
             "BEFORE": "Before",
             "AFTER": "Past"
+        },
+        "PROJECT_KANBAN_OPTIONS": {
+            "TITLE": "Kanban options",
+            "SUBTITLE": "Enable swimlanes to use in your workflow and set WIP limits to restrict the maximun number of user stories on each status.",
+            "SWIMLANES": "Swimlanes",
+            "ACTION_ADD_SWIMLANE": "New swimlane",
+            "SWIMLANE_NAME_EXISTS": "This swimlane name already exists",
+            "NO_SWIMLANES": "There are no swimlanes yet",
+            "SWIMLANE_NAME": "Swimlane name",
+            "POPUP_NEW_SWIMLANE": "If you had some user stories created, you will find them on this swimlane.",
+            "WIP_LIMITS": "WIP LIMITS",
+            "WIP_LIMIT_PLACEHOLDER": "WIP limit not set",
+            "WIP_LIMIT_INPUT": "Set WIP limit",
+            "DEFAULT": "Default"
         },
         "ROLES": {
             "PAGE_TITLE": "Rols - {{projectName}}",
@@ -774,7 +795,7 @@
             "ACTION_ADD_STATUS": "Afegeix un estat nou",
             "IS_ARCHIVED_COLUMN": "Archived",
             "IS_CLOSED_COLUMN": "Tancat",
-            "WIP_LIMIT_COLUMN": "Limit WIP",
+            "WIP_LIMIT_COLUMN": "WIP limit",
             "PLACEHOLDER_WRITE_NAME": "Escriviu un nom per al nou estat"
         },
         "MENU": {
@@ -792,7 +813,8 @@
             "TYPES": "Tipus",
             "CUSTOM_FIELDS": "Camps personalitzats",
             "TAGS": "Etiquetes",
-            "DUE_DATES": "Due dates"
+            "DUE_DATES": "Due dates",
+            "KANBAN_OPTIONS": "Kanban options"
         },
         "SUBMENU_ROLES": {
             "TITLE": "Rols",
@@ -853,7 +875,7 @@
             "FILTER_TYPE_ALL_TITLE": "Mostrar tot",
             "FILTER_TYPE_PROJECTS": "Projectes",
             "FILTER_TYPE_PROJECTS_TITLE": "Mostra només projectes",
-            "FILTER_TYPE_EPICS": "Epics",
+            "FILTER_TYPE_EPICS": "Èpiques",
             "FILTER_TYPE_EPICS_TITLE": "Show only epics",
             "FILTER_TYPE_USER_STORIES": "Históries",
             "FILTER_TYPE_USER_STORIES_TITLE": "Veure només històries d'usuari",
@@ -866,43 +888,51 @@
     },
     "PROJECT": {
         "PAGE_TITLE": "{{projectName}}",
-        "HELP": "Reorder your projects to set at the top the most used ones.<br/> The top 10 projects will appear in the top navigation bar project list",
+        "HELP": "Reorder your projects to set at the top the most used ones.<br/> The top 4 projects will appear in the top navigation bar project list",
         "PRIVATE": "Projecte privat",
         "LOOKING_FOR_PEOPLE": "Este projecte busca col·laboracions",
-        "FANS_COUNTER_TITLE": "{total, plural, =1{one fan} other{# fans}}",
-        "WATCHERS_COUNTER_TITLE": "{total, plural, =1{one watcher} other{# watchers}}",
-        "MEMBERS_COUNTER_TITLE": "{total, plural, =1{one member} other{# members}}",
+        "FANS_COUNTER_TITLE": "{total, plural, =1{un fan} altres{# fans}}",
+        "WATCHERS_COUNTER_TITLE": "{total, plural, =1{un seguidor} altre{# seguidors}}",
+        "MEMBERS_COUNTER_TITLE": "{total, plural, =1{un membre} altres{# membres}}",
         "BLOCKED_PROJECT": {
-            "BLOCKED": "Blocked project",
+            "BLOCKED": "Projecte bloquejat",
             "THIS_PROJECT_IS_BLOCKED": "This project is temporarily blocked",
             "TO_UNBLOCK_CONTACT_THE_ADMIN_STAFF": "In order to unblock your projects, contact the administrator."
         },
         "SECTION": {
             "SEARCH": "Cerca",
             "TIMELINE": "Timeline",
-            "EPICS": "Epics",
+            "EPICS": "Èpiques",
             "BACKLOG": "Backlog",
             "KANBAN": "Kanban",
             "ISSUES": "Incidències",
             "WIKI": "Wiki",
             "TEAM": "Equip",
-            "MEETUP": "Trobar-se",
-            "ADMIN": "Admin"
+            "MEETUP": "Meetup",
+            "SETTINGS": "Preferències",
+            "SCRUM": "Scrum",
+            "COLLAPSE_MENU": "collapse menu"
         },
         "NAVIGATION": {
-            "ACTION_CREATE_PROJECT": "Crear projecte",
+            "PROJECTS": "Projectes",
+            "ACCOUNT_SETTINGS": "Account settings",
+            "ACTION_CREATE_PROJECT": "New project",
+            "ACTION_CREATE_PROJECT_FIRST": "Create your first project",
+            "ACTION_CREATE_PROJECT_FIRST_TEXT": "You don’t have any projects yet. Create one now, invite your team and start using Taiga to the fullest.",
+            "VIEW_ALL_PROJECTS": "View all projects",
             "MANAGE_PROJECTS": "Gestiona els projectes",
             "TITLE_CREATE_PROJECT": "Crear projecte",
-            "HELP_TITLE": "Pàgina d'ajuda de Taiga",
-            "HELP": "Ajuda",
+            "HELP_TITLE": "Ajuda",
             "HOMEPAGE": "Homepage",
-            "FEEDBACK_TITLE": "Enviar suggerències",
-            "FEEDBACK": "Suggerències",
+            "TAIGA_RESOURCES_TITLE": "Go to Taiga resources",
+            "TAIGA_RESOURCES": "Taiga Resources",
+            "FEEDBACK_TITLE": "Write to us with your feedback",
+            "FEEDBACK": "Fes una pregunta",
             "NOTIFICATIONS_TITLE": "Edita la configuració de les teves notificacions",
             "NOTIFICATIONS": "Notificacions",
             "VIEW_PROFILE_TITLE": "Visualitza el perfil",
             "VIEW_PROFILE": "Visualitza el perfil",
-            "USER_SETTINGS_TITLE": "Editeu les vostres preferències",
+            "EDIT_PROFILE": "Edita el perfil",
             "USER_SETTINGS": "Configuració d'usuari",
             "CHANGE_PASSWORD_TITLE": "Canvi de contrasenya",
             "CHANGE_PASSWORD": "Canvi de contrasenya",
@@ -915,13 +945,13 @@
             "LIKED": "T'agrada",
             "UNLIKE": "No t'agrada",
             "BUTTON_TITLE": "Favoriteja o desfavoriteja aquest projecte",
-            "COUNTER_TITLE": "{total, plural, =1{one fan} other{# fans}}"
+            "COUNTER_TITLE": "{total, plural, =1{un fan} altres{# fans}}"
         },
         "WATCH_BUTTON": {
             "BUTTON_TITLE": "Segueix este projecte i edita les notificacions",
             "WATCH": "Segueix",
             "WATCHING": "Observant",
-            "COUNTER_TITLE": "{total, plural, =1{one watcher} other{# watchers}}",
+            "COUNTER_TITLE": "{total, plural, =1{un seguidor} altre{# seguidors}}",
             "OPTIONS": {
                 "NOTIFY_ALL": "Receive all notifications",
                 "NOTIFY_ALL_TITLE": "Receive all notifications for this project",
@@ -983,7 +1013,7 @@
             "WRITE_EMAIL": "Or if you want, write the email that this user uses in Taiga",
             "SEARCH_CONTACT": "Or if you want, search in your contacts",
             "WRITE_EMAIL_LABEL": "Write the email that this user uses in Taiga",
-            "ACCEEDE": "Accede",
+            "ACCEEDE": "Access",
             "PROJECT_MEMBERS": "Project Members",
             "PROCESS_DESCRIPTION": "Tell us to whom from Taiga you want to assign the tasks of {{platform}}",
             "MATCH": "Is <strong>{{user_external}}</strong> the same person as <strong>{{user_internal}}</strong>?",
@@ -1044,7 +1074,7 @@
             "GITHUB": {
                 "SELECTOR": "Import your GitHub project issues",
                 "CHOOSE_PROJECT": "Find the project you want to import",
-                "NO_PROJECTS": "It seems you have no porjects in GitHub",
+                "NO_PROJECTS": "It seems you have no projects in GitHub",
                 "HOW_DO_YOU_WANT_TO_IMPORT": "How do you want to import your issues into Taiga?",
                 "KANBAN_PROJECT": "As user stories in a kanban project",
                 "KANBAN_PROJECT_DESCRIPTION": "After that you can enable scrum with backlog.",
@@ -1056,7 +1086,7 @@
             "ASANA": {
                 "SELECTOR": "Import your Asana project and choose how to manage it",
                 "CHOOSE_PROJECT": "Choose project that you want to import",
-                "NO_PROJECTS": "It seems you have no porjects in Asana",
+                "NO_PROJECTS": "It seems you have no projects in Asana",
                 "KANBAN_PROJECT": "Kanban",
                 "SCRUM_PROJECT": "Scrum",
                 "CREATE_AS_SCRUM_DESCRIPTION": "The tasks and sub-tasks of your project will be created as Taiga user stories and tasks.",
@@ -1066,7 +1096,7 @@
                 "SELECTOR": "Import your Jira project and choose how to manage it",
                 "HOW_TO_CONFIGURE": "(configuration help)",
                 "CHOOSE_PROJECT": "Choose project or board that you want to import",
-                "NO_PROJECTS": "It seems you have no porjects or boards in Jira",
+                "NO_PROJECTS": "It seems you have no projects or boards in Jira",
                 "URL": "Your Jira URL",
                 "KANBAN_PROJECT": "Kanban",
                 "SCRUM_PROJECT": "Scrum",
@@ -1082,9 +1112,9 @@
     "LIGHTBOX": {
         "DELETE_ACCOUNT": {
             "CONFIRM": "Segur que vols borrar el teu compte de Taiga? ",
-            "CANCEL": "Back to settings",
-            "ACCEPT": "Delete account",
-            "BLOCK_PROJECT": "Note that all the projects you own projects will be <strong>blocked</strong> after you delete your account. If you do not want a project blocked, transfer ownership to another member of each project prior to deleting your account."
+            "CANCEL": "Tornar a preferències",
+            "ACCEPT": "Esborrar compte",
+            "BLOCK_PROJECT": "Tin en compte que tots els projectes que posseeixes seran <strong>bloquejats</strong>quan esborres el teu compte. Si no vols que algun projecte es bloquege, assegurat que el transfereixes a un altre membre de Taiga abans d'esborrar el compte."
         },
         "DELETE_PROJECT": {
             "TITLE": "Esborrar projecte",
@@ -1098,12 +1128,12 @@
         },
         "SELECT_USER": {
             "SEARCH": "Cerca usuaris",
-            "REMOVE": "Remove user",
+            "REMOVE": "Esborra usuari",
             "ROLE": "Rol"
         },
         "ADD_MEMBER": {
             "TITLE": "Nou membre",
-            "PLACEHOLDER": "Filter users or write an email to invite",
+            "PLACEHOLDER": "Filtra els usuaris o escriu un email per convidar",
             "ADD_EMAIL": "Add email",
             "REMOVE": "Remove",
             "INVITE": "Invite",
@@ -1112,9 +1142,14 @@
             "HELP_TEXT": "Si els usuaris ja estàn registrats en Taiga seràn afegits automàticament. Si no, rebran una invitació."
         },
         "FEEDBACK": {
-            "TITLE": "Contans...",
-            "COMMENT": "...un bug, una sugerència, algo bonic... inclús el teu pitjor malson amb Taiga.",
-            "ACTION_SEND": "Enviar suggerències"
+            "TITLE": "Fes una pregunta",
+            "COMMENT": "Deixa'ns un missatge",
+            "ACTION_SEND": "Send Message",
+            "YOU_CAN_ALSO": "You can also:",
+            "CREATE": "Create an issue on this",
+            "PUBLIC": "public Taiga project",
+            "EMAIL": "Send us a e-mail directly to",
+            "SUPPORT": "support@taiga.io"
         },
         "SEARCH": {
             "TITLE": "Cerca",
@@ -1144,7 +1179,17 @@
             "EXISTING_ISSUE": "Existing issue",
             "CHOOSE_EXISTING_ISSUE": "Which issue?",
             "ADD_ISSUE": "Afegeix incidència",
-            "FILTER_ISSUES": "Filter issues"
+            "FILTER_ISSUES": "Filter issues",
+            "SWIMLANE": "Swimlane",
+            "SELECT_SWIMLANE": "Select swimlane",
+            "SELECT_STATUS": "Select status",
+            "DEFAULT": "Default",
+            "ERROR_STATUS": "Changes cannot be saved because there is a problem with the selected status.",
+            "ERROR_SWIMLANE": "Changes cannot be saved because there is a problem with the selected swimlane."
+        },
+        "DISABLE_KANBAN": {
+            "TITLE": "Disable kanban",
+            "MESSAGE": "This project has swimlanes. They will be gone but your user stories will not be deleted"
         },
         "DELETE_DUE_DATE": {
             "TITLE": "Delete due date",
@@ -1202,6 +1247,15 @@
             "TITLE_ACTION_DELETE_DUE_DATE": "Delete due date",
             "SUBTITLE_ACTION_DELETE_DUE_DATE": "Are you sure you want to delete the due date status {{due_date_status_name}}?"
         },
+        "ADMIN_KANBAN_POWERUPS": {
+            "TITLE_ACTION_DELETE_SWIMLANE": "Delete swimlane",
+            "SUBTITLE_ACTION_DELETE_SWIMLANE_OPTIONS": "Are you sure you want to delete {{swimlane}}?",
+            "SUBTITLE_ACTION_DELETE_SWIMLANE_REPLACEMENT": "All the user stories on this swimlane will be moved to:",
+            "SUBTITLE_ACTION_DELETE_SWIMLANE_LAST": "Your user stories will not be deleted. They will remain in the kanban.",
+            "DEFAULT_SWIMLANE": "New user stories will be in this swimlane by default",
+            "SET_DEFAULT_SWIMLANE": "Set this swimlane as default",
+            "DISABLE_DELETE_SWIMLANE": "The default swimlane cannot be deleted"
+        },
         "RELATE_TO_EPIC": {
             "TITLE": "Link to epic",
             "EXISTING_EPIC": "Existing epic",
@@ -1215,10 +1269,11 @@
         }
     },
     "EPIC": {
-        "PAGE_TITLE": "{{epicSubject}} - Epic {{epicRef}} - {{projectName}}",
-        "PAGE_DESCRIPTION": "Status: {{epicStatus }}. Description: {{epicDescription}}",
-        "SECTION_NAME": "Epic",
-        "ERROR_UNLINK_RELATED_USERSTORY": "We have not been able to unlink: {{errorMessage}}",
+        "PAGE_TITLE": "{{epicSubject}} - Èpica {{epicRef}} - {{projectName}}",
+        "PAGE_DESCRIPTION": "Estat: {{epicStatus }}. Descripció: {{epicDescription}}",
+        "EPIC_COLOR": "Color d'èpica:",
+        "SECTION_NAME": "Èpica",
+        "ERROR_UNLINK_RELATED_USERSTORY": "No hem pogut desconnectar: {{errorMessage}}",
         "CREATE_RELATED_USERSTORIES": "Create a relationship with",
         "NEW_USERSTORY": "Nova història d'usuari",
         "EXISTING_USERSTORY": "Existing user story",
@@ -1240,7 +1295,7 @@
         "LINK_TASKBOARD": "Panell de tasques",
         "TITLE_LINK_TASKBOARD": "Anar a panell de tasques",
         "TOTAL_POINTS": "punts totals",
-        "ADD": "+ Add a new user story",
+        "ADD": "història d'usuari",
         "ADD_BULK": "Add some new user stories in bulk",
         "PROMOTED_FROM_ISSUE": "This user story has been promoted from issue:",
         "PROMOTED_FROM_TASK": "This user story has been promoted from task:",
@@ -1248,6 +1303,7 @@
         "TITLE_LINK_GO_TO_ISSUE": "Anar a la incidència",
         "TITLE_LINK_GO_TO_TASK": "Go to task",
         "TITLE_DELETE_ACTION": "Borra història d'usuari",
+        "TITLE_DELETE_MESSAGE": "Are you sure you want to delete <strong>“{{subject}}“</strong>?",
         "LIGHTBOX_TITLE_BLOKING_US": "Blocking user story",
         "NOT_ESTIMATED": "Sense estimar",
         "OWNER_US": "This user story belongs to",
@@ -1266,8 +1322,9 @@
         }
     },
     "COMMENTS": {
-        "DELETED_INFO": "Comment deleted by {{user}}",
-        "COMMENTS_COUNT": "{{comments}} Comments",
+        "TITLE": "Comentaris",
+        "DELETED_INFO": "Comentar esborrat per {{user}}",
+        "COMMENTS_COUNT": "{{comments}} Comentaris",
         "OLDER_FIRST": "Older first",
         "RECENT_FIRST": "Recent first",
         "COMMENT": "Comentar",
@@ -1284,7 +1341,7 @@
     },
     "ACTIVITY": {
         "TITLE": "Activitat",
-        "ACTIVITIES_COUNT": "{{activities}} Activities",
+        "ACTIVITIES_COUNT": "{{activities}} Activititats",
         "TAGS_ADDED": "tags added:",
         "TAGS_REMOVED": "tags removed:",
         "US_POINTS": "{{role}} points",
@@ -1320,16 +1377,20 @@
     "BACKLOG": {
         "PAGE_TITLE": "Backlog - {{projectName}}",
         "PAGE_DESCRIPTION": "El panell Backlog, amb històries d'usuari i esprints del projecte {{projectName}}: {{projectDescription}}",
-        "SECTION_NAME": "Backlog",
+        "SECTION_NAME": "Scrum",
         "CUSTOMIZE_GRAPH": "Edita el teu gràfic de backlog",
         "CUSTOMIZE_GRAPH_TEXT": "Per a tindre un gràfic que t'ajude a seguir la evolució del projecte deus de editar els punts i els sprints per mig del",
         "CUSTOMIZE_GRAPH_ADMIN": "Admin",
         "CUSTOMIZE_GRAPH_TITLE": "Estableix els punts i els sprints al Admin",
+        "TOTAL_STORIES_FILTERED": "of {{ totalUserStories }} user stories",
+        "TOTAL_STORIES": "{{ totalUserStories }} user stories",
         "MOVE_US_TO_CURRENT_SPRINT": "Envia al Sprint",
         "MOVE_US_TO_LATEST_SPRINT": "Posar a l'ultim sprint",
         "EMPTY": "El backlog està buit!",
         "CREATE_NEW_US": "Create a new user story",
-        "CREATE_NEW_US_EMPTY_HELP": "Potser vols crear una nova història d'usuari",
+        "CREATE_NEW_US_EMPTY_HELP": "Add a user story",
+        "NO_MATCH": "No matching search result found with “{{ q }}”",
+        "NO_MATCH_HELP": "Try again using more general search terms",
         "EXCESS_OF_POINTS": "Excés de punts",
         "PENDING_POINTS": "Punts pendents",
         "CLOSED_POINTS": "tancat",
@@ -1350,17 +1411,19 @@
         },
         "TAGS": {
             "TOGGLE": "Alterna la visibilitat d'etiquetes",
-            "SHOW": "Mostra etiquetes",
+            "SHOW": "Etiquetes",
             "HIDE": "Amaga etiquetes"
         },
         "FORECASTING": {
             "TITLE": "Velocity forecasting",
-            "BACKLOG": "Display backlog",
-            "NEW_SPRINT": "Candidate user stories for your next sprint based on your velocity. Click to create a new sprint.",
-            "CURRENT_SPRINT": "Candidate user stories for your sprint based on your velocity. Click to add to current sprint."
+            "BACKLOG": "return to backlog",
+            "NEW_SPRINT": "Candidate user stories for your next sprint based on your velocity.",
+            "CURRENT_SPRINT": "Candidate user stories for your sprint based on your velocity. Click to add to current sprint.",
+            "ADD_NEW_SPRINT": "create sprint and add US",
+            "ADD_NEW_SPRINT_SHORT": "create sprint"
         },
         "TABLE": {
-            "COLUMN_US": "Històries d'usuari",
+            "COLUMN_US": "User Story",
             "TITLE_COLUMN_POINTS": "Selecciona vista per rol"
         },
         "SPRINT_SUMMARY": {
@@ -1381,8 +1444,8 @@
         },
         "FILTERS": {
             "TOGGLE": "Alterna la visibilitat dels filtres",
-            "HIDE": "Amaga filtres",
-            "SHOW": "Mostra filtres"
+            "TITLE": "Filtres",
+            "HIDE_TITLE": "Hide filters"
         },
         "SPRINTS": {
             "TITLE": "SPRINTS",
@@ -1392,14 +1455,14 @@
             "EMPTY": "There are no sprints yet",
             "WARNING_EMPTY_SPRINT_ANONYMOUS": "This sprint has no user stories",
             "WARNING_EMPTY_SPRINT": "Drop here Stories from your backlog to start a new sprint",
-            "TITLE_ACTION_NEW_SPRINT": "Add new sprint",
+            "TITLE_ACTION_NEW_SPRINT": "Add a sprint",
             "TEXT_ACTION_NEW_SPRINT": "You may want to create a new sprint in your project",
             "ACTION_SHOW_CLOSED_SPRINTS": "Mostra sprints tancats",
             "ACTION_HIDE_CLOSED_SPRINTS": "Amaga sprints tancats"
         }
     },
     "ERROR": {
-        "TEXT1": "Something happened and the Taiga has captured the error to be able to work on it.",
+        "TEXT1": "Ha passat alguna cosa i Taiga ha capturat l'error per tal d'arreglar-ho.",
         "NOT_FOUND": "No trobat",
         "NOT_FOUND_TEXT": "Error 404. La pàgina que busques no existeix. Pots tornar a la página principal de taiga i provar desde allí.",
         "PERMISSION_DENIED": "Permis denegat",
@@ -1415,8 +1478,11 @@
         "TITLE_ACTION_ADD_ISSUE": "Add a new issue",
         "TITLE_ACTION_ADD_ISSUE_BULK": "Add some new issues in bulk",
         "TITLE_ACTION_ASSIGN": "Assignar tasca",
-        "PLACEHOLDER_CARD_TITLE": "Açó podría ser una tasca",
-        "PLACEHOLDER_CARD_TEXT": "Divideix les históries per a poder gertionar-les separadament",
+        "PLACEHOLDER_CARD_TITLE": "This could be a user story",
+        "PLACEHOLDER_CARD_TEXT": "Go to the <a href=\"{{ backlogUrl }}\" title=\"Go to backlog\">backlog</a> and drag user stories to this sprint; split the stories into tasks to track them separately.",
+        "TASK_NOT_FOUND_TITLE": "No matching results found",
+        "TASK_NOT_FOUND_TEXT": "Try again using more general search terms or disabling some filters.",
+        "TITLE_DATE_RANGE": "{{startDate}} <span>to</span> {{endDate}}",
         "TABLE": {
             "COLUMN": "Història d'usuari",
             "TITLE_ACTION_FOLD": "Plegar columna",
@@ -1429,10 +1495,12 @@
         },
         "CHARTS": {
             "XAXIS_LABEL": "Díes",
-            "YAXIS_LABEL": "Punts",
-            "OPTIMAL": "Punts pendents òptims per dia {{formattedDate}} deu ser {{roundedValue}}",
+            "YAXIS_LABEL": "Projected points progress",
+            "OPTIMAL": "Pending points for day {{formattedDate}} should be {{roundedValue}}",
             "REAL": "Punts pendents el dia {{formattedDate}} son {{roundedValue}}",
-            "DATE": "DD MMMM YYYY"
+            "DATE": "DD MMMM YYYY",
+            "HELP_LINK": "How this chart works",
+            "HELP_TOOLTIP": "This burndown chart shows the sprint's approximate or projected progress based on estimated user story closed tasks. Actual finished estimated user stories are tracked above."
         },
         "MOVE_TO_SPRINT": {
             "TITLE_ACTION_MOVE_UNFINISHED": "Move unfinished items to another sprint",
@@ -1468,7 +1536,7 @@
     },
     "NOTIFICATION": {
         "OK": "Tot està bé",
-        "WARNING": "Oops, ha passat algo...",
+        "WARNING": "Oops, something went wrong...",
         "WARNING_TEXT": "Your changes were not saved!",
         "SAVED": "The Taiga saved all your changes!",
         "CLOSE": "Tancar notificació",
@@ -1488,14 +1556,14 @@
         "SUBTITLE": "Un click més i el teu correu estarà actualitzat!",
         "PLACEHOLDER_INPUT_TOKEN": "Canvia el token de correu",
         "ACTION_CHANGE_EMAIL": "Canviar correu",
-        "SUCCESS": "The Taiga updated your email"
+        "SUCCESS": "Your email address has been successfully changed"
     },
     "VERIFY_EMAIL_FORM": {
         "TITLE": "Verify your email",
         "SUBTITLE": "One click more and your email will be verified!",
         "PLACEHOLDER_INPUT_TOKEN": "Canvia el token de correu",
         "ACTION_VERIFY_EMAIL": "Verify email",
-        "SUCCESS": "The Taiga verified your email"
+        "SUCCESS": "Congratulations!!, your email address has been verified"
     },
     "ISSUES": {
         "PAGE_TITLE": "Incidències - {{projectName}}",
@@ -1531,11 +1599,12 @@
                 "TYPE": "Tipus",
                 "SEVERITY": "Severitat",
                 "PRIORITY": "Prioritat",
-                "SUBJECT": "Descripció",
+                "ISSUE": "incidència",
                 "VOTES": "Vots",
                 "STATUS": "Estats",
+                "ATTACHMENTS": "Adjunts",
                 "MODIFIED": "Modified",
-                "ASSIGNED_TO": "Assignat a"
+                "ASSIGNED_TO": "Assign to"
             },
             "TITLE_ACTION_CHANGE_STATUS": "Canvia l'estat",
             "TITLE_ACTION_ASSIGNED_TO": "Assignat a",
@@ -1560,14 +1629,21 @@
         "TITLE_ACTION_ADD_BULK": "Add new bulk",
         "ACTION_SHOW_ARCHIVED": "Mostrar arxivats",
         "ACTION_HIDE_ARCHIVED": "Amagar arxivats",
-        "HIDDEN_USER_STORIES": "Les històries d'usuari en aquest estats estan amagades",
-        "PLACEHOLDER_CARD_TITLE": "These are your user stories",
-        "PLACEHOLDER_CARD_TEXT": "Stories might also have subtasks to separate requirements"
+        "US_NOT_FOUND_TITLE": "No matching results found",
+        "US_NOT_FOUND_TEXT_P1": "Try again using more general search terms or disabled some filters.",
+        "US_NOT_FOUND_TEXT_P2": "<strong>Archived stories</strong> are not loaded by default. Unfold the archived statuses to expand your search.",
+        "PLACEHOLDER_CARD_TITLE": "This could be a user story",
+        "PLACEHOLDER_CARD_TEXT": "Create user stories here and change their status to track their progress.",
+        "NUMBER_US": "Number of US",
+        "ARCHIVED": "(Archived)",
+        "CREATE_SWIMLANE": "Create more swimlanes",
+        "UNCLASSIFIED_USER_STORIES": "Unclassified user stories",
+        "UNCLASSIFIED_USER_STORIES_TOOLTIP": "The user stories that are not part of any swimlane are here."
     },
     "SEARCH": {
         "PAGE_TITLE": "Cerca - {{projectName}}",
         "PAGE_DESCRIPTION": "Busca qualsevol cosa al projecte {{projectName}}: {{projectDescription}}",
-        "FILTER_EPICS": "Epics",
+        "FILTER_EPICS": "Èpiques",
         "FILTER_USER_STORIES": "Històries d'usuari",
         "FILTER_ISSUES": "Incidències",
         "FILTER_TASKS": "Tasca",
@@ -1692,7 +1768,7 @@
         "HINT2_TITLE": "Saps que pots crear camps personalitzats?",
         "HINT2_TEXT": "Teams can now create custom fields as a flexible means to enter specific data useful for their particular workflow.",
         "HINT3_TITLE": "Reorder your projects to feature those most relevant to you.",
-        "HINT3_TEXT": "The 10 projects are listed in the direct access bar at the top.",
+        "HINT3_TEXT": "The 4 projects are listed in the direct access bar at the top.",
         "HINT4_TITLE": "Did you forget what were you working on?",
         "HINT4_TEXT": "Don't worry, on your dashboard you'll find your open tasks, issues, and user stories in the order you worked on them."
     },
@@ -1742,7 +1818,7 @@
         "TITLE": "Events",
         "MY_EVENTS": "My events",
         "DISMISS_ALL": "Dismiss all",
-        "VIEW_ALL": "View all",
+        "VIEW_ALL": "View all notifications",
         "NO_NEW_EVENTS": "No new events",
         "NO_EVENTS_YET": "There are no events yet",
         "ASSIGNED_YOU": "{{username}} assigned you to {{obj_name}}",
@@ -1753,10 +1829,7 @@
         "COMMENTED": "{{username}} has commented on {{obj_name}}"
     },
     "LEGAL": {
-        "TERMS_OF_SERVICE_AND_PRIVACY_POLICY_AD": "<span>When creating a new account, you agree to our </span><a href=\"{{ termsOfServiceUrl }}\" title=\"See terms of service\" target=\"_blank\">terms of service</a><span> and </span><a href=\"{{ privacyPolicyUrl }}\" title=\"See privacy policy\" target=\"_blank\">privacy policy</a>.",
-        "GDPR_ANNOUNCEMENT_TITLE": "General Data Protection Regulation (GDPR)",
-        "GDPR_ANNOUNCEMENT_DESCRIPTION": "You saw this comming, right? Updates to our Terms of Service",
-        "GDPR_ANNOUNCEMENT_INFOLINK": "Please read our announcement here"
+        "TERMS_OF_SERVICE_AND_PRIVACY_POLICY_AD": "<span>When creating a new account, you agree to our </span><a href=\"{{ termsOfServiceUrl }}\" title=\"See terms of service\" target=\"_blank\">terms of service</a><span> and </span><a href=\"{{ privacyPolicyUrl }}\" title=\"See privacy policy\" target=\"_blank\">privacy policy</a>."
     },
     "EXTERNAL_APP": {
         "PAGE_TITLE": "Una aplicació externa requereix autenticació",
@@ -1858,5 +1931,12 @@
             "ACTION_TITLE": "Cerca",
             "RESULTS": "Search results"
         }
+    },
+    "ZOOM": {
+        "TITLE": "Zoom:",
+        "ZOOM-1": "Compact",
+        "ZOOM-2": "Default",
+        "ZOOM-3": "Detailed",
+        "ZOOM-4": "Expanded"
     }
 }

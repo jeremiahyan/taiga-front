@@ -1,5 +1,5 @@
 ###
-# Copyright (C) 2014-2018 Taiga Agile LLC
+# Copyright (C) 2014-present Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -18,7 +18,7 @@
 ###
 
 DropdownUserDirective = (authService, configService, locationService,
-        navUrlsService, feedbackService, $rootScope) ->
+        navUrlsService, $rootScope) ->
 
     link = (scope, el, attrs, ctrl) ->
         scope.vm = {}
@@ -30,9 +30,6 @@ DropdownUserDirective = (authService, configService, locationService,
             authService.logout()
             locationService.url(navUrlsService.resolve("discover"))
             locationService.search({})
-
-        scope.vm.sendFeedback = ->
-            feedbackService.sendFeedback()
 
         scope.vm.userSettingsPlugins = _.filter($rootScope.userSettingsPlugins, {userMenu: true})
 
@@ -49,7 +46,6 @@ DropdownUserDirective.$inject = [
     "$tgConfig",
     "$tgLocation",
     "$tgNavUrls",
-    "tgFeedbackService",
     "$rootScope"
 ]
 

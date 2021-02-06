@@ -1,5 +1,5 @@
 ###
-# Copyright (C) 2014-2018 Taiga Agile LLC
+# Copyright (C) 2014-present Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -96,7 +96,7 @@ NavigationUrlsDirective = ($navurls, $auth, $q, $location, lightboxService, tgSe
         values = _.map params, (param) -> _.values(param)[0]
         promises = _.map(values, (x) -> bindOnceP($scope, x))
 
-        return $q.all(promises).then ->
+        return Promise.all(promises).then ->
             options = {}
             for param in params
                 key = Object.keys(param)[0]

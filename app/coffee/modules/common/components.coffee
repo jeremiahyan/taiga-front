@@ -1,5 +1,5 @@
 ###
-# Copyright (C) 2014-2018 Taiga Agile LLC
+# Copyright (C) 2014-present Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -30,9 +30,11 @@ module = angular.module("taigaCommon")
 DateRangeDirective = ($translate) ->
     renderRange = ($el, first, second) ->
         prettyDate = $translate.instant("BACKLOG.SPRINTS.DATE")
-        initDate = moment(first).format(prettyDate)
+        startDate = moment(first).format(prettyDate)
         endDate = moment(second).format(prettyDate)
-        $el.html("#{initDate}-#{endDate}")
+        $el.html(
+            $translate.instant("TASKBOARD.TITLE_DATE_RANGE", { startDate: startDate, endDate: endDate})
+        )
 
     link = ($scope, $el, $attrs) ->
         [first, second] = $attrs.tgDateRange.split(",")
@@ -218,15 +220,10 @@ BlockButtonDirective = ($rootscope, $loading, $template) ->
         $scope.$watch $attrs.ngModel, (item) ->
             return if not item
 
-            if isEditable()
-                $el.find('.item-block').addClass('editable')
+            $scope.item = item
 
-            if item.is_blocked
-                $el.find('.item-block').removeClass('is-active')
-                $el.find('.item-unblock').addClass('is-active')
-            else
-                $el.find('.item-block').addClass('is-active')
-                $el.find('.item-unblock').removeClass('is-active')
+            if isEditable()
+                $el.find('.button-lock').addClass('editable')
 
         $el.on "click", ".item-block", (event) ->
             event.preventDefault()
@@ -481,9 +478,6 @@ TgMainTitleDirective = ($translate) ->
     return {
         link: link
         templateUrl: "common/components/main-title.html"
-        scope: {
-            projectName : "=projectName"
-        }
     }
 
 module.directive("tgMainTitle", ["$translate",  TgMainTitleDirective])

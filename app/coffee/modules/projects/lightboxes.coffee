@@ -1,5 +1,5 @@
 ###
-# Copyright (C) 2014-2018 Taiga Agile LLC
+# Copyright (C) 2014-present Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -57,11 +57,11 @@ DeleteProjectDirective = ($repo, $rootscope, $auth, $location, $navUrls, $confir
                 $confirm.notify("error")
                 lightboxService.close($el)
 
-        $el.on "click", ".button-red", (event) ->
+        $el.on "click", ".js-cancel", (event) ->
             event.preventDefault()
             lightboxService.close($el)
 
-        $el.on "click", ".button-green", (event) ->
+        $el.on "click", ".js-confirm", (event) ->
             event.preventDefault()
             submit()
 

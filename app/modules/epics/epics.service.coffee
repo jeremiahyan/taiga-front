@@ -1,5 +1,5 @@
 ###
-# Copyright (C) 2014-2018 Taiga Agile LLC
+# Copyright (C) 2014-present Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -24,10 +24,11 @@ class EpicsService
         'tgProjectService',
         'tgAttachmentsService'
         'tgResources',
-        'tgXhrErrorService'
+        'tgXhrErrorService',
+        '$q'
     ]
 
-    constructor: (@projectService, @attachmentsService, @resources, @xhrError) ->
+    constructor: (@projectService, @attachmentsService, @resources, @xhrError, @q) ->
         @.clear()
 
         taiga.defineImmutableProperty @, 'epics', () => return @._epics
@@ -79,7 +80,7 @@ class EpicsService
                         @attachmentsService.upload(
                             attachment.file, epic.get('id'), epic.get('project'), 'epic')
 
-                    Promise.all(promises).then(@.fetchEpics.bind(this, true))
+                    @q.all(promises).then(@.fetchEpics.bind(this, true))
 
 
     reorderEpic: (epic, newIndex) ->

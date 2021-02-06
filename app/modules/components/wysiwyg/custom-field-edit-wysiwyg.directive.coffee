@@ -1,5 +1,5 @@
 ###
-# Copyright (C) 2014-2018 Taiga Agile LLC
+# Copyright (C) 2014-present Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -20,18 +20,22 @@
 CustomFieldEditWysiwyg = (attachmentsFullService) ->
     link = ($scope, $el, $attrs) ->
         types = {
+            epics: "epic",
             userstories: "us",
+            userstory: "us",
             issues: "issue",
-            tasks: "task"
+            tasks: "task",
+            epic: "epic",
+            us: "us"
+            issue: "issue",
+            task: "task",
         }
 
-        uploadFile = (file, cb) ->
-            return attachmentsFullService.addAttachment($scope.vm.projectId, $scope.vm.comment.comment.id, types[$scope.vm.comment.comment._name], file).then (result) ->
-                cb(result.getIn(['file', 'name']), result.getIn(['file', 'url']), types[$scope.vm.comment.comment._name], result.getIn(['file', 'id']))
-
-        $scope.uploadFiles = (files, cb) ->
-            for file in files
-                uploadFile(file, cb)
+        $scope.uploadFiles = (file, cb) ->
+            return attachmentsFullService.addAttachment($scope.project.id, $scope.ctrl.objectId.toString(), types[$scope.ctrl.type], file).then (result) ->
+                cb({
+                    default: result.getIn(['file', 'url'])
+                })
 
     return {
         scope: true,
@@ -39,11 +43,12 @@ CustomFieldEditWysiwyg = (attachmentsFullService) ->
         template: """
             <div>
                 <tg-wysiwyg
-                    editonly
+                    editonly="!!customAttributeValue.value.length"
+                    project="project"
                     content='customAttributeValue.value'
                     on-save="saveCustomRichText(text, cb)"
                     on-cancel="cancelCustomRichText()"
-                    on-upload-file='uploadFiles(files, cb)'>
+                    on-upload-file='uploadFiles'>
                 </tg-wysiwyg>
             </div>
         """

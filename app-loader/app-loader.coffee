@@ -6,7 +6,7 @@ window.taigaConfig = {
     "tribeHost": null,
     "eventsMaxMissedHeartbeats": 5,
     "eventsHeartbeatIntervalTime": 60000,
-    "debug": true,
+    "debug": false,
     "defaultLanguage": "en",
     "themes": ["taiga", "taiga-legacy", "material-design", "high-contrast"],
     "defaultTheme": "taiga",
@@ -16,7 +16,10 @@ window.taigaConfig = {
     "privacyPolicyUrl": null,
     "termsOfServiceUrl": null,
     "maxUploadFileSize": null,
-    "importers": [],
+    "enableAsanaImporter": false,
+    "enableGithubImporter": false,
+    "enableJiraImporter": false,
+    "enableTrelloImporter": false,
     "contribPlugins": []
 }
 
@@ -82,3 +85,4 @@ promise.always ->
         ljs.load "/#{window._version}/js/app.js", ->
             emojisPromise.then ->
                 angular.bootstrap(document, ['taiga'])
+

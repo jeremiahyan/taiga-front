@@ -13,25 +13,6 @@
         @include until($tablet) {
             display: block;
         }
-        &.blocked {
-            background: $red-light;
-            color: $white;
-            a,
-            a:hover,
-            .detail-ref,
-            .detail-subject,
-            .section-name,
-            .created-title,
-            .created-date {
-                color: $white;
-            }
-            svg {
-                fill: $white;
-            }
-            a:not(.button):hover {
-                text-decoration: underline;
-            }
-        }
     }
     .detail-ref {
         flex-shrink: 1;
@@ -53,7 +34,6 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    margin-top: 1rem;
     @include until($tablet) {
         flex-direction: column;
         justify-content: flex-start;
@@ -69,6 +49,7 @@
         align-items: flex-end;
         display: flex;
         flex-wrap: wrap;
+        gap: .5rem;
         margin-right: .25rem;
     }
     .tags-block {
@@ -76,13 +57,19 @@
         flex: 1;
         flex-grow: 1;
         .tag {
-            border-color: transparent;
-            border-style: solid;
-            margin: .25rem .25rem 0;
+            @include font-size(small);
+
+            align-items: center;
+            display: flex;
+            min-height: 2rem;
+            &:first-child {
+                margin-inline-start: 0;
+            }
         }
     }
     &.has-tags .relate-to-epic {
         flex-basis: 100%;
+        margin-top: 0;
     }
 }
 
@@ -115,11 +102,9 @@
     }
 
     .no-description {
-        color: $gray-light;
-    }
-    .markdown {
-        background: $white;
-        height: 10rem;
+        color: $default-tags;
+        padding: 1rem;
+        padding-inline-start: 2rem;
     }
     .save-container {
         position: absolute;

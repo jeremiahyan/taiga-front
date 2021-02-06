@@ -1,5 +1,5 @@
 ###
-# Copyright (C) 2014-2018 Taiga Agile LLC
+# Copyright (C) 2014-present Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -85,6 +85,13 @@ resourceProvider = ($config, $repo, $http, $urls, $auth, $q, $translate) ->
     service.delete_tasks_csv_uuid = (projectId) ->
         url = "#{$urls.resolve("projects")}/#{projectId}/delete_tasks_csv_uuid"
         return $http.post(url)
+
+    service.patch_default_swimlane = (projectId, swimlaneId) ->
+        url = "#{$urls.resolve("projects")}/#{projectId}"
+        data = {
+            default_swimlane: swimlaneId
+        }
+        return $http.patch(url, data)
 
     service.delete_issues_csv_uuid = (projectId) ->
         url = "#{$urls.resolve("projects")}/#{projectId}/delete_issues_csv_uuid"

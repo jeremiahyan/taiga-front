@@ -1,5 +1,5 @@
 ###
-# Copyright (C) 2014-2018 Taiga Agile LLC
+# Copyright (C) 2014-present Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -37,8 +37,8 @@ taiga.generateUniqueSessionIdentifier = ->
 taiga.sessionId = taiga.generateUniqueSessionIdentifier()
 
 
-configure = ($routeProvider, $locationProvider, $httpProvider, $provide, $tgEventsProvider,
-             $compileProvider, $translateProvider, $translatePartialLoaderProvider, $animateProvider) ->
+configure = ($routeProvider, $locationProvider, $httpProvider, $provide, $tgEventsProvider, $compileProvider,
+             $translateProvider, $translatePartialLoaderProvider, $animateProvider, $logProvider) ->
 
     $animateProvider.classNameFilter(/^(?:(?!ng-animate-disabled).)*$/)
 
@@ -51,7 +51,7 @@ configure = ($routeProvider, $locationProvider, $httpProvider, $provide, $tgEven
             languageLoad: ["$q", "$translate", ($q, $translate) ->
                 deferred = $q.defer()
 
-                $translate().then () -> deferred.resolve()
+                $translate("COMMON.YES").then () -> deferred.resolve()
 
                 return deferred.promise
             ],
@@ -210,7 +210,7 @@ configure = ($routeProvider, $locationProvider, $httpProvider, $provide, $tgEven
 
     # Epics
     $routeProvider.when("/project/:pslug/epics",
-    {
+        {
             section: "epics",
             templateUrl: "epics/dashboard/epics-dashboard.html",
             loader: true,
@@ -392,6 +392,12 @@ configure = ($routeProvider, $locationProvider, $httpProvider, $provide, $tgEven
     $routeProvider.when("/project/:pslug/admin/project-values/due-dates",
         {
             templateUrl: "admin/admin-project-values-due-dates.html",
+            section: "admin"
+        }
+    )
+    $routeProvider.when("/project/:pslug/admin/project-values/kanban-power-ups",
+        {
+            templateUrl: "admin/admin-project-values-kanban-power-ups.html",
             section: "admin"
         }
     )
@@ -731,6 +737,7 @@ configure = ($routeProvider, $locationProvider, $httpProvider, $provide, $tgEven
         .useSanitizeValueStrategy('escapeParameters')
         .addInterpolation('$translateMessageFormatInterpolation')
         .preferredLanguage(preferedLangCode)
+        .useMissingTranslationHandlerLog()
 
     $translateProvider.fallbackLanguage(preferedLangCode)
 
@@ -740,6 +747,45 @@ configure = ($routeProvider, $locationProvider, $httpProvider, $provide, $tgEven
     _.each decorators, (decorator) ->
         $provide.decorator decorator.provider, decorator.decorator
 
+    # Enable or disable debug log messages
+    $logProvider.debugEnabled(window.taigaConfig.debug)
+    if window.taigaConfig.debug
+        console.info("Debug mode is enable")
+
+    ## debug-events
+    ##
+    ## NOTE: This code is useful to debug Angular events, overwrite $rootScope methos
+    ##       $broadcast and $emit to log info in the browser console. Uncomment this for
+    ##       debug purpose.
+    ##
+    # $provide.decorator '$rootScope', ($delegate) ->
+    #     ignore_events = [
+    #         "$routeChangeStart",
+    #         "$routeChangeSuccess",
+    #         "$locationChangeStart",
+    #         "$locationChangeSuccess",
+    #         "$translateChangeStart",
+    #         "$translateChangeEnd",
+    #         "$translateChangeSuccess",
+    #         "$translateLoadingStart",
+    #         "$translateLoadingEnd",
+    #         "$translateLoadingSuccess",
+    #         "$viewContentLoaded",
+    #         "$destroy",
+    #     ]
+    #     Scope = $delegate.constructor
+    #     origBroadcast = Scope.prototype.$broadcast
+    #     origEmit = Scope.prototype.$emit
+    #     Scope.prototype.$broadcast = ($scope) ->
+    #         if arguments[0] not in ignore_events
+    #             console.log(">> $BROADCAST:", arguments[0], arguments)
+    #         return origBroadcast.apply(this, arguments)
+    #     Scope.prototype.$emit = ($scope) ->
+    #         if arguments[0] not in ignore_events
+    #             console.log(">> $EMIT:", arguments[0], arguments)
+    #         return origEmit.apply(this, arguments)
+    #     return $delegate
+    ## end debug-events
 
 i18nInit = (lang, $translate) ->
     # i18n - moment.js
@@ -846,25 +892,30 @@ init = ($log, $rootscope, $auth, $events, $analytics, $tagManager, $userPilot, $
     # Taiga Plugins
     $rootscope.contribPlugins = @.taigaContribPlugins
     $rootscope.adminPlugins = _.filter(@.taigaContribPlugins, {"type": "admin"})
+    $rootscope.authPlugins = _.filter(@.taigaContribPlugins, {"type": "auth"})
     $rootscope.userSettingsPlugins = _.filter(@.taigaContribPlugins, {"type": "userSettings"})
 
-    $rootscope.$on "$translateChangeEnd", (e, ctx) ->
-        lang = ctx.language
-        i18nInit(lang, $translate)
-        # RTL
-        rtlLanguages = $tgConfig.get("rtlLanguages", [])
-        $rootscope.isRTL = rtlLanguages.indexOf(lang) > -1
+    lang = null
 
-    # bluebird
-    Promise.setScheduler (cb) ->
-        $rootscope.$evalAsync(cb)
+    $rootscope.$on "$translateChangeEnd", (e, ctx) ->
+        if lang != ctx.language
+            lang = ctx.language
+            i18nInit(lang, $translate)
+            # RTL
+            rtlLanguages = $tgConfig.get("rtlLanguages", [])
+            $rootscope.isRTL = rtlLanguages.indexOf(lang) > -1
+
+            legacy = document.querySelector('tg-legacy')
+            legacy.translations = {
+                translationTable: $translate.getTranslationTable(lang),
+                lan: lang
+            }
 
     $events.setupConnection()
 
     # Load user
     if $auth.isAuthenticated()
         user = $auth.getUser()
-        $auth.showTerms()
 
     # Analytics
     $analytics.initialize()
@@ -881,7 +932,7 @@ init = ($log, $rootscope, $auth, $events, $analytics, $tagManager, $userPilot, $
         errorHandlingService.init()
 
         if lightboxService.getLightboxOpen().length
-            event.preventDefault();
+            event.preventDefault()
 
             lightboxService.closeAll()
 
@@ -997,6 +1048,7 @@ module.config([
     "$translateProvider",
     "$translatePartialLoaderProvider",
     "$animateProvider",
+    "$logProvider"
     configure
 ])
 

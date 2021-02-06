@@ -1,5 +1,5 @@
 ###
-# Copyright (C) 2014-2018 Taiga Agile LLC
+# Copyright (C) 2014-present Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -350,25 +350,6 @@ Capslock = () ->
 
 module.directive("tgCapslock", [Capslock])
 
-LightboxClose = () ->
-    template = """
-        <a class="close" ng-click="onClose()" href="" title="{{'COMMON.CLOSE' | translate}}">
-            <tg-svg svg-icon="icon-close"></tg-svg>
-        </a>
-    """
-
-    link = (scope, elm, attrs) ->
-
-    return {
-        scope: {
-            onClose: '&'
-        },
-        link: link,
-        template: template
-    }
-
-module.directive("tgLightboxClose", [LightboxClose])
-
 Svg = () ->
     template = """
     <svg class="{{ 'icon ' + svgIcon }}" style="fill: {{ svgFill }}">
@@ -457,15 +438,3 @@ module.directive 'tgPreloadImage', () ->
     }
 
 
-#############################################################################
-## Disable link href when Ctrl Key is pressed
-#############################################################################
-
-CtrlClickDisable = () ->
-    link = ($scope, $el, $attrs) ->
-        $el.on "click", ($event) ->
-            if ($event.ctrlKey || $event.metaKey)
-                $event.preventDefault()
-    return {link: link}
-
-module.directive("tgCtrlClickDisable", CtrlClickDisable)

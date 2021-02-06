@@ -14,13 +14,17 @@
           @include font-size(small);
         }
         .mumble {
-            @include font-type(light);
+            @include font-type(regular);
             margin-left: .25rem;
         }
     }
     input + label {
-        background-color: $grey-20;
-        color: $white;
+        background-color: $color-gray200;
+        color: $color-black600;
+
+        .icon {
+            fill: $color-black600;
+        }
     }
     &-check {
         position: relative;
@@ -45,13 +49,12 @@
         display: flex;
         justify-content: center;
         margin-bottom: 0;
-
         .create-project-title {
             display: inline-block;
         }
         .icon {
             @include svg-size(1.75rem);
-            fill: $primary;
+            fill: $color-link-primary;
             margin-right: .5rem;
             stroke: $primary;
             vertical-align: middle;
@@ -70,7 +73,7 @@
     }
 
     &-limit {
-        @include font-type(light);
+        @include font-type(regular);
         @include font-size(small);
         color: $gray;
     }
@@ -96,6 +99,11 @@
 
         input:checked + label {
             background: $grey-70;
+            color: $color-white;
+
+            .icon {
+                fill: $color-white;
+            }
         }
 
         label {
@@ -120,7 +128,7 @@
     }
 
     &-type {
-        @include font-type(semibold);
+        @include font-type(medium);
         align-items: center;
         display: flex;
         justify-content: center;
@@ -171,12 +179,12 @@
         }
 
         &-template {
-            @include font-type(semibold);
+            @include font-type(medium);
             text-transform: uppercase;
         }
 
         &-description {
-            @include font-type(light);
+            @include font-type(regular);
         }
 
         &-long-description {

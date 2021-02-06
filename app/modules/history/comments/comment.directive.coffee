@@ -1,5 +1,5 @@
 ###
-# Copyright (C) 2014-2018 Taiga Agile LLC
+# Copyright (C) 2014-present Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -24,6 +24,7 @@ CommentDirective = () ->
     return {
         scope: {
             name: "@",
+            projectId: "@",
             object: "@",
             comment: "<",
             type: "<",
@@ -32,6 +33,7 @@ CommentDirective = () ->
             deleting: "<",
             objectId: "<",
             editMode: "<",
+            project: "<",
             onEditMode: "&",
             onDeleteComment: "&",
             onRestoreDeletedComment: "&",

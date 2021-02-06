@@ -1,7 +1,6 @@
 .ticket-created-by {
     display: flex;
     justify-content: flex-end;
-    margin: 1rem 0 0 2rem;
     @include until($tablet) {
         margin: 1rem 0 .5rem;
     }
@@ -16,14 +15,14 @@
     .created-by {
         .created-title,
         .created-date {
-            @include font-type(light);
+            @include font-type(regular);
             @include font-size(small);
             color: $gray;
             display: block;
             text-align: right;
         }
         .created-title {
-            color: $primary;
+            color: $color-link-primary;
         }
         .created-date {
             margin-left: .5rem;

@@ -1,5 +1,5 @@
 ###
-# Copyright (C) 2014-2018 Taiga Agile LLC
+# Copyright (C) 2014-present Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -19,13 +19,6 @@
 
 FilterDirective = () ->
     link = (scope, el, attrs, ctrl) ->
-        unwatch = scope.$watch "vm.defaultQ", (q) ->
-            if q && !scope.vm.filtersForm.$dirty
-                scope.vm.q = q
-                unwatch()
-            else if scope.vm.filtersForm.$dirty
-                unwatch()
-
         attrs.$observe "open", (open) ->
             open = scope.$eval(open)
 
@@ -43,7 +36,6 @@ FilterDirective = () ->
             onRemoveCustomFilter: "&",
             onSaveCustomFilter: "&",
             customFilters: "<",
-            defaultQ: "=q",
             filters: "<"
             customFilters: "<"
             selectedFilters: "<"

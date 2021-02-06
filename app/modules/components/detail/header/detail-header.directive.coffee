@@ -1,5 +1,5 @@
 ###
-# Copyright (C) 2014-2018 Taiga Agile LLC
+# Copyright (C) 2014-present Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -19,10 +19,16 @@
 
 module = angular.module('taigaBase')
 
-DetailHeaderDirective = () ->
+DetailHeaderDirective = ($tgWysiwygService) ->
     @.$inject = []
 
     link = (scope, el, attrs, ctrl) ->
+        scope.blocked_html_note = ''
+
+        scope.$watch "vm.item.blocked_note" , (blocked_note) ->
+            html_note = $tgWysiwygService.getHTML(blocked_note)
+            scope.blocked_html_note = html_note
+
         ctrl._checkPermissions()
 
     return {
@@ -40,4 +46,4 @@ DetailHeaderDirective = () ->
     }
 
 
-module.directive("tgDetailHeader", DetailHeaderDirective)
+module.directive("tgDetailHeader", ["tgWysiwygService", DetailHeaderDirective])

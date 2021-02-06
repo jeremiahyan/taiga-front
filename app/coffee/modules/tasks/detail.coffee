@@ -1,5 +1,5 @@
 ###
-# Copyright (C) 2014-2018 Taiga Agile LLC
+# Copyright (C) 2014-present Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -47,15 +47,19 @@ class TaskDetailController extends mixOf(taiga.Controller, taiga.PageMixin)
         "$translate",
         "$tgQueueModelTransformation",
         "tgErrorHandlingService",
-        "tgProjectService"
+        "tgProjectService",
+        "tgAttachmentsFullService",
     ]
 
     constructor: (@scope, @rootscope, @repo, @confirm, @rs, @params, @q, @location,
-                  @log, @appMetaService, @navUrls, @analytics, @translate, @modelTransform, @errorHandlingService, @projectService) ->
+                  @log, @appMetaService, @navUrls, @analytics, @translate, @modelTransform, @errorHandlingService, @projectService, @attachmentsFullService) ->
         bindMethods(@)
 
         @scope.taskRef = @params.taskref
         @scope.sectionName = @translate.instant("TASK.SECTION_NAME")
+        @scope.attachmentsReady = false
+        @scope.$on "attachments:loaded", () =>
+            @scope.attachmentsReady = true
         @.initializeEventHandlers()
 
         promise = @.loadInitialData()
@@ -77,6 +81,9 @@ class TaskDetailController extends mixOf(taiga.Controller, taiga.PageMixin)
             taskDescription: angular.element(@scope.task.description_html or "").text()
         })
         @appMetaService.setAll(title, description)
+
+    loadAttachments: ->
+        @attachmentsFullService.loadAttachments('task', @scope.taskId, @scope.projectId)
 
     initializeEventHandlers: ->
         @scope.$on "promote-task-to-us:success", (e, ref) =>
@@ -121,6 +128,13 @@ class TaskDetailController extends mixOf(taiga.Controller, taiga.PageMixin)
             @scope.task = task
             @scope.taskId = task.id
             @scope.commentModel = task
+
+            @.loadAttachments()
+
+            window.legacyChannel.next({
+                type: 'SET_DETAIL_OBJ',
+                value: task._attrs
+            })
 
             @modelTransform.setObject(@scope, 'task')
 

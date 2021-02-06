@@ -31,18 +31,19 @@
 
             tg-capslock
 
-        fieldset
-            button.button-green.submit-button(
+        fieldset.end
+            button.btn-small.full(
+                variant="primary"
                 type="submit"
                 title="{{'LOGIN_COMMON.ACTION_SIGN_IN' | translate}}"
                 translate="LOGIN_COMMON.ACTION_SIGN_IN"
             )
 
-    .contrib-plugins-wrapper(ng-if="contribPlugins.length")
+    .contrib-plugins-wrapper(ng-if="authPlugins.length")
         label(translate="LOGIN_COMMON.ALT_LOGIN", ng-if="defaultLoginEnabled")
 
         fieldset(
-            ng-repeat="plugin in contribPlugins|filter:{type: 'auth'}"
+            ng-repeat="plugin in authPlugins"
             ng-include="plugin.template"
         )
 

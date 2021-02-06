@@ -34,7 +34,7 @@
         "PLUGINS": "플러그인",
         "ONE_ITEM_LINE": "한 줄마다 하나씩...",
         "NEW_BULK": "여러개 생성하기",
-        "SUBTASKS": "세부작업",
+        "RELATED_TASKS": "태스크",
         "PREVIOUS": "이전",
         "NEXT": "다음",
         "LOGOUT": "로그아웃",
@@ -53,7 +53,13 @@
             "EDIT": "카드 수정",
             "DELETE": "Delete card",
             "DELETE_ISSUE": "이슈 삭제",
-            "DETACH_ISSUE_FROM_SPRINT": "Detach issue from sprint"
+            "DETACH_ISSUE_FROM_SPRINT": "Detach from sprint",
+            "PTS": "{{pts}} pts",
+            "DUE_DATE": "Due date: {{date}}",
+            "NO_PTS": "N/E",
+            "ESTIMATION": "Estimation",
+            "TASKS": "{{completed}} tasks of {{total}} completed",
+            "EXTRA_ASSIGNED_USERS": "{{total}} more assigned users"
         },
         "FORM_ERRORS": {
             "DEFAULT_MESSAGE": "값이 유효하지 않습니다",
@@ -159,7 +165,7 @@
             "DUE_DATE_REASON": "Due date reason"
         },
         "ROLES": {
-            "ALL": "전체"
+            "ALL": "All points"
         },
         "ASSIGNED_TO": {
             "NOT_ASSIGNED": "할당 되지 않음",
@@ -203,7 +209,6 @@
             "COUNTER_TITLE": "{total, plural, =1{one vote} other{# votes}}"
         },
         "PROMOTE_TO_US": "Promote to user story",
-        "PROMOTE_TASK_TO_US": "Promote task to user story",
         "PROMOTED_ISSUES": "This issue has been promoted to",
         "PROMOTED_TASKS": "This task has been promoted to",
         "CONFIRM_PROMOTE": {
@@ -220,21 +225,24 @@
             "CUSTOM_FIELDS": "사용자 정의 필드",
             "SAVE": "Save custom field",
             "EDIT": "Edit custom field",
-            "DELETE": "사용자 정의 속성 삭제하기",
-            "CONFIRM_DELETE": "Remember that all values in this custom field will be deleted.\n Are you sure you want to continue?"
+            "DELETE": "Delete custom fields",
+            "CONFIRM_DELETE": "Remember that all values in this custom field will be deleted."
         },
         "FILTERS": {
-            "INPUT_PLACEHOLDER": "제목 또는 참조",
+            "INPUT_PLACEHOLDER": "subject or reference",
             "TITLE_ACTION_FILTER_BUTTON": "검색하기",
-            "TITLE": "필터",
+            "TITLE": "사용자 정의 필터",
             "TITLE_ACTION_SEARCH": "검색",
-            "ACTION_SAVE_CUSTOM_FILTER": "커스컴 필터 저장하기",
+            "ACTION_ADD": "추가하기",
+            "ACTION_SAVE_CUSTOM_FILTER": "save filter",
             "PLACEHOLDER_FILTER_NAME": "필터 이름을 쓰고 엔터키를 누르세요",
             "APPLIED_FILTERS_NUM": "적용된 필터",
             "TITLE_ADVANCED_FILTER": "Advanced",
             "ADVANCED_FILTERS": {
                 "INCLUDE": "Include",
-                "EXCLUDE": "Exclude"
+                "EXCLUDE": "Exclude",
+                "INCLUDED": "Filtered by:",
+                "EXCLUDED": "Excluded:"
             },
             "CATEGORIES": {
                 "TYPE": "타입",
@@ -379,7 +387,6 @@
         "PLACEHOLDER_NEW_PASSWORD": "새 비밀번호",
         "PLACEHOLDER_RE_TYPE_NEW_PASSWORD": "새 비밀번호를 한 번 더 입력하세요",
         "ACTION_RESET_PASSWORD": "비밀번호 재설정하기",
-        "ERROR": "The Taiga can't find your request to recover your password. Try to ask for it again.",
         "SUCCESS": "The Taiga saved your new password.<br /> Try to <strong>sign in</strong> with it."
     },
     "INVITATION": {
@@ -448,7 +455,7 @@
         "MY_PROJECTS": "내 프로젝트"
     },
     "ATTACHMENT": {
-        "SECTION_NAME": "첨부",
+        "SECTION_NAME": "Attachments",
         "TITLE": "{{ fileName }} 파일은 {{ date }}에 업로드되었습니다.",
         "LIST_VIEW_MODE": "목록으로 보기",
         "GALLERY_VIEW_MODE": "갤러리로 보기",
@@ -509,7 +516,7 @@
             "TITLE": "모듈",
             "EPICS": "에픽",
             "EPICS_DESCRIPTION": "프로젝트의 가장 전략적인 부분을 시각화하고 관리합니다.",
-            "BACKLOG": "백로그",
+            "BACKLOG": "스크럼",
             "BACKLOG_DESCRIPTION": "유저 스토리를 관리하여 다가오는 작업과 우선 순위가 지정된 작업을 체계적으로 볼 수 있습니다.",
             "NUMBER_SPRINTS": "예상되는 스프린트 의 갯수",
             "NUMBER_SPRINTS_HELP": "정하지 않으려면 0을 입력합니다.",
@@ -664,6 +671,20 @@
             "BEFORE": "Before",
             "AFTER": "Past"
         },
+        "PROJECT_KANBAN_OPTIONS": {
+            "TITLE": "Kanban options",
+            "SUBTITLE": "Enable swimlanes to use in your workflow and set WIP limits to restrict the maximun number of user stories on each status.",
+            "SWIMLANES": "Swimlanes",
+            "ACTION_ADD_SWIMLANE": "New swimlane",
+            "SWIMLANE_NAME_EXISTS": "This swimlane name already exists",
+            "NO_SWIMLANES": "There are no swimlanes yet",
+            "SWIMLANE_NAME": "Swimlane name",
+            "POPUP_NEW_SWIMLANE": "If you had some user stories created, you will find them on this swimlane.",
+            "WIP_LIMITS": "WIP LIMITS",
+            "WIP_LIMIT_PLACEHOLDER": "WIP limit not set",
+            "WIP_LIMIT_INPUT": "Set WIP limit",
+            "DEFAULT": "Default"
+        },
         "ROLES": {
             "PAGE_TITLE": "역할 - {{projectName}}",
             "WARNING_NO_ROLE": "주의하세요, 현재 프로젝트에 유저 스토리의 포인트를 산정할 수 있는 역할이 없습니다.",
@@ -774,7 +795,7 @@
             "ACTION_ADD_STATUS": "상태 추가하기",
             "IS_ARCHIVED_COLUMN": "보관됨",
             "IS_CLOSED_COLUMN": "완료함",
-            "WIP_LIMIT_COLUMN": "동시 진행 제한 갯수",
+            "WIP_LIMIT_COLUMN": "WIP limit",
             "PLACEHOLDER_WRITE_NAME": "새 상태의 이름을 입력하세요"
         },
         "MENU": {
@@ -792,7 +813,8 @@
             "TYPES": "타입",
             "CUSTOM_FIELDS": "사용자 정의  필드",
             "TAGS": "태그",
-            "DUE_DATES": "Due dates"
+            "DUE_DATES": "Due dates",
+            "KANBAN_OPTIONS": "Kanban options"
         },
         "SUBMENU_ROLES": {
             "TITLE": "역할",
@@ -866,7 +888,7 @@
     },
     "PROJECT": {
         "PAGE_TITLE": "{{projectName}}",
-        "HELP": "Reorder your projects to set at the top the most used ones.<br/> The top 10 projects will appear in the top navigation bar project list",
+        "HELP": "Reorder your projects to set at the top the most used ones.<br/> The top 4 projects will appear in the top navigation bar project list",
         "PRIVATE": "비공개 프로젝트",
         "LOOKING_FOR_PEOPLE": "이 프로젝트는 사람을 찾고 있습니다.",
         "FANS_COUNTER_TITLE": "{total, plural, =1{one fan} other{# fans}}",
@@ -886,23 +908,31 @@
             "ISSUES": "이슈",
             "WIKI": "위키",
             "TEAM": "팀",
-            "MEETUP": "미팅",
-            "ADMIN": "관리자"
+            "MEETUP": "Meetup",
+            "SETTINGS": "설정",
+            "SCRUM": "스크럼",
+            "COLLAPSE_MENU": "collapse menu"
         },
         "NAVIGATION": {
-            "ACTION_CREATE_PROJECT": "프로젝트 생성하기",
+            "PROJECTS": "프로젝트",
+            "ACCOUNT_SETTINGS": "Account settings",
+            "ACTION_CREATE_PROJECT": "New project",
+            "ACTION_CREATE_PROJECT_FIRST": "Create your first project",
+            "ACTION_CREATE_PROJECT_FIRST_TEXT": "You don’t have any projects yet. Create one now, invite your team and start using Taiga to the fullest.",
+            "VIEW_ALL_PROJECTS": "View all projects",
             "MANAGE_PROJECTS": "프로젝트 관리하기",
             "TITLE_CREATE_PROJECT": "프로젝트 생성하기",
-            "HELP_TITLE": "타이가 고객 지원 페이지",
-            "HELP": "도움말",
+            "HELP_TITLE": "도움말",
             "HOMEPAGE": "홈페이지",
-            "FEEDBACK_TITLE": "피드백 보내기",
-            "FEEDBACK": "피드백",
+            "TAIGA_RESOURCES_TITLE": "Go to Taiga resources",
+            "TAIGA_RESOURCES": "Taiga Resources",
+            "FEEDBACK_TITLE": "Write to us with your feedback",
+            "FEEDBACK": "Ask a question",
             "NOTIFICATIONS_TITLE": "알림 설정 수정",
             "NOTIFICATIONS": "알림",
             "VIEW_PROFILE_TITLE": "프로필 보기",
             "VIEW_PROFILE": "프로필 보기",
-            "USER_SETTINGS_TITLE": "설정 수정",
+            "EDIT_PROFILE": "프로필 수정하기",
             "USER_SETTINGS": "사용자 설정",
             "CHANGE_PASSWORD_TITLE": "비밀번호 변경하기",
             "CHANGE_PASSWORD": "비밀번호 변경하기",
@@ -983,7 +1013,7 @@
             "WRITE_EMAIL": "원한다면, 사용자가 사용하는 이메일을 타이가에 작성하십시오.",
             "SEARCH_CONTACT": "또는 연락처에서 찾습니다.",
             "WRITE_EMAIL_LABEL": "Tagia에서 사용자가 사용할 이메일을 작성",
-            "ACCEEDE": "Accede",
+            "ACCEEDE": "Access",
             "PROJECT_MEMBERS": "프로젝트 회원",
             "PROCESS_DESCRIPTION": "Tell us to whom from Taiga you want to assign the tasks of {{platform}}",
             "MATCH": "외부의 <strong>{{user_external}}</strong> 사용자는 내부의 <strong>{{user_internal}}</strong> 사용자와 동일인입니까?",
@@ -1044,7 +1074,7 @@
             "GITHUB": {
                 "SELECTOR": "깃헙 프로젝트 이슈 가져오기",
                 "CHOOSE_PROJECT": "가져오고 싶은 프로젝트를 찾으세요.",
-                "NO_PROJECTS": "깃헙에 당신의 프로젝트가 없는 것 같군요.",
+                "NO_PROJECTS": "It seems you have no projects in GitHub",
                 "HOW_DO_YOU_WANT_TO_IMPORT": "타이가로 당신의 이슈들을 어떻게 가져오고 싶습니까?",
                 "KANBAN_PROJECT": "칸반 프로젝트의 유저 스토리",
                 "KANBAN_PROJECT_DESCRIPTION": "이후에 스크럼과 백로그를 활성화할 수 있습니다.",
@@ -1056,7 +1086,7 @@
             "ASANA": {
                 "SELECTOR": "가져올 Asana 프로젝트와 어떻게 관리할지를 선택하세요.",
                 "CHOOSE_PROJECT": "가져오고 싶은 프로젝트를 선택하세요.",
-                "NO_PROJECTS": "Asana에 당신의 프로젝트가 없는 것 같군요.",
+                "NO_PROJECTS": "It seems you have no projects in Asana",
                 "KANBAN_PROJECT": "칸반",
                 "SCRUM_PROJECT": "스크럼",
                 "CREATE_AS_SCRUM_DESCRIPTION": "당신의 프로젝트에서 태스크와 하위 태스크는 Taiga 유저 스토리와 태스크로 작성됩니다.",
@@ -1066,7 +1096,7 @@
                 "SELECTOR": "가져올 Jira 프로젝트와 어떻게 관리할지를 선택하세요",
                 "HOW_TO_CONFIGURE": "(설정 도움말)",
                 "CHOOSE_PROJECT": "가져오고 싶은 프로젝트나 보드를 선택하세요.",
-                "NO_PROJECTS": "Jira에 당신의 프로젝트가나 보드가 없는 것 같군요.",
+                "NO_PROJECTS": "It seems you have no projects or boards in Jira",
                 "URL": "당신의 Jira URL",
                 "KANBAN_PROJECT": "칸반",
                 "SCRUM_PROJECT": "스크럼",
@@ -1084,7 +1114,7 @@
             "CONFIRM": "타이가 계정을 정말로 삭제하시겠어요?",
             "CANCEL": "설정으로 돌아가기",
             "ACCEPT": "계정 삭제",
-            "BLOCK_PROJECT": "계정을 삭제한 후에는 당신이 소유하고 있는 모든 프로젝트가 <strong>차단</strong>됩니다. 이걸 원치 않으시면, 계정을 삭제하기 전에 프로젝트 소유권을 다른 회원에게 넘겨주세요."
+            "BLOCK_PROJECT": "Note that all projects you own will be <strong>blocked</strong> after you delete your account. If you do not want a particular project to be blocked, make sure you transfer ownership to another existing Taiga member before deleting your account."
         },
         "DELETE_PROJECT": {
             "TITLE": "프로젝트 삭제하기",
@@ -1112,9 +1142,14 @@
             "HELP_TEXT": "타이가에 이미 등록한 사용자라면 자동으로 프로젝트에 추가될 겁니다. 등록하지 않은 사용자라면 초대장이 발송됩니다."
         },
         "FEEDBACK": {
-            "TITLE": "말해주세요...",
-            "COMMENT": "... 버그, 몇 가지 제안, 멋진 것 ... 아니면 타이가와의 최악의 악몽",
-            "ACTION_SEND": "피드백 보내기"
+            "TITLE": "Ask a question",
+            "COMMENT": "Leave us a message",
+            "ACTION_SEND": "Send Message",
+            "YOU_CAN_ALSO": "You can also:",
+            "CREATE": "Create an issue on this",
+            "PUBLIC": "public Taiga project",
+            "EMAIL": "Send us a e-mail directly to",
+            "SUPPORT": "support@taiga.io"
         },
         "SEARCH": {
             "TITLE": "검색",
@@ -1144,7 +1179,17 @@
             "EXISTING_ISSUE": "Existing issue",
             "CHOOSE_EXISTING_ISSUE": "Which issue?",
             "ADD_ISSUE": "이슈 추가",
-            "FILTER_ISSUES": "Filter issues"
+            "FILTER_ISSUES": "Filter issues",
+            "SWIMLANE": "Swimlane",
+            "SELECT_SWIMLANE": "Select swimlane",
+            "SELECT_STATUS": "Select status",
+            "DEFAULT": "Default",
+            "ERROR_STATUS": "Changes cannot be saved because there is a problem with the selected status.",
+            "ERROR_SWIMLANE": "Changes cannot be saved because there is a problem with the selected swimlane."
+        },
+        "DISABLE_KANBAN": {
+            "TITLE": "Disable kanban",
+            "MESSAGE": "This project has swimlanes. They will be gone but your user stories will not be deleted"
         },
         "DELETE_DUE_DATE": {
             "TITLE": "만료 시간 삭제",
@@ -1202,6 +1247,15 @@
             "TITLE_ACTION_DELETE_DUE_DATE": "만료 시간 삭제",
             "SUBTITLE_ACTION_DELETE_DUE_DATE": "Are you sure you want to delete the due date status {{due_date_status_name}}?"
         },
+        "ADMIN_KANBAN_POWERUPS": {
+            "TITLE_ACTION_DELETE_SWIMLANE": "Delete swimlane",
+            "SUBTITLE_ACTION_DELETE_SWIMLANE_OPTIONS": "Are you sure you want to delete {{swimlane}}?",
+            "SUBTITLE_ACTION_DELETE_SWIMLANE_REPLACEMENT": "All the user stories on this swimlane will be moved to:",
+            "SUBTITLE_ACTION_DELETE_SWIMLANE_LAST": "Your user stories will not be deleted. They will remain in the kanban.",
+            "DEFAULT_SWIMLANE": "New user stories will be in this swimlane by default",
+            "SET_DEFAULT_SWIMLANE": "Set this swimlane as default",
+            "DISABLE_DELETE_SWIMLANE": "The default swimlane cannot be deleted"
+        },
         "RELATE_TO_EPIC": {
             "TITLE": "Link to epic",
             "EXISTING_EPIC": "Existing epic",
@@ -1217,6 +1271,7 @@
     "EPIC": {
         "PAGE_TITLE": "{{epicSubject}} - 에픽 {{epicRef}} - {{projectName}}",
         "PAGE_DESCRIPTION": "상태: {{epicStatus }}. 설명: {{epicDescription}}",
+        "EPIC_COLOR": "Epic color:",
         "SECTION_NAME": "에픽",
         "ERROR_UNLINK_RELATED_USERSTORY": "링크를 해제할 수 없었습니다: {{errorMessage}}",
         "CREATE_RELATED_USERSTORIES": "다음으로 관계 만들기",
@@ -1240,7 +1295,7 @@
         "LINK_TASKBOARD": "태스크보드",
         "TITLE_LINK_TASKBOARD": "태스크보드로 가기",
         "TOTAL_POINTS": "전체 포인트",
-        "ADD": "+ Add a new user story",
+        "ADD": "유저 스토리",
         "ADD_BULK": "Add some new user stories in bulk",
         "PROMOTED_FROM_ISSUE": "This user story has been promoted from issue:",
         "PROMOTED_FROM_TASK": "This user story has been promoted from task:",
@@ -1248,6 +1303,7 @@
         "TITLE_LINK_GO_TO_ISSUE": "이슈로 가기",
         "TITLE_LINK_GO_TO_TASK": "Go to task",
         "TITLE_DELETE_ACTION": "유저 스토리 삭제",
+        "TITLE_DELETE_MESSAGE": "Are you sure you want to delete <strong>“{{subject}}“</strong>?",
         "LIGHTBOX_TITLE_BLOKING_US": "Blocking user story",
         "NOT_ESTIMATED": "추산되지 않음",
         "OWNER_US": "This user story belongs to",
@@ -1266,6 +1322,7 @@
         }
     },
     "COMMENTS": {
+        "TITLE": "댓글",
         "DELETED_INFO": "{{user}} 에 의해 댓글이 지워짐.",
         "COMMENTS_COUNT": "{{comments}} 댓글",
         "OLDER_FIRST": "오랜된 순으로",
@@ -1320,16 +1377,20 @@
     "BACKLOG": {
         "PAGE_TITLE": "백로그 - {{projectName}}",
         "PAGE_DESCRIPTION": "프로젝트의 유저 스토리와 스프린트를 보여주는 백 패널 {{projectName}}: {{projectDescription}}",
-        "SECTION_NAME": "백로그",
+        "SECTION_NAME": "스크럼",
         "CUSTOMIZE_GRAPH": "백로그 그래프 사용자 정의하기",
         "CUSTOMIZE_GRAPH_TEXT": "프로젝트의 진화를 돕는 좋은 그래프를 얻으려면, 당신은 포인트와 스프린트를 설정해야합니다.",
         "CUSTOMIZE_GRAPH_ADMIN": "관리자",
         "CUSTOMIZE_GRAPH_TITLE": "관리자 메뉴에서 포인트와 스프린트를 설정하세요.",
+        "TOTAL_STORIES_FILTERED": "of {{ totalUserStories }} user stories",
+        "TOTAL_STORIES": "{{ totalUserStories }} user stories",
         "MOVE_US_TO_CURRENT_SPRINT": "현재 스프린트로 옮기기",
         "MOVE_US_TO_LATEST_SPRINT": "가장 최근 스프린트로 옮기기",
         "EMPTY": "백로그가 비었습니다!",
         "CREATE_NEW_US": "Create a new user story",
-        "CREATE_NEW_US_EMPTY_HELP": "새로운 유저 스토리를 만들어 보고 싶죠?",
+        "CREATE_NEW_US_EMPTY_HELP": "Add a user story",
+        "NO_MATCH": "No matching search result found with “{{ q }}”",
+        "NO_MATCH_HELP": "Try again using more general search terms",
         "EXCESS_OF_POINTS": "포인트 초과",
         "PENDING_POINTS": "보류 중인 포인트",
         "CLOSED_POINTS": "완료",
@@ -1350,17 +1411,19 @@
         },
         "TAGS": {
             "TOGGLE": "태그 보여짐 토글",
-            "SHOW": "태그 보기",
+            "SHOW": "태그",
             "HIDE": "태그 숨기기"
         },
         "FORECASTING": {
             "TITLE": "속도 예측",
-            "BACKLOG": "백로그 표시",
-            "NEW_SPRINT": "Candidate user stories for your next sprint based on your velocity. Click to create a new sprint.",
-            "CURRENT_SPRINT": "Candidate user stories for your sprint based on your velocity. Click to add to current sprint."
+            "BACKLOG": "return to backlog",
+            "NEW_SPRINT": "Candidate user stories for your next sprint based on your velocity.",
+            "CURRENT_SPRINT": "Candidate user stories for your sprint based on your velocity. Click to add to current sprint.",
+            "ADD_NEW_SPRINT": "create sprint and add US",
+            "ADD_NEW_SPRINT_SHORT": "create sprint"
         },
         "TABLE": {
-            "COLUMN_US": "유저 스토리",
+            "COLUMN_US": "User Story",
             "TITLE_COLUMN_POINTS": "역할 별로 보기"
         },
         "SPRINT_SUMMARY": {
@@ -1381,8 +1444,8 @@
         },
         "FILTERS": {
             "TOGGLE": "필터 보여짐 토글",
-            "HIDE": "필터 숨기기",
-            "SHOW": "필터 보기"
+            "TITLE": "필터",
+            "HIDE_TITLE": "Hide filters"
         },
         "SPRINTS": {
             "TITLE": "스프린트",
@@ -1392,7 +1455,7 @@
             "EMPTY": "스프린트가 아직 없습니다.",
             "WARNING_EMPTY_SPRINT_ANONYMOUS": "This sprint has no user stories",
             "WARNING_EMPTY_SPRINT": "새 스프린트를 추가하려면 백로그에서 스토리를 끌어 놓으세요",
-            "TITLE_ACTION_NEW_SPRINT": "새로운 스프린트 추가",
+            "TITLE_ACTION_NEW_SPRINT": "Add a sprint",
             "TEXT_ACTION_NEW_SPRINT": "프로젝트에 새로운 스프린트를 만들어 보고 싶죠?",
             "ACTION_SHOW_CLOSED_SPRINTS": "완료한 스프린트 보기",
             "ACTION_HIDE_CLOSED_SPRINTS": "완료한 스프린트 숨기기"
@@ -1415,8 +1478,11 @@
         "TITLE_ACTION_ADD_ISSUE": "Add a new issue",
         "TITLE_ACTION_ADD_ISSUE_BULK": "Add some new issues in bulk",
         "TITLE_ACTION_ASSIGN": "태스크 할당하기",
-        "PLACEHOLDER_CARD_TITLE": "이것은 태스크가 될 수 있습니다.",
-        "PLACEHOLDER_CARD_TEXT": "스토리를 여러 태스크로 나누고 개별적으로 추적하세요.",
+        "PLACEHOLDER_CARD_TITLE": "This could be a user story",
+        "PLACEHOLDER_CARD_TEXT": "Go to the <a href=\"{{ backlogUrl }}\" title=\"Go to backlog\">backlog</a> and drag user stories to this sprint; split the stories into tasks to track them separately.",
+        "TASK_NOT_FOUND_TITLE": "No matching results found",
+        "TASK_NOT_FOUND_TEXT": "Try again using more general search terms or disabling some filters.",
+        "TITLE_DATE_RANGE": "{{startDate}} <span>to</span> {{endDate}}",
         "TABLE": {
             "COLUMN": "유저 스토리",
             "TITLE_ACTION_FOLD": "컬럼 접기",
@@ -1429,10 +1495,12 @@
         },
         "CHARTS": {
             "XAXIS_LABEL": "일",
-            "YAXIS_LABEL": "포인트",
-            "OPTIMAL": "{{formattedDate}}에 대한 최적의 일일 대기 포인트는 {{roundedValue}}이어야 합니다.",
+            "YAXIS_LABEL": "Projected points progress",
+            "OPTIMAL": "Pending points for day {{formattedDate}} should be {{roundedValue}}",
             "REAL": "{{formattedDate}}의 실제 대기 포인트는 {{roundedValue}} 입니다.",
-            "DATE": "YYYY MMMM DD"
+            "DATE": "YYYY MMMM DD",
+            "HELP_LINK": "How this chart works",
+            "HELP_TOOLTIP": "This burndown chart shows the sprint's approximate or projected progress based on estimated user story closed tasks. Actual finished estimated user stories are tracked above."
         },
         "MOVE_TO_SPRINT": {
             "TITLE_ACTION_MOVE_UNFINISHED": "Move unfinished items to another sprint",
@@ -1468,7 +1536,7 @@
     },
     "NOTIFICATION": {
         "OK": "모든게 좋네요",
-        "WARNING": "음? 뭔가 문제가 있는데...",
+        "WARNING": "Oops, something went wrong...",
         "WARNING_TEXT": "Your changes were not saved!",
         "SAVED": "The Taiga saved all your changes!",
         "CLOSE": "알림 닫기",
@@ -1488,14 +1556,14 @@
         "SUBTITLE": "한번 더 클릭하시면 이메일 정보가 업데이트 됩니다.",
         "PLACEHOLDER_INPUT_TOKEN": "이메일 토큰 변경",
         "ACTION_CHANGE_EMAIL": "이메일 변경하기",
-        "SUCCESS": "The Taiga updated your email"
+        "SUCCESS": "Your email address has been successfully changed"
     },
     "VERIFY_EMAIL_FORM": {
         "TITLE": "Verify your email",
         "SUBTITLE": "One click more and your email will be verified!",
         "PLACEHOLDER_INPUT_TOKEN": "이메일 토큰 변경",
         "ACTION_VERIFY_EMAIL": "Verify email",
-        "SUCCESS": "The Taiga verified your email"
+        "SUCCESS": "Congratulations!!, your email address has been verified"
     },
     "ISSUES": {
         "PAGE_TITLE": "이슈 - {{projectName}}",
@@ -1531,11 +1599,12 @@
                 "TYPE": "타입",
                 "SEVERITY": "심각도",
                 "PRIORITY": "우선순위",
-                "SUBJECT": "주제",
+                "ISSUE": "이슈",
                 "VOTES": "투표",
                 "STATUS": "상태",
+                "ATTACHMENTS": "Attachments",
                 "MODIFIED": "수정됨",
-                "ASSIGNED_TO": "할당됨"
+                "ASSIGNED_TO": "Assign to"
             },
             "TITLE_ACTION_CHANGE_STATUS": "상태 변경하기",
             "TITLE_ACTION_ASSIGNED_TO": "할당됨",
@@ -1560,9 +1629,16 @@
         "TITLE_ACTION_ADD_BULK": "Add new bulk",
         "ACTION_SHOW_ARCHIVED": "보관된 것 보기",
         "ACTION_HIDE_ARCHIVED": "보관된 것 숨기기",
-        "HIDDEN_USER_STORIES": "이 상태에 있는 유저 스토리는 기본적으로 숨겨집니다.",
-        "PLACEHOLDER_CARD_TITLE": "These are your user stories",
-        "PLACEHOLDER_CARD_TEXT": "스토리에는 요구 사항을 구분하는 하위 태스크가 있을 수도 있습니다."
+        "US_NOT_FOUND_TITLE": "No matching results found",
+        "US_NOT_FOUND_TEXT_P1": "Try again using more general search terms or disabled some filters.",
+        "US_NOT_FOUND_TEXT_P2": "<strong>Archived stories</strong> are not loaded by default. Unfold the archived statuses to expand your search.",
+        "PLACEHOLDER_CARD_TITLE": "This could be a user story",
+        "PLACEHOLDER_CARD_TEXT": "Create user stories here and change their status to track their progress.",
+        "NUMBER_US": "Number of US",
+        "ARCHIVED": "(Archived)",
+        "CREATE_SWIMLANE": "Create more swimlanes",
+        "UNCLASSIFIED_USER_STORIES": "Unclassified user stories",
+        "UNCLASSIFIED_USER_STORIES_TOOLTIP": "The user stories that are not part of any swimlane are here."
     },
     "SEARCH": {
         "PAGE_TITLE": "검색 - {{projectName}}",
@@ -1692,7 +1768,7 @@
         "HINT2_TITLE": "사용자 정의 필드를 만들 수 있다는건 아세요?",
         "HINT2_TEXT": "이제 팀은 특정 워크 플로우에 유용한 특정 데이터를 입력하는 유연한 방법으로 사용자 정의 필드를 만들 수 있습니다.",
         "HINT3_TITLE": "당신과 가장 관련성이 높은 순서대로 프로젝트를 정렬하세요.",
-        "HINT3_TEXT": "상단의 빠른 접근 항목에서 10개의 목록이 보여 집니다.",
+        "HINT3_TEXT": "The 4 projects are listed in the direct access bar at the top.",
         "HINT4_TITLE": "뭘 하고 있었는지 잊었습니까?",
         "HINT4_TEXT": "걱정마세요, 대시보드에서 당신이 연 태스크, 이슈, 유저 스토리를 작업한 순서데로 찾아볼 수 있습니다."
     },
@@ -1742,7 +1818,7 @@
         "TITLE": "이벤트",
         "MY_EVENTS": "My events",
         "DISMISS_ALL": "Dismiss all",
-        "VIEW_ALL": "View all",
+        "VIEW_ALL": "View all notifications",
         "NO_NEW_EVENTS": "No new events",
         "NO_EVENTS_YET": "There are no events yet",
         "ASSIGNED_YOU": "{{username}} assigned you to {{obj_name}}",
@@ -1753,10 +1829,7 @@
         "COMMENTED": "{{username}} has commented on {{obj_name}}"
     },
     "LEGAL": {
-        "TERMS_OF_SERVICE_AND_PRIVACY_POLICY_AD": "<span>When creating a new account, you agree to our </span><a href=\"{{ termsOfServiceUrl }}\" title=\"See terms of service\" target=\"_blank\">terms of service</a><span> and </span><a href=\"{{ privacyPolicyUrl }}\" title=\"See privacy policy\" target=\"_blank\">privacy policy</a>.",
-        "GDPR_ANNOUNCEMENT_TITLE": "General Data Protection Regulation (GDPR)",
-        "GDPR_ANNOUNCEMENT_DESCRIPTION": "You saw this comming, right? Updates to our Terms of Service",
-        "GDPR_ANNOUNCEMENT_INFOLINK": "Please read our announcement here"
+        "TERMS_OF_SERVICE_AND_PRIVACY_POLICY_AD": "<span>When creating a new account, you agree to our </span><a href=\"{{ termsOfServiceUrl }}\" title=\"See terms of service\" target=\"_blank\">terms of service</a><span> and </span><a href=\"{{ privacyPolicyUrl }}\" title=\"See privacy policy\" target=\"_blank\">privacy policy</a>."
     },
     "EXTERNAL_APP": {
         "PAGE_TITLE": "외부 연동 앱은 권한이 필요합니다.",
@@ -1858,5 +1931,12 @@
             "ACTION_TITLE": "검색",
             "RESULTS": "검색 결과"
         }
+    },
+    "ZOOM": {
+        "TITLE": "Zoom:",
+        "ZOOM-1": "Compact",
+        "ZOOM-2": "Default",
+        "ZOOM-3": "Detailed",
+        "ZOOM-4": "Expanded"
     }
 }

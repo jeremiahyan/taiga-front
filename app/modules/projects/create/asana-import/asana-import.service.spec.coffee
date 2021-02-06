@@ -1,5 +1,5 @@
 ###
-# Copyright (C) 2014-2018 Taiga Agile LLC
+# Copyright (C) 2014-present Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -19,6 +19,8 @@
 
 describe "tgAsanaImportService", ->
     $provide = null
+    $rootScope = null
+    $q = null
     service = null
     mocks = {}
 
@@ -57,8 +59,10 @@ describe "tgAsanaImportService", ->
             return null
 
     _inject = ->
-        inject (_tgAsanaImportService_) ->
+        inject (_tgAsanaImportService_, _$rootScope_, _$q_) ->
             service = _tgAsanaImportService_
+            $rootScope = _$rootScope_
+            $q = _$q_
 
     _setup = ->
         _mocks()
@@ -104,11 +108,15 @@ describe "tgAsanaImportService", ->
             }
         }
 
-        mocks.resources.asanaImporter.getAuthUrl.promise().resolve(response)
+        getAuthUrlDeferred = $q.defer()
+        mocks.resources.asanaImporter.getAuthUrl.returns(getAuthUrlDeferred.promise)
+        getAuthUrlDeferred.resolve(response)
 
         service.getAuthUrl().then (url) ->
             expect(url).to.be.equal("url123")
             done()
+
+        $rootScope.$apply()
 
     it "authorize", (done) ->
         service.setToken(123)
@@ -121,8 +129,12 @@ describe "tgAsanaImportService", ->
             }
         }
 
-        mocks.resources.asanaImporter.authorize.withArgs(verifyCode).promise().resolve(response)
+        authorizeDeferred = $q.defer()
+        mocks.resources.asanaImporter.authorize.withArgs(verifyCode).returns(authorizeDeferred.promise)
+        authorizeDeferred.resolve(response)
 
         service.authorize(verifyCode).then (token) ->
             expect(token).to.be.equal("token123")
             done()
+
+        $rootScope.$apply()

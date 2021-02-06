@@ -1,5 +1,5 @@
 ###
-# Copyright (C) 2014-2018 Taiga Agile LLC
+# Copyright (C) 2014-present Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -17,11 +17,19 @@
 # File: navigation-bar/dropdown-project-list/dropdown-project-list.directive.coffee
 ###
 
-DropdownProjectListDirective = (rootScope, currentUserService, projectsService) ->
+DropdownProjectListDirective = (rootScope, currentUserService, projectsService, projectService) ->
     link = (scope, el, attrs, ctrl) ->
         scope.vm = {}
 
         taiga.defineImmutableProperty(scope.vm, "projects", () -> currentUserService.projects.get("recents"))
+
+        taiga.defineImmutableProperty(scope.vm, "currentProject",
+            () ->
+                if projectService.project
+                    return projectService.project.get('id')
+
+                return null
+        )
 
         scope.vm.newProject = ->
             projectsService.newProject()
@@ -44,7 +52,8 @@ DropdownProjectListDirective = (rootScope, currentUserService, projectsService) 
 DropdownProjectListDirective.$inject = [
     "$rootScope",
     "tgCurrentUserService",
-    "tgProjectsService"
+    "tgProjectsService",
+    "tgProjectService"
 ]
 
 angular.module("taigaNavigationBar").directive("tgDropdownProjectList", DropdownProjectListDirective)

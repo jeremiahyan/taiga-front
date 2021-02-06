@@ -1,5 +1,5 @@
 ###
-# Copyright (C) 2014-2018 Taiga Agile LLC
+# Copyright (C) 2014-present Taiga Agile LLC
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -149,6 +149,10 @@ urls = {
     "issue-unwatch": "/issues/%s/unwatch"
     "promote-issue-to-us": "/issues/%s/promote_to_user_story"
 
+    # Swimlanes
+    "swimlanes": "/swimlanes"
+    "swimlane-userstory-statuses": "/swimlane-userstory-statuses"
+
     # Wiki pages
     "wiki": "/wiki"
     "wiki-restore": "/wiki/%s/restore"
@@ -167,6 +171,7 @@ urls = {
     "attachments/issue": "/issues/attachments"
     "attachments/task": "/tasks/attachments"
     "attachments/wiki_page": "/wiki/attachments"
+    "attachments/wikipage": "/wiki/attachments"
 
     # Custom Attributess
     "custom-attributes/epic": "/epic-custom-attributes"
@@ -279,6 +284,7 @@ module.run([
     "$tgUserstoriesResourcesProvider",
     "$tgTasksResourcesProvider",
     "$tgIssuesResourcesProvider",
+    "$tgSwimlanesResourcesProvider",
     "$tgWikiResourcesProvider",
     "$tgSearchResourcesProvider",
     "$tgMdRenderResourcesProvider",
