@@ -17,6 +17,7 @@
         "BACK": "이전",
         "COPY_TO_CLIPBOARD": "클립보드에 복사",
         "COPIED_TO_CLIPBOARD": "클립보드에 추가되었습니다.",
+        "MOVE_TO_TOP": "Move to top",
         "EDIT": "수정하기",
         "DRAG": "드래그",
         "TAG_LINE": "당신의 프로젝트 관리를 위한 민첩하고 무료인 오픈소스 도구",
@@ -214,7 +215,7 @@
         "CONFIRM_PROMOTE": {
             "ISSUE": {
                 "TITLE": "이 이슈를 유저 스토리에 등록하기",
-                "MESSAGE": "Are you sure you want to create a new user story from this issue?"
+                "MESSAGE": "이 이슈에서 새 유저 스토리를 생성하시겠어요?"
             },
             "TASK": {
                 "TITLE": "Promote this task to a new user story",
@@ -238,6 +239,8 @@
             "PLACEHOLDER_FILTER_NAME": "필터 이름을 쓰고 엔터키를 누르세요",
             "APPLIED_FILTERS_NUM": "적용된 필터",
             "TITLE_ADVANCED_FILTER": "Advanced",
+            "LENGTH_ZERO_ERROR": "Please add a filter name",
+            "REPEATED_FILTER_ERROR": "This filter name is already in use",
             "ADVANCED_FILTERS": {
                 "INCLUDE": "Include",
                 "EXCLUDE": "Exclude",
@@ -339,8 +342,8 @@
         "ALT_LOGIN": "또는 다른 방법으로 로그인"
     },
     "LOGIN_FORM": {
-        "ERROR_AUTH_INCORRECT": "According to the Taiga, your username/email or password are incorrect.",
-        "SUCCESS": "Welcome to Taiga."
+        "ERROR_AUTH_INCORRECT": "타이가에 따르면, 사용자명/이메일 또는 암호가 틀렸습니다.",
+        "SUCCESS": "타이가에 오신 것을 환영합니다. "
     },
     "REGISTER": {
         "PAGE_TITLE": "등록 - 타이가",
@@ -368,7 +371,7 @@
         "LINK_CANCEL": "아니요 되돌아갈래요. 기억이 났어요.",
         "SUCCESS_TITLE": "메일함을 확인해보세요!",
         "SUCCESS_TEXT": "<strong>이메일 보관함을 확인하세요!</strong><br />새 비밀번호를 설정할 수 있는 방법을 이메일로 알려드렸습니다.",
-        "ERROR": "According to the Taiga, you are not registered yet."
+        "ERROR": "타이가에 따르면, 아직 등록되지 않은 사용자입니다."
     },
     "CHANGE_PASSWORD": {
         "PAGE_TITLE": "비밀번호 변경하기 - 타이가",
@@ -379,7 +382,7 @@
         "PLACEHOLDER_NEW_PASSWORD": "새 비밀번호를 입력하세요",
         "FIELD_RETYPE_PASSWORD": "새 비밀번호를 한 번 더 입력하세요",
         "PLACEHOLDER_RETYPE_PASSWORD": "새 비밀번호를 한 번 더 입력하세요",
-        "ERROR_PASSWORD_MATCH": "The passwords don't match"
+        "ERROR_PASSWORD_MATCH": "암호가 일치하지 않습니다"
     },
     "CHANGE_PASSWORD_RECOVERY_FORM": {
         "TITLE": "타이가 패쓰 생성하기",
@@ -387,30 +390,30 @@
         "PLACEHOLDER_NEW_PASSWORD": "새 비밀번호",
         "PLACEHOLDER_RE_TYPE_NEW_PASSWORD": "새 비밀번호를 한 번 더 입력하세요",
         "ACTION_RESET_PASSWORD": "비밀번호 재설정하기",
-        "SUCCESS": "The Taiga saved your new password.<br /> Try to <strong>sign in</strong> with it."
+        "SUCCESS": "타이가가 새 비밀번호를 저장했습니다.<br /><strong>로그인</strong> 시도해보세요."
     },
     "INVITATION": {
         "PAGE_TITLE": "초대 수락 - 타이가",
         "PAGE_DESCRIPTION": "타이가에서 온 프로젝트 초대를 수락하세요. 타이가는 스타트업과 애자일 개발자/디자이너들을 위한 간명하고 아름다운 프로젝트 관리 플랫폼입니다. 정말 즐거울 거예요"
     },
     "INVITATION_LOGIN_FORM": {
-        "NOT_FOUND": "The Taiga can't find your invitation.",
+        "NOT_FOUND": "타이가는 당신의 초대장을 찾지 못했습니다.",
         "SUCCESS": "{{project_name}} 프로젝트에 오신 것을 환영합니다."
     },
     "HOME": {
         "PAGE_TITLE": "홈페이지 - 타이가",
         "PAGE_DESCRIPTION": "타이가 홈페이지에서는 여러분의 프로젝트 뿐만 아니라 여러분이 관련된 유저 스토리, 태스크, 이슈를 확인할 수 있습니다.",
         "EMPTY_WORKING_ON": "<srtong>비어있는 것 같아요. 아닌가요?</strong> 타이가로 일을 시작하고 당신이 일하게 될 스토리, 태스크, 이슈들을 확인해보세요.",
-        "EMPTY_WATCHING": "<strong>Follow</strong> user stories, tasks, issues in your projects and be notified about their changes :)",
-        "EMPTY_PROJECT_LIST": "You don't have any project yet",
+        "EMPTY_WATCHING": "프로젝트의 유저 스토리, 태스크, 이슈들을 <strong>팔로우</strong>하여 변경사항에 관한 알림을 받으세요 :)",
+        "EMPTY_PROJECT_LIST": "아직 프로젝트가 없습니다",
         "WORKING_ON_SECTION": "일 하는 중",
         "WATCHING_SECTION": "구독중",
         "DASHBOARD": "프로젝트 대시보드",
         "SET_HIDDEN": "가리기",
         "SET_VISIBLE": "보이기",
         "NO_HIDDEN_ITEMS": "숨겨진 항목이 있습니다",
-        "HIDE_HIDDEN": "Do not show hidden objects",
-        "SHOW_HIDDEN": "Show hidden objects"
+        "HIDE_HIDDEN": "숨겨진 객체 보지 않기",
+        "SHOW_HIDDEN": "숨겨진 객체 보기"
     },
     "EPICS": {
         "TITLE": "에픽",
@@ -455,7 +458,7 @@
         "MY_PROJECTS": "내 프로젝트"
     },
     "ATTACHMENT": {
-        "SECTION_NAME": "Attachments",
+        "SECTION_NAME": "첨부",
         "TITLE": "{{ fileName }} 파일은 {{ date }}에 업로드되었습니다.",
         "LIST_VIEW_MODE": "목록으로 보기",
         "GALLERY_VIEW_MODE": "갤러리로 보기",
@@ -636,7 +639,7 @@
         },
         "PROJECT_VALUES_STATUS": {
             "TITLE": "상태",
-            "SUBTITLE": "유저 스토리, 태스크 그리고 이슈의 상태를 지정하세요.",
+            "SUBTITLE": "Add, remove or edit the color and name of the statuses your epics, user stories, task and issues will go through.",
             "EPIC_TITLE": "에픽 상태",
             "US_TITLE": "유저 스토리 상태",
             "TASK_TITLE": "태스크 상태",
@@ -688,7 +691,7 @@
         "ROLES": {
             "PAGE_TITLE": "역할 - {{projectName}}",
             "WARNING_NO_ROLE": "주의하세요, 현재 프로젝트에 유저 스토리의 포인트를 산정할 수 있는 역할이 없습니다.",
-            "HELP_ROLE_ENABLED": "사용하도록 설정하면, 회원들에게 이 역할이 할당되었을 때 유저 스토리의 포인트 값을 예측할 수 있습니다.",
+            "HELP_ROLE_ENABLED": "This role is part of the roles involved in estimating user story points.",
             "DISABLE_COMPUTABLE_ALERT_TITLE": "이 역할의 예측 기능을 비활성화 하시겠습니까?",
             "DISABLE_COMPUTABLE_ALERT_SUBTITLE": "만약 {{roleName}} 역할에 대한 평가 권한을 비활성화 했다면, 이 역할로 수행한 모든 평가는 삭제될 것입니다.",
             "COUNT_MEMBERS": "{{ role.members_count }} 명의 회원이 이 역할을 가지고 있습니다.",
@@ -888,7 +891,7 @@
     },
     "PROJECT": {
         "PAGE_TITLE": "{{projectName}}",
-        "HELP": "Reorder your projects to set at the top the most used ones.<br/> The top 4 projects will appear in the top navigation bar project list",
+        "HELP": "자주 사용하는 프로젝트들을 상위로 올려보세요.<br/> 상위 4개 프로젝트는 내비게이션 바의 프로젝트 목록에 나타납니다.",
         "PRIVATE": "비공개 프로젝트",
         "LOOKING_FOR_PEOPLE": "이 프로젝트는 사람을 찾고 있습니다.",
         "FANS_COUNTER_TITLE": "{total, plural, =1{one fan} other{# fans}}",
@@ -915,11 +918,11 @@
         },
         "NAVIGATION": {
             "PROJECTS": "프로젝트",
-            "ACCOUNT_SETTINGS": "Account settings",
-            "ACTION_CREATE_PROJECT": "New project",
+            "ACCOUNT_SETTINGS": "계정 설정",
+            "ACTION_CREATE_PROJECT": "프로젝트 만들기",
             "ACTION_CREATE_PROJECT_FIRST": "Create your first project",
             "ACTION_CREATE_PROJECT_FIRST_TEXT": "You don’t have any projects yet. Create one now, invite your team and start using Taiga to the fullest.",
-            "VIEW_ALL_PROJECTS": "View all projects",
+            "VIEW_ALL_PROJECTS": "모든 프로젝트 보기",
             "MANAGE_PROJECTS": "프로젝트 관리하기",
             "TITLE_CREATE_PROJECT": "프로젝트 생성하기",
             "HELP_TITLE": "도움말",
@@ -988,9 +991,9 @@
             "PRIVATE_PROJECT": "비공개 프로젝트"
         },
         "COMMON": {
-            "DETAILS": "새로운 프로젝트 세부사항",
-            "PROJECT_TITLE": "프로젝트 이름",
-            "PROJECT_DESCRIPTION": "프로젝트 설명"
+            "DETAILS": "새 프로젝트 상세",
+            "PROJECT_TITLE": "Project Name (Required)",
+            "PROJECT_DESCRIPTION": "Project Description (Required)"
         },
         "DUPLICATE": {
             "TITLE": "프로젝트 복사",
@@ -1169,7 +1172,7 @@
             "ISSUE_PLACEHOLDER_DESCRIPTION": "Please add descriptive text to help others better understand this issue",
             "US_PLACEHOLDER_DESCRIPTION": "Please add descriptive text to help others better understand this user story",
             "NEW_TASK": "태스크",
-            "NEW_ISSUE": "New issue",
+            "NEW_ISSUE": "이슈 만들기",
             "NEW_US": "새 유저 스토리",
             "EDIT_TASK": "태스크 수정하기",
             "EDIT_ISSUE": "Edit issue",
@@ -1220,7 +1223,7 @@
             }
         },
         "CHANGE_OWNER": {
-            "TITLE": "누구를 새로운 프로젝트 소유자로 삼고 싶습니까?",
+            "TITLE": "누가 새 프로젝트의 소유자가 되기를 원하나요?",
             "ADD_COMMENT": "댓글 추가",
             "BUTTON": "이 프로젝트 회원에게 새 프로젝트 소유자가 되도록 문의하십시오."
         },
@@ -1271,7 +1274,7 @@
     "EPIC": {
         "PAGE_TITLE": "{{epicSubject}} - 에픽 {{epicRef}} - {{projectName}}",
         "PAGE_DESCRIPTION": "상태: {{epicStatus }}. 설명: {{epicDescription}}",
-        "EPIC_COLOR": "Epic color:",
+        "EPIC_COLOR": "에픽 색깔:",
         "SECTION_NAME": "에픽",
         "ERROR_UNLINK_RELATED_USERSTORY": "링크를 해제할 수 없었습니다: {{errorMessage}}",
         "CREATE_RELATED_USERSTORIES": "다음으로 관계 만들기",
@@ -1305,7 +1308,7 @@
         "TITLE_DELETE_ACTION": "유저 스토리 삭제",
         "TITLE_DELETE_MESSAGE": "Are you sure you want to delete <strong>“{{subject}}“</strong>?",
         "LIGHTBOX_TITLE_BLOKING_US": "Blocking user story",
-        "NOT_ESTIMATED": "추산되지 않음",
+        "NOT_ESTIMATED": "N/E",
         "OWNER_US": "This user story belongs to",
         "RELATE_TO_EPIC": "Link to epic",
         "REMOVE_RELATIONSHIP_WITH_EPIC": "Remove epic relationship",
@@ -1368,7 +1371,7 @@
             "TYPE": "타입",
             "ASSIGNED_TO": "할당됨",
             "ASSIGNED_USERS": "assigned users",
-            "DUE_DATE": "due date",
+            "DUE_DATE": "완료 기한",
             "MILESTONE": "스프린트",
             "COLOR": "색",
             "PROMOTED_TO": "promoted to"
@@ -1475,8 +1478,8 @@
         "SECTION_NAME": "태스크보드",
         "TITLE_ACTION_ADD": "Add a new task",
         "TITLE_ACTION_ADD_BULK": "Add some new tasks in bulk",
-        "TITLE_ACTION_ADD_ISSUE": "Add a new issue",
-        "TITLE_ACTION_ADD_ISSUE_BULK": "Add some new issues in bulk",
+        "TITLE_ACTION_ADD_ISSUE": "이슈 추가",
+        "TITLE_ACTION_ADD_ISSUE_BULK": "이슈 여러 개 한꺼번에 추가",
         "TITLE_ACTION_ASSIGN": "태스크 할당하기",
         "PLACEHOLDER_CARD_TITLE": "This could be a user story",
         "PLACEHOLDER_CARD_TEXT": "Go to the <a href=\"{{ backlogUrl }}\" title=\"Go to backlog\">backlog</a> and drag user stories to this sprint; split the stories into tasks to track them separately.",
@@ -1541,7 +1544,7 @@
         "SAVED": "The Taiga saved all your changes!",
         "CLOSE": "알림 닫기",
         "MAIL": "메일로 알림",
-        "DESKTOP": "Desktop notifications using browser alerts",
+        "DESKTOP": "브라우저 경고를 통한 데스크탑 알림",
         "ASK_DELETE": "정말 삭제하실 건가요?"
     },
     "CANCEL_ACCOUNT": {
@@ -1569,7 +1572,7 @@
         "PAGE_TITLE": "이슈 - {{projectName}}",
         "PAGE_DESCRIPTION": "프로젝트 {{projectName}}: {{projectDescription}}의 이슈 목록 패널",
         "SECTION_NAME": "이슈",
-        "ACTION_NEW_ISSUE": "이슈 추가하기",
+        "ACTION_NEW_ISSUE": "이슈 만들기",
         "ACTION_ATTACH_SPRINT": "Attach issue to Sprint",
         "ACTION_DETACH_SPRINT": "Detach issue from Sprint",
         "EXTERNAL_REFERENCE": "이 이슈가 만들어 진 곳은 ",
@@ -1602,7 +1605,7 @@
                 "ISSUE": "이슈",
                 "VOTES": "투표",
                 "STATUS": "상태",
-                "ATTACHMENTS": "Attachments",
+                "ATTACHMENTS": "첨부",
                 "MODIFIED": "수정됨",
                 "ASSIGNED_TO": "Assign to"
             },
@@ -1681,7 +1684,7 @@
             "SECTION_TITLE": "사용자 설정",
             "CHANGE_PASSWORD": "비밀번호 변경하기",
             "EMAIL_NOTIFICATIONS": "이메일 알림",
-            "DESKTOP_NOTIFICATIONS": "Desktop notifications",
+            "DESKTOP_NOTIFICATIONS": "데스크탑 알림",
             "EVENTS": "이벤트"
         },
         "NOTIFICATIONS": {
@@ -1696,10 +1699,10 @@
             "OPTION_NONE": "없음"
         },
         "PROJECT_SETTINGS": {
-            "SET_START_PAGES": "Set start pages",
-            "START_PAGES_PER_PROJECT": "Set start pages per project",
+            "SET_START_PAGES": "시작 페이지 설정",
+            "START_PAGES_PER_PROJECT": "프로젝트별 시작 페이지 설정",
             "COLUMN_PROJECT": "프로젝트",
-            "COLUMN_STARTPAGE": "Start page",
+            "COLUMN_STARTPAGE": "시작 페이지",
             "DEFAULT_VALUE": "Default"
         },
         "EVENTS": {

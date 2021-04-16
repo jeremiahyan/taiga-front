@@ -1,5 +1,5 @@
 .row.us-item-row(
-    ng-repeat="us in userstories | inArray:visibleUserStories:'ref'"
+    ng-repeat="us in userstories | inArray:visibleUserStories:'ref' track by us.ref"
     tg-bind-scope
     ng-class="{blocked: us.is_blocked, new: us.new}"
     tg-class-permission="{'readonly': '!modify_us'}"
@@ -61,6 +61,7 @@
     div.points(tg-backlog-us-points="us")
 
     .us-option(tg-us-edit-selector, tg-check-permission="modify_us")
-        button.us-option-popup-button.js-popup-button
+        button.us-option-popup-button.js-popup-button(
+          ng-class="{first: us.backlog_order === 0}"
+        )
             tg-svg(svg-icon="icon-more-vertical")
-

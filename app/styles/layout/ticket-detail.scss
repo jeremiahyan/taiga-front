@@ -47,10 +47,11 @@
     }
     .tags-container {
         align-items: flex-end;
+        column-gap: .5rem;
         display: flex;
         flex-wrap: wrap;
-        gap: .5rem;
         margin-right: .25rem;
+        row-gap: .5rem;
     }
     .tags-block {
         align-items: flex-end;
@@ -95,6 +96,10 @@
     }
     &.wysiwyg {
         overflow: visible;
+    }
+
+    tg-wysiwyg {
+        max-width: calc(100% - 2rem);
     }
 
     .read-mode .wysiwyg {

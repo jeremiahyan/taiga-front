@@ -233,6 +233,7 @@ $qqueue, $repo, $analytics, activityService) ->
                 if not $scope.item.id?
                     $analytics.trackEvent("wikipage", "create", "create wiki page", 1)
                     $scope.$emit("wikipage:add")
+                    $scope.editableDescription = $scope.project.my_permissions.indexOf("modify_wiki_page") != -1
 
                 activityService.fetchEntries(true)
                 $confirm.notify("success")
@@ -266,7 +267,10 @@ $qqueue, $repo, $analytics, activityService) ->
         $scope.$watch 'project', (project) ->
             return if !project
 
-            $scope.editableDescription = project.my_permissions.indexOf("modify_wiki_page") != -1
+            if $scope.item.id?
+                $scope.editableDescription = project.my_permissions.indexOf("modify_wiki_page") != -1
+            else
+                $scope.editableDescription = project.my_permissions.indexOf("add_wiki_page") != -1
 
     return {
         scope: true,
@@ -288,7 +292,7 @@ $qqueue, $repo, $analytics, activityService) ->
                 <div
                     class="wysiwyg"
                     ng-if="!editableDescription && item.content.length"
-                    ng-bind-html="item.content | markdownToHTML"></div>
+                    tg-bind-wysiwyg-html="item.content"></div>
                 <div
                     class="wysiwyg"
                     ng-if="!editableDescription && !item.content.length">

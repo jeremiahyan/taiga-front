@@ -5,9 +5,14 @@
     margin-bottom: 1rem;
 }
 
-.new-issue {
+.issues-options-start {
     display: flex;
-    gap: .5rem;
+}
+
+.new-issue {
+    column-gap: .5rem;
+    display: flex;
+    row-gap: .5rem;
 }
 
 .in-taskboard {
@@ -20,7 +25,10 @@
     }
     .sprint-issues-title {
         align-items: center;
+        border-inline-end: 1px solid $default-tags;
         display: flex;
+        margin-inline-end: 1rem;
+        padding-inline-end: 1rem;
         .icon {
             fill: $color-gray400;
             margin-right: .5rem;

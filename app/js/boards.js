@@ -21,12 +21,18 @@ function initBoard() {
             }
 
             var callback = function(entries) {
-                entries.forEach(function(entry) {
-                        eventsCallback('SHOW_CARD', {
-                            id: Number(entry.target.dataset.id),
-                            visible: entry.isIntersecting
-                        });
-                    });
+                entries = entries.map((entry) => {
+                    return {
+                        id: Number(entry.target.dataset.id),
+                        visible: entry.isIntersecting
+                    };
+                }).filter((entry) => {
+                    return entry.visible
+                });
+
+                if (entries.length) {
+                    eventsCallback('SHOW_CARD', entries);
+                }
             };
 
             if (swimlaneId) {
@@ -34,9 +40,7 @@ function initBoard() {
                     kanbanStatusObservers[swimlaneId] = {};
                 }
 
-                if (!kanbanStatusObservers[swimlaneId][statusId]) {
-                    kanbanStatusObservers[swimlaneId][statusId] = new IntersectionObserver(callback, options);
-                }
+                kanbanStatusObservers[swimlaneId][statusId] = new IntersectionObserver(callback, options);
             } else {
                 if (!kanbanStatusObservers[statusId]) {
                     kanbanStatusObservers[statusId] = new IntersectionObserver(callback, options);

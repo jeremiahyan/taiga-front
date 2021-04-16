@@ -17,6 +17,7 @@
         "BACK": "Back",
         "COPY_TO_CLIPBOARD": "Copiar para área de transferência",
         "COPIED_TO_CLIPBOARD": "O texto foi copiado para a área de transferência",
+        "MOVE_TO_TOP": "Move to top",
         "EDIT": "Editar",
         "DRAG": "Arrastar",
         "TAG_LINE": "Sua ferramenta de código aberto, gratuita e ágil.",
@@ -238,6 +239,8 @@
             "PLACEHOLDER_FILTER_NAME": "Digite o nome do filtro e pressione Enter",
             "APPLIED_FILTERS_NUM": "filtros aplicados",
             "TITLE_ADVANCED_FILTER": "Advanced",
+            "LENGTH_ZERO_ERROR": "Please add a filter name",
+            "REPEATED_FILTER_ERROR": "This filter name is already in use",
             "ADVANCED_FILTERS": {
                 "INCLUDE": "Include",
                 "EXCLUDE": "Exclude",
@@ -435,8 +438,8 @@
             "ASSIGNED_TO": "Atribuído",
             "STATUS": "Status",
             "PROGRESS": "Progresso",
-            "CLOSED_US": "Closed user stories",
-            "CLOSED_EPICS": "Closed epics",
+            "CLOSED_US": "Histórias de usuário encerradas",
+            "CLOSED_EPICS": "Épicos encerrados",
             "VIEW_OPTIONS": "Ver opções"
         },
         "CREATE": {
@@ -455,7 +458,7 @@
         "MY_PROJECTS": "Meus Projetos"
     },
     "ATTACHMENT": {
-        "SECTION_NAME": "Attachments",
+        "SECTION_NAME": "Anexos",
         "TITLE": "{{ fileName }} enviado em {{ date }}",
         "LIST_VIEW_MODE": "Modo de visualização lista",
         "GALLERY_VIEW_MODE": "Modo de Visualização Galeria",
@@ -496,7 +499,7 @@
             "ADD_BUTTON": "+ Novo Membro",
             "ADD_BUTTON_TITLE": "Adicionar novo membro",
             "UPGRADE_BUTTON": "Fazer Upgrade no seu plano",
-            "LIMIT_USERS_WARNING_MESSAGE_FOR_ADMIN": "If you would like to <strong>add more members</strong>, please contact the project owner <a href='mailto:{{ owner_email }}' title='{{ owner_email }}'>{{ owner_email }}</a>",
+            "LIMIT_USERS_WARNING_MESSAGE_FOR_ADMIN": "Se quiser <strong>adicionar mais membros</strong>, por favor fale com o dono do projeto<a href='mailto:{{ owner_email }}' title='{{ owner_email }}'>{{ owner_email }}</a>",
             "LIMIT_USERS_WARNING_MESSAGE_FOR_OWNER": "Este projeto atingiu o limite de <strong>({{members}})</strong> membros permitidos. Se você deseja aumentar este limite entre em contato com o administrador."
         },
         "PROJECT_EXPORT": {
@@ -636,7 +639,7 @@
         },
         "PROJECT_VALUES_STATUS": {
             "TITLE": "Status",
-            "SUBTITLE": "Especifique os status pelos quais suas histórias de usuários, tarefas e problemas passarão",
+            "SUBTITLE": "Add, remove or edit the color and name of the statuses your epics, user stories, task and issues will go through.",
             "EPIC_TITLE": "Estados do Épico",
             "US_TITLE": "Status de história de usuário",
             "TASK_TITLE": "Estados da Tarefa",
@@ -688,7 +691,7 @@
         "ROLES": {
             "PAGE_TITLE": "Funções - {{projectName}}",
             "WARNING_NO_ROLE": "Seja cuidadoso, nenhuma função em seu projeto será capaz de estimar o valor dos pontos para as histórias de usuários",
-            "HELP_ROLE_ENABLED": "Quando habilitado, membros atribuídos a esta função serão capazes de estimar valores para histórias de usuários",
+            "HELP_ROLE_ENABLED": "This role is part of the roles involved in estimating user story points.",
             "DISABLE_COMPUTABLE_ALERT_TITLE": "Você tem certeza que quer desativar esta permissão de estimativas?",
             "DISABLE_COMPUTABLE_ALERT_SUBTITLE": "Se você desativar a permissão de estimativas para esta regra  {{roleName}} todas estimativas feitas anteriormente por esta regra serão removidas.",
             "COUNT_MEMBERS": "{{ role.members_count }} membros com a mesma função",
@@ -888,7 +891,7 @@
     },
     "PROJECT": {
         "PAGE_TITLE": "{{projectName}}",
-        "HELP": "Reorder your projects to set at the top the most used ones.<br/> The top 4 projects will appear in the top navigation bar project list",
+        "HELP": "Reorganize seus projetos para colocar os mais usados no topo.<br>Os 4 primeiros aparecerão na lista de projetos da barra de navegação superior.",
         "PRIVATE": "Projeto Privado",
         "LOOKING_FOR_PEOPLE": "Este projeto esta a procura de colaboradores",
         "FANS_COUNTER_TITLE": "{total, plural, =1{one fan} other{# fans}}",
@@ -927,7 +930,7 @@
             "TAIGA_RESOURCES_TITLE": "Go to Taiga resources",
             "TAIGA_RESOURCES": "Taiga Resources",
             "FEEDBACK_TITLE": "Write to us with your feedback",
-            "FEEDBACK": "Ask a question",
+            "FEEDBACK": "Pergunte algo",
             "NOTIFICATIONS_TITLE": "Editar suas configurações de notificações",
             "NOTIFICATIONS": "Notificações",
             "VIEW_PROFILE_TITLE": "Ver perfil",
@@ -989,8 +992,8 @@
         },
         "COMMON": {
             "DETAILS": "Detalhes do novo projeto",
-            "PROJECT_TITLE": "Nome do Projeto",
-            "PROJECT_DESCRIPTION": "Descrição do Projeto"
+            "PROJECT_TITLE": "Project Name (Required)",
+            "PROJECT_DESCRIPTION": "Project Description (Required)"
         },
         "DUPLICATE": {
             "TITLE": "Duplicar Projeto",
@@ -1114,7 +1117,7 @@
             "CONFIRM": "Você tem certeza que quer excluir sua conta Taiga?",
             "CANCEL": "Voltar para configurações",
             "ACCEPT": "Excluir conta",
-            "BLOCK_PROJECT": "Note that all projects you own will be <strong>blocked</strong> after you delete your account. If you do not want a particular project to be blocked, make sure you transfer ownership to another existing Taiga member before deleting your account."
+            "BLOCK_PROJECT": "Perceba que todos os projetos de sua propriedade serão <strong>bloqueados</strong> após você deletar sua conta. Se você não deseja que algum dos projetos seja bloqueado, certifique-se de transferir sua propriedade para outro membro do Taiga antes de deletar sua conta. "
         },
         "DELETE_PROJECT": {
             "TITLE": "Excluir projeto",
@@ -1142,10 +1145,10 @@
             "HELP_TEXT": "Se os usuários já estiverem registrados no Taiga, eles serão adicionados automaticamente. Caso contrário, eles receberão um convite."
         },
         "FEEDBACK": {
-            "TITLE": "Ask a question",
-            "COMMENT": "Leave us a message",
-            "ACTION_SEND": "Send Message",
-            "YOU_CAN_ALSO": "You can also:",
+            "TITLE": "Pergunte algo",
+            "COMMENT": "Deixe uma mensagem",
+            "ACTION_SEND": "Enviar mensagem",
+            "YOU_CAN_ALSO": "Você também pode:",
             "CREATE": "Create an issue on this",
             "PUBLIC": "public Taiga project",
             "EMAIL": "Send us a e-mail directly to",
@@ -1165,7 +1168,7 @@
             "LAST_SPRINT_NAME": "última sprint é <strong>{{lastSprint}} ;-) </strong>"
         },
         "CREATE_EDIT": {
-            "TASK_PLACEHOLDER_DESCRIPTION": "Please add descriptive text to help others better understand this task",
+            "TASK_PLACEHOLDER_DESCRIPTION": "Por favor adicione um texto descritivo que ajude os outros a compreender melhor esta tarefa",
             "ISSUE_PLACEHOLDER_DESCRIPTION": "Please add descriptive text to help others better understand this issue",
             "US_PLACEHOLDER_DESCRIPTION": "Please add descriptive text to help others better understand this user story",
             "NEW_TASK": "Nova tarefa",
@@ -1271,7 +1274,7 @@
     "EPIC": {
         "PAGE_TITLE": "{{epicSubject}} - Épico {{epicRef}} - {{projectName}}",
         "PAGE_DESCRIPTION": "Estado: {{epicStatus }}. Descrição: {{epicDescription}}",
-        "EPIC_COLOR": "Epic color:",
+        "EPIC_COLOR": "Cor do éṕico ",
         "SECTION_NAME": "Épico",
         "ERROR_UNLINK_RELATED_USERSTORY": "Não fomos capazes de separar: {{errorMessage}}",
         "CREATE_RELATED_USERSTORIES": "Criar um relacionamento com",
@@ -1305,7 +1308,7 @@
         "TITLE_DELETE_ACTION": "Excluir história de usuário",
         "TITLE_DELETE_MESSAGE": "Are you sure you want to delete <strong>“{{subject}}“</strong>?",
         "LIGHTBOX_TITLE_BLOKING_US": "Blocking user story",
-        "NOT_ESTIMATED": "Não estimado",
+        "NOT_ESTIMATED": "N/E",
         "OWNER_US": "This user story belongs to",
         "RELATE_TO_EPIC": "Link to epic",
         "REMOVE_RELATIONSHIP_WITH_EPIC": "Remove epic relationship",
@@ -1462,7 +1465,7 @@
         }
     },
     "ERROR": {
-        "TEXT1": "Something happened and the Taiga has captured the error to be able to work on it.",
+        "TEXT1": "Algo aconteceu e o Taiga capturou o erro para poder trabalhar nele.",
         "NOT_FOUND": "Não encontrado",
         "NOT_FOUND_TEXT": "Erro 404. A página que você procura não existe mais. Você pode voltar para a página do TAIGA e ver se consegue encontrar o que está procurando.",
         "PERMISSION_DENIED": "Permissão negada",
@@ -1569,7 +1572,7 @@
         "PAGE_TITLE": "Apontamentos - {{projectName}}",
         "PAGE_DESCRIPTION": "O painel de problemas do projeto {{projectName}}: {{projectDescription}}",
         "SECTION_NAME": "Problema",
-        "ACTION_NEW_ISSUE": "+ NOVO PROBLEMA",
+        "ACTION_NEW_ISSUE": "NEW ISSUE",
         "ACTION_ATTACH_SPRINT": "Attach issue to Sprint",
         "ACTION_DETACH_SPRINT": "Detach issue from Sprint",
         "EXTERNAL_REFERENCE": "Esse problema foi criado a partir de",
@@ -1602,7 +1605,7 @@
                 "ISSUE": "Problema",
                 "VOTES": "Votos",
                 "STATUS": "Status",
-                "ATTACHMENTS": "Attachments",
+                "ATTACHMENTS": "Anexos",
                 "MODIFIED": "Modificado",
                 "ASSIGNED_TO": "Assign to"
             },

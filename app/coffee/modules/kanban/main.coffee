@@ -67,6 +67,18 @@ class KanbanController extends mixOf(taiga.Controller, taiga.PageMixin, taiga.Fi
 
     storeCustomFiltersName: 'kanban-custom-filters'
     storeFiltersName: 'kanban-filters'
+    validQueryParams: [
+        'exclude_tags',
+        'tags',
+        'exclude_assigned_users',
+        'assigned_users',
+        'exclude_role',
+        'role',
+        'exclude_epic',
+        'epic',
+        'exclude_owner',
+        'owner'
+    ]
 
     constructor: (@scope, @rootscope, @repo, @confirm, @rs, @rs2, @params, @q, @location,
                   @appMetaService, @navUrls, @events, @analytics, @translate, @errorHandlingService,
@@ -83,7 +95,7 @@ class KanbanController extends mixOf(taiga.Controller, taiga.PageMixin, taiga.Fi
         @.isLightboxOpened = false # True when a lighbox is open
         @.isRefreshNeeded = false  # True if a lighbox is open and some event arrived
 
-        return if @.applyStoredFilters(@params.pslug, "kanban-filters")
+        return if @.applyStoredFilters(@params.pslug, "kanban-filters", @.validQueryParams)
 
         @scope.sectionName = @translate.instant("KANBAN.SECTION_NAME")
         @.initializeEventHandlers()
@@ -144,8 +156,11 @@ class KanbanController extends mixOf(taiga.Controller, taiga.PageMixin, taiga.Fi
                 @.zoomLoading = false
                 @kanbanUserstoriesService.resetFolds()
 
-    filtersReloadContent: () ->
+    filtersReloadContent: debounceLeading 100, () ->
         @.loadUserstories().then (result) =>
+            if !result
+                return
+
             if @scope.swimlanesList.size && !result.length
                 @.foldedSwimlane = @.foldedSwimlane.set(@scope.swimlanesList.first().id.toString(), false)
 
@@ -342,11 +357,13 @@ class KanbanController extends mixOf(taiga.Controller, taiga.PageMixin, taiga.Fi
 
         if clean
             @kanbanUserstoriesService.set(newUs)
+            @.batchTimings = [200, 100, 50]
         else
             @kanbanUserstoriesService.add(newUs)
 
         if @.queue.length > 0
-            @timeout(@.renderBatch)
+            timeout = @.batchTimings.shift() || 0
+            @timeout(@.renderBatch, timeout)
         else
             scopeDefer @scope, =>
                 # The broadcast must be executed when the DOM has been fully reloaded.
@@ -391,13 +408,19 @@ class KanbanController extends mixOf(taiga.Controller, taiga.PageMixin, taiga.Fi
             params.include_attachments = 1
             params.include_tasks = 1
 
-        params = _.merge params, @location.search()
+        locationParams = _.pick(_.clone(@location.search()), @.validQueryParams)
+        params = _.merge params, locationParams
         params.q = @.filterQ
+        @.lastSearch = @.filterQ
+        lastSearch = @.filterQ
 
         promise = @q.all([
             @rs.userstories.listAll(@scope.projectId, params),
             @.loadSwimlanes()
         ]).then (result) =>
+            if lastSearch != @.lastSearch
+                return
+
             @kanbanUserstoriesService.reset(false)
             userstories = result[0]
             swimlanes = result[1]
@@ -570,12 +593,15 @@ KanbanDirective = ($repo, $rootscope) ->
                 resizeObserver.observe(column)
 
         board = initBoard()
-        board.events (event, data) =>
+        board.events (event, entries) =>
             # the card is visible in the scroll viewport
             if event == 'SHOW_CARD'
-                if !$scope.usCardVisibility[data.id] && data.visible
+                visibleEntries = entries.filter (entry) => entry.visible && !$scope.usCardVisibility[entry.id]
+
+                if visibleEntries.length
                     $scope.$evalAsync () =>
-                        $scope.usCardVisibility[data.id] = data.visible
+                        visibleEntries.forEach (entry) =>
+                            $scope.usCardVisibility[entry.id] = true
 
             return
 

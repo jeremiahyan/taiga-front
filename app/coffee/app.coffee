@@ -529,14 +529,15 @@ configure = ($routeProvider, $locationProvider, $httpProvider, $provide, $tgEven
             controller: "LoginPage",
         }
     )
-    $routeProvider.when("/register",
-        {
-            templateUrl: "auth/register.html",
-            title: "REGISTER.PAGE_TITLE",
-            description: "REGISTER.PAGE_DESCRIPTION",
-            disableHeader: true
-        }
-    )
+    if window.taigaConfig.publicRegisterEnabled
+        $routeProvider.when("/register",
+            {
+                templateUrl: "auth/register.html",
+                title: "REGISTER.PAGE_TITLE",
+                description: "REGISTER.PAGE_DESCRIPTION",
+                disableHeader: true
+            }
+        )
     $routeProvider.when("/forgot-password",
         {
             templateUrl: "auth/forgot-password.html",
@@ -790,6 +791,7 @@ configure = ($routeProvider, $locationProvider, $httpProvider, $provide, $tgEven
 i18nInit = (lang, $translate) ->
     # i18n - moment.js
     moment.locale(lang)
+    document.querySelector('html').setAttribute('lang', lang)
 
     if (lang != 'en') # en is the default, the file doesn't exist
         ljs.load "/#{window._version}/locales/moment-locales/" + lang + ".js"

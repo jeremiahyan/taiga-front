@@ -44,6 +44,7 @@ div.wrapper.issues.lightbox-generic-form(
                                     id="show-tags-input"
                                     ng-checked="ctrl.showTags"
                                     ng-model="ctrl.showTags"
+                                    ng-change="ctrl.toggleShowTags()"
                                 )
                                 div
                             label(
@@ -58,7 +59,7 @@ div.wrapper.issues.lightbox-generic-form(
                             variant="primary"
                             ng-click="ctrl.addNewIssue('standard', null)"
                         )
-                            tg-svg(ng-if="ctrl.sprintIssues", svg-icon="icon-add")
+                            tg-svg(svg-icon="icon-add")
                             span(ng-if="!ctrl.sprintIssues") {{"ISSUES.ACTION_NEW_ISSUE" | translate}}
 
                         button(
@@ -70,7 +71,7 @@ div.wrapper.issues.lightbox-generic-form(
                             tg-svg(svg-icon="icon-bulk")
         .issue-container
             sidebar.filters-bar(
-                ng-if="!ctrl.openFilter"
+                ng-if="ctrl.openFilter"
             )
                 tg-filter(
                     q="ctrl.filterQ"
@@ -86,7 +87,7 @@ div.wrapper.issues.lightbox-generic-form(
                     on-change-q="ctrl.changeQ(q)"
                 )
 
-            section.main.issues-page(
+            section.issues-page(
                 ng-class="{filter: ctrl.openFilter}"
             )
                 tg-issues-table(
@@ -95,6 +96,7 @@ div.wrapper.issues.lightbox-generic-form(
                     on-load-issues="ctrl.loadIssues()"
                     on-add-new-issue="ctrl.addNewIssue()"
                     on-add-issues-in-bulk="ctrl.addIssuesInBulk()"
+                    on-toggle-tags="ctrl.toggleTags(tags)"
                 )
 
                 // Paginator is rendered using js.

@@ -77,7 +77,6 @@ paths.css_vendor = [
     paths.modules + "dragula/dist/dragula.css",
     paths.modules + "awesomplete/awesomplete.css",
     paths.app + "styles/vendor/*.css",
-    paths.modules + "@highlightjs/cdn-assets/styles/default.min.css",
     paths.modules + "@highlightjs/cdn-assets/styles/dracula.min.css"
 ];
 paths.locales = paths.app + "locales/**/*.json";
@@ -600,6 +599,11 @@ gulp.task("copy-ckeditor-translations", function() {
         .pipe(gulp.dest(paths.distVersion + "/ckeditor-translations/"));
 });
 
+gulp.task("copy-hljs-languages", function() {
+    return gulp.src(paths.modules + "@highlightjs/cdn-assets/languages/*")
+        .pipe(gulp.dest(paths.distVersion + "/highlightjs-languages/"));
+});
+
 gulp.task("link-images", gulp.series("copy-images", function(cb) {
     try {
         fs.unlinkSync(paths.dist+"images");
@@ -618,7 +622,8 @@ gulp.task("copy", gulp.parallel([
     "copy-svg",
     "copy-theme-svg",
     "copy-extras",
-    "copy-ckeditor-translations"
+    "copy-ckeditor-translations",
+    "copy-hljs-languages"
 ]));
 
 gulp.task("delete-old-version", function() {
@@ -647,6 +652,7 @@ gulp.task("express", function(cb) {
     app.use("/" + version + "/locales", express.static(__dirname + "/dist/" + version + "/locales"));
     app.use("/" + version + "/maps", express.static(__dirname + "/dist/" + version + "/maps"));
     app.use("/" + version + "/ckeditor-translations", express.static(__dirname + "/dist/" + version + "/ckeditor-translations"));
+    app.use("/" + version + "/highlightjs-languages", express.static(__dirname + "/dist/" + version + "/highlightjs-languages"));
     app.use("/plugins", express.static(__dirname + "/dist/plugins"));
     app.use("/conf.json", express.static(__dirname + "/dist/conf.json"));
     app.use(require('connect-livereload')({

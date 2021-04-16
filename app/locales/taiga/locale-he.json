@@ -17,6 +17,7 @@
         "BACK": "הקודם",
         "COPY_TO_CLIPBOARD": "העתק ללוח",
         "COPIED_TO_CLIPBOARD": "טקסט הועתק ללוח",
+        "MOVE_TO_TOP": "Move to top",
         "EDIT": "ערוך",
         "DRAG": "גרור",
         "TAG_LINE": "כלי ניהול הפרוייקטים האג'ילי, חינמי ופתוח שלך",
@@ -238,6 +239,8 @@
             "PLACEHOLDER_FILTER_NAME": "כתוב את שם המסנן ולחץ אנטר",
             "APPLIED_FILTERS_NUM": "מסננים מוחלים",
             "TITLE_ADVANCED_FILTER": "מתקדם",
+            "LENGTH_ZERO_ERROR": "Please add a filter name",
+            "REPEATED_FILTER_ERROR": "This filter name is already in use",
             "ADVANCED_FILTERS": {
                 "INCLUDE": "תכלול",
                 "EXCLUDE": "אל תכלול",
@@ -636,7 +639,7 @@
         },
         "PROJECT_VALUES_STATUS": {
             "TITLE": "סטאטוסים",
-            "SUBTITLE": "בחר סטטוטסים שדרכם יעברו סיפורי המשתמש, המשימות והתקלות שלך",
+            "SUBTITLE": "Add, remove or edit the color and name of the statuses your epics, user stories, task and issues will go through.",
             "EPIC_TITLE": "סטטוסי אפיונים",
             "US_TITLE": "סטאטוס סיפורי משתמש",
             "TASK_TITLE": "סטטוסי משימה",
@@ -688,7 +691,7 @@
         "ROLES": {
             "PAGE_TITLE": "תפקידים - {{projectName}}",
             "WARNING_NO_ROLE": "היה זהיר, שום תפקיד בפרוייקט זה לא יוכל להעריך את הנקודות של סיפורי המשתמש",
-            "HELP_ROLE_ENABLED": "כאשר מאופשר, משתמשים המשוייכים לתפקיד זה יוכלו לתמחר נקודות עבור סיפורי המשתמש",
+            "HELP_ROLE_ENABLED": "This role is part of the roles involved in estimating user story points.",
             "DISABLE_COMPUTABLE_ALERT_TITLE": "האם אתה בטוח שברצונך למנוע מבעלי תפקיד זה לתמחר?",
             "DISABLE_COMPUTABLE_ALERT_SUBTITLE": "אם תבטל הרשאות תמחור לתפקיד {{roleName}}, כל התמחורים הקודמים אשר בוצעו על ידי בעלי תפקיד זה ימחקו.",
             "COUNT_MEMBERS": "{{ role.members_count }} משתמשים בעלי תפקיד זה",
@@ -989,8 +992,8 @@
         },
         "COMMON": {
             "DETAILS": "פרטי פרוייקט חדש",
-            "PROJECT_TITLE": "שם פרוייקט",
-            "PROJECT_DESCRIPTION": "תיאור פרוייקט"
+            "PROJECT_TITLE": "Project Name (Required)",
+            "PROJECT_DESCRIPTION": "Project Description (Required)"
         },
         "DUPLICATE": {
             "TITLE": "שכפל פרוייקט",
@@ -1305,7 +1308,7 @@
         "TITLE_DELETE_ACTION": "Delete user story",
         "TITLE_DELETE_MESSAGE": "Are you sure you want to delete <strong>“{{subject}}“</strong>?",
         "LIGHTBOX_TITLE_BLOKING_US": "Blocking user story",
-        "NOT_ESTIMATED": "לא מתומחר",
+        "NOT_ESTIMATED": "N/E",
         "OWNER_US": "This user story belongs to",
         "RELATE_TO_EPIC": "Link to epic",
         "REMOVE_RELATIONSHIP_WITH_EPIC": "Remove epic relationship",
@@ -1569,7 +1572,7 @@
         "PAGE_TITLE": "תקלות - {{projectName}}",
         "PAGE_DESCRIPTION": "לוח התקלות של הפרוייקט {{projectName}}: {{projectDescription}}\n",
         "SECTION_NAME": "תקלה",
-        "ACTION_NEW_ISSUE": "+ תקלה חדשה",
+        "ACTION_NEW_ISSUE": "NEW ISSUE",
         "ACTION_ATTACH_SPRINT": "הצמד בעיה אל Sprint",
         "ACTION_DETACH_SPRINT": "נתק תקלה מהSprint",
         "EXTERNAL_REFERENCE": "תקלה זו נוצרה מתוך",

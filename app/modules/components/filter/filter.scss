@@ -1,4 +1,6 @@
 tg-filter {
+    --filter-list-max-height: 380px;
+
     background: $grey-02;
     display: block;
     max-height: 100%;
@@ -52,16 +54,26 @@ tg-filter {
 }
 
 .custom-filters-add-form {
-    display: flex;
-    flex-direction: column;
+    display: block;
     padding-top: 1rem;
 
     .add-filter-input {
         margin-bottom: .5rem;
     }
 
+    .error-text {
+        display: block;
+        margin-left: .5rem;
+    }
+
     .button-custom-filters {
         align-self: flex-end;
+    }
+
+    .btn-small {
+        display: block;
+        margin: 0 0 0 auto;
+        text-align: right;
     }
 }
 
@@ -292,13 +304,15 @@ tg-filter {
     }
 }
 
+
+
 .filters-cats {
     ul {
         margin-bottom: 0;
     }
     li {
         .filter-list {
-            max-height: 380px;
+            max-height: var(--filter-list-max-height);
             min-height: 60px;
         }
         &:not(.active):last-child {

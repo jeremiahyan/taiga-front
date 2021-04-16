@@ -73,6 +73,25 @@ class IssuesController extends mixOf(taiga.Controller, taiga.PageMixin, taiga.Fi
         "role",
     ]
 
+    validQueryParams: [
+        'exclude_tags',
+        'tags',
+        'exclude_status',
+        'status',
+        'exclude_type',
+        'type',
+        'exclude_severity',
+        'severity',
+        'exclude_priority',
+        'priority',
+        'exclude_assigned_to',
+        'assigned_to',
+        'exclude_role',
+        'role',
+        'exclude_owner',
+        'owner',
+        'order_by'
+    ]
 
     constructor: (@scope, @rootscope, @repo, @confirm, @rs, @urls, @params, @q, @location, @appMetaService,
                   @navUrls, @events, @analytics, @translate, @errorHandlingService, @storage, @filterRemoteStorageService, @projectService) ->
@@ -81,8 +100,9 @@ class IssuesController extends mixOf(taiga.Controller, taiga.PageMixin, taiga.Fi
         @showTags = true
         @scope.sectionName = @translate.instant("PROJECT.SECTION.ISSUES")
         @.voting = false
+        @.openFilter = false
 
-        return if @.applyStoredFilters(@params.pslug, @.filtersHashSuffix)
+        return if @.applyStoredFilters(@params.pslug, @.filtersHashSuffix, @.validQueryParams)
 
         promise = @.loadInitialData()
 
@@ -116,7 +136,7 @@ class IssuesController extends mixOf(taiga.Controller, taiga.PageMixin, taiga.Fi
                     @.loadIssues()
 
     toggleShowTags: ->
-        @showTags = !@showTags
+        @rs.issues.storeIssuesShowTags(@scope.projectId, @showTags)
 
     isOrderedBy: (fieldName) ->
         pattern = new RegExp("-*"+fieldName)
@@ -176,9 +196,12 @@ class IssuesController extends mixOf(taiga.Controller, taiga.PageMixin, taiga.Fi
 
             @filterRemoteStorageService.storeFilters(@scope.projectId, userFilters, @.myFiltersHashSuffix).then(@.generateFilters)
 
+    getQueryParams: () ->
+        return _.pick(_.clone(@location.search()), @.validQueryParams)
+
     generateFilters: ->
-        @.storeFilters(@params.pslug, @location.search(), @.filtersHashSuffix)
-        urlfilters = @location.search()
+        urlfilters = @.getQueryParams()
+        @.storeFilters(@params.pslug, urlfilters, @.filtersHashSuffix)
 
         loadFilters = {}
         loadFilters.project = @scope.projectId
@@ -362,6 +385,9 @@ class IssuesController extends mixOf(taiga.Controller, taiga.PageMixin, taiga.Fi
         @.initializeSubscription()
         @.generateFilters()
 
+        if @rs.issues.getIssuesShowTags(@scope.projectId) == false
+            @showTags = false
+
         return @.loadIssues()
 
     # Functions used from templates
@@ -519,7 +545,8 @@ IssuesOrderingDirective = ($log, $location, $template, $compile) ->
                 $ctrl.replaceFilter("order_by", finalOrder)
 
                 if $ctrl.filtersHashSuffix
-                    $ctrl.storeFilters($ctrl.params.pslug, $location.search(), $ctrl.filtersHashSuffix)
+                    urlfilters = $ctrl.getQueryParams()
+                    $ctrl.storeFilters($ctrl.params.pslug, urlfilters, $ctrl.filtersHashSuffix)
 
                 $ctrl.loadIssues().then ->
                     # Update the arrow
@@ -590,8 +617,15 @@ IssueStatusInlineEditionDirective = ($repo, $template, $rootscope) ->
             $el.find(".pop-status").popover().close()
             updateIssueStatus($el, issue, $scope.issueStatusById)
 
+            attachments = issue.attachments
+
             $scope.$apply () ->
                 $repo.save(issue).then (response) ->
+                    issue.attachments = attachments
+                    issue._isModified = false
+                    issue._attrs = _.extend(issue.getAttrs(), issue)
+                    issue._modifiedAttrs = {}
+
                     $rootscope.$broadcast("status:changed", response)
 
         taiga.bindOnce $scope, "project", (project) ->
@@ -651,7 +685,13 @@ IssueAssignedToInlineEditionDirective = ($repo, $rootscope, $translate, avatarSe
         $el.on "click", ".issue-assignedto", (event) ->
             onClose = (assignedUsers) =>
                 issue.assigned_to = assignedUsers.pop() || null
+                attachments = issue.attachments
                 $repo.save(issue).then ->
+                    issue.attachments = attachments
+                    issue._isModified = false
+                    issue._attrs = _.extend(issue.getAttrs(), issue)
+                    issue._modifiedAttrs = {}
+
                     updateIssue(issue)
                     $rootscope.$broadcast("assigned-to:changed", issue)
 

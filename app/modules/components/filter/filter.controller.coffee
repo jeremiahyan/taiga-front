@@ -23,6 +23,8 @@ class FilterController
     ]
 
     @.activeCustomFilter = null
+    @.repeatedFilterError = false
+    @.lengthZeroError = false
 
     constructor: (@translate) ->
         @.opened = null
@@ -53,11 +55,29 @@ class FilterController
     isOpen: (filterName) ->
         return @.opened == filterName
 
+    openCustomFilter: () ->
+        @.customFilterForm = true
+        @.lengthZeroError = false
+        @.repeatedFilterError = false
+
     saveCustomFilter: () ->
-        @.onSaveCustomFilter({name: @.customFilterName})
-        @.customFilterForm = false
-        @.opened = 'custom-filter'
-        @.customFilterName = ''
+        if @.customFilterName.length > 0 && !@.customFilters.find((filter) => filter.name == @.customFilterName)
+            @.lengthZeroError = false
+            @.repeatedFilterError = false
+            @.onSaveCustomFilter({name: @.customFilterName})
+            @.customFilterForm = false
+            @.opened = 'custom-filter'
+            @.customFilterName = ''
+
+        if @.customFilterName.length == 0
+            @.lengthZeroError = true
+        else
+            @.lengthZeroError = false
+
+        if !@.customFilters.find((filter) => filter.name == @.customFilterName)
+            @.repeatedFilterError = false
+        else
+            @.repeatedFilterError = true
 
     unselectFilter: (filter) ->
         @.activeCustomFilter = null

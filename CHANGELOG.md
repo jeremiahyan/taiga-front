@@ -1,5 +1,67 @@
 # Changelog
 
+## 6.0.11 (unreleased)
+
+- ...
+
+## 6.0.10 (2021-04-13)
+
+- Feature: Add a "move to top" option to the context menu of the backlog ([#2239](https://github.com/taigaio/taiga-front/pull/2239))
+- Fix: Add simple line breaks to wysiwyg editor
+- Update translations
+
+## 6.0.9 (2021-04-06)
+
+- Fix: prevent invalid query params on filters
+- Fix: support more languages in the html editor
+- Fix: kanban search race condition
+- Layout adjustments on discover page
+- Fix: Support flex gap for webkit browsers
+- Fix: Clean and repair settings icon for webkit browser
+- Fix: empty cards in kanban with swimlanes after toggle swimlane visibility
+
+## 6.0.8 (2021-03-16)
+
+- Fix: Change html lang attribute when the lenguage is not en
+- Fix: epic screen on screen inferior to 1200px
+
+## 6.0.7 (2021-03-09)
+
+- General improvements to interface.
+- Persist show/hide tags preferences on local storage
+
+## 6.0.6 (2021-03-01)
+
+- General improvements to interface.
+- Fix: Can't create empty custom filters anymore.
+- Fix: Can't save filters with the same name as an existing filter.
+- Fix: Remove highlightjs default theme
+- Fix: Wrong filter us count in empty backlog
+- Fix: Highlight code when the user doesn't have edit permissions
+- Improve kanban render performance
+- Fix: Display warning in admin if reached max memberships in a project
+- Display issues tags in sprint taskboard
+- Fix: Fix incorrect count on filter
+
+## 6.0.5 (2021-02-22)
+
+- Added translation to Dansk
+- Added translation to Serbian
+- Added translation to Vietnamese
+- General improvements to interface.
+- Fix: Add new buttons and style to transfer owner, imports warnings lightbox and warnings on new projects
+- Fix: User mention with underscore
+- Fix: Drag and drop on empty backlog
+- Feat: Editor, image with links
+
+## 6.0.4 (2021-02-15)
+
+### Misc
+
+- Minor bug fix.
+- Improve configuration for docker
+
+
 ## 6.0.3 (2021-02-07)
 
 ### Misc

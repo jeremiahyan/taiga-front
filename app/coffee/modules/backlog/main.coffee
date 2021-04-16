@@ -63,6 +63,20 @@ class BacklogController extends mixOf(taiga.Controller, taiga.PageMixin, taiga.F
     backlogOrder: {}
     milestonesOrder: {}
     newUs: []
+    validQueryParams: [
+        'exclude_status',
+        'status',
+        'exclude_tags',
+        'tags',
+        'exclude_assigned_users',
+        'assigned_users',
+        'exclude_role',
+        'role',
+        'exclude_epic',
+        'epic',
+        'exclude_owner',
+        'owner'
+    ]
 
     constructor: (@scope, @rootscope, @repo, @confirm, @rs, @params, @q, @location, @appMetaService, @navUrls,
                   @events, @analytics, @translate, @loading, @rs2, @modelTransform, @errorHandlingService,
@@ -81,7 +95,7 @@ class BacklogController extends mixOf(taiga.Controller, taiga.PageMixin, taiga.F
         @scope.noSwimlaneUserStories = false
         @scope.swimlanesList = Immutable.List()
 
-        return if @.applyStoredFilters(@params.pslug, "backlog-filters")
+        return if @.applyStoredFilters(@params.pslug, "backlog-filters", @.validQueryParams)
 
         @scope.sectionName = @translate.instant("BACKLOG.SECTION_NAME")
         @showTags = true
@@ -293,7 +307,7 @@ class BacklogController extends mixOf(taiga.Controller, taiga.PageMixin, taiga.F
 
         @.loadingUserstories = true
         @.disablePagination = true
-        params = _.clone(@location.search())
+        params = _.pick(_.clone(@location.search()), @.validQueryParams)
         @rs.userstories.storeQueryParams(@scope.projectId, params)
 
         if resetPagination
@@ -309,6 +323,7 @@ class BacklogController extends mixOf(taiga.Controller, taiga.PageMixin, taiga.F
         return promise.then (result) =>
 
             userstories = result[0]
+
             header = result[1]
 
             if resetPagination
@@ -392,15 +407,28 @@ class BacklogController extends mixOf(taiga.Controller, taiga.PageMixin, taiga.F
         @.fillUsersAndRoles(project.members, project.roles)
         @.initializeSubscription()
 
+        if @rs.userstories.getShowTags(@scope.projectId) == false
+            @showTags = false
+
         return @.loadBacklog()
             .then(=> @.generateFilters(milestone = "null"))
             .then(=> @scope.$emit("backlog:loaded"))
 
+    toggleTags: () ->
+        @rs.userstories.storeShowTags(@scope.projectId, @showTags)
+
     prepareBulkUpdateData: (uses, field="backlog_order") ->
          return _.map(uses, (x) -> {"us_id": x.id, "order": x[field]})
 
+    moveUsToTopOfBacklog: (us) ->
+      self = @
+      $('.first').each(() ->
+        $(this).removeClass('first');
+      )
+      @.moveUs('sprint:us:move', [us], 0, null)
+
     # --move us api behavior--
-    # If your are moving multiples USs you must use the bulk api
+    # If you are moving multiples USs you must use the bulk api
     # If there is only one US you must use patch (repo.save)
     #
     # The new US position is the position of the previous US + 1.
@@ -616,6 +644,16 @@ class BacklogController extends mixOf(taiga.Controller, taiga.PageMixin, taiga.F
             end = moment(sprint.estimated_finish, 'YYYY-MM-DD').format('x')
 
             return currentDate >= start && currentDate <= end
+
+    addFilterBacklog: (newFilter) ->
+        @.selectFilter(newFilter.category.dataType, newFilter.filter.id, false, newFilter.mode)
+        @.filtersReloadContent()
+        @.generateFilters('null')
+
+    removeFilterBacklog: (filter) ->
+        @.unselectFilter(filter.dataType, filter.id, false, filter.mode)
+        @.filtersReloadContent()
+        @.generateFilters('null')
 
 module.controller("BacklogController", BacklogController)
 
@@ -879,6 +917,8 @@ UsEditSelector = ($rootscope, $tgTemplate, $compile, $translate) ->
             $el.find(".js-popup-button").addClass('popover-open')
             $el.append(html)
             $el.find(".us-option-popup").popover().open(() -> removePopupOpenState())
+            if event.target.parentNode.classList.contains('first')
+              $el.find(".us-option-popup").addClass('first')
 
         $scope.$on "$destroy", ->
             $el.off()
